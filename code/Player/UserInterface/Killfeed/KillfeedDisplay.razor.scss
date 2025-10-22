@@ -1,0 +1,57 @@
+@import "../HudStyle.razor.scss";
+
+KillfeedDisplay {
+    width: 100%;
+    height: 50px;
+
+
+    .background {
+        width: 100%;
+        height: 100%;
+        padding: 0px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .text {
+        overflow: hidden;
+        margin: auto;
+        font-size: 20px;
+        font-family: Poppins;
+        color: #fff;
+        text-shadow: 1px 1px 2px black;
+    }
+
+    .attacker {
+        align-content: center;
+        justify-content: center;
+        max-width: 40%;
+        height: 100%;
+    }
+
+    .suicide {
+        align-content: center;
+        justify-content: center;
+        max-width: 60%;
+        height: 100%;
+    }
+
+    .prop {
+        align-content: center;
+        justify-content: center;
+        width: 20%;
+        height: 50px;
+
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    .victim {
+        align-content: center;
+        justify-content: center;
+        max-width: 40%;
+        height: 100%;
+    }
+}

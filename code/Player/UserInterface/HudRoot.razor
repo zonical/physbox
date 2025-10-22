@@ -1,0 +1,54 @@
+@using Sandbox;
+@using Sandbox.UI;
+@attribute [Title("Player HUD Element")]
+@attribute [Icon("screen_share")]
+@attribute [Group("Physbox")]
+@attribute [Tint(EditorTint.Yellow)]
+@inherits PanelComponent
+@namespace Physbox
+
+@if (Player is null || IsProxy || !DrawHud) return;
+
+<root>
+	<Timer></Timer>
+
+	@if ( Input.Down( "score" ))
+	{
+		<Scoreboard></Scoreboard>
+	}
+
+	@if (Player.IsAlive)
+	{
+		<div style="position: absolute; bottom: 20px; left: 50px; gap: 20px;">
+			<Health></Health>
+			<Score></Score>
+		</div>
+
+		@if (!Input.Down("score"))
+		{
+			<PropSelector></PropSelector>
+		}
+
+		<div style="position:absolute; bottom: 20px; right: 50px; flex-direction:column;">
+			<Charge class="align_right" style="padding-bottom: 20px;"></Charge>
+			<HeldProp></HeldProp>
+		</div>
+	}
+	else
+	{
+		<DeadMessage></DeadMessage>
+	}
+</root>
+
+@code
+{
+	[ConVar("physbox_player_drawhud", ConVarFlags.Cheat)]
+	public static bool DrawHud { get; set; } = true;
+
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine( Time.Now );
+}

@@ -1,0 +1,44 @@
+{
+  "RootObject": {
+    "__guid": "865dec31-d4ca-4adf-9fbe-e8feaecb91f5",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "Crate Spawner (14)",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "PropSpawnerComponent",
+        "__guid": "add0e170-ea96-45db-9be8-fcde48dc89c9",
+        "__enabled": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Prop": "props/crate.pdef",
+        "Sleeping": false,
+        "TraceDirection": "0,0,-1",
+        "TraceDistance": 16,
+        "TraceOffset": "0,0,16",
+        "TraceRadius": 64
+      }
+    ],
+    "Children": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": false,
+  "MenuPath": null,
+  "MenuIcon": null,
+  "DontBreakAsTemplate": false,
+  "__references": [],
+  "__version": 2
+}

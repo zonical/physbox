@@ -1,0 +1,38 @@
+@import "../HudStyle.razor.scss";
+
+Scoreboard {
+    // When the element is deleted make it double in size before being deleted.
+    &:intro {
+        transition: opacity 0.2s ease-in-out;
+        opacity: 1;
+    }
+
+    &:outro {
+        transition: opacity 0.2s ease-in-out;
+        opacity: 0;
+    }
+
+    pointer-events: all;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+
+    .root {
+        width: 60%;
+        height: 70%;
+        margin-top: 20%;
+    }
+
+    .playerContainer {
+        position: relative;
+        margin-top: 20px;
+        width: 100%;
+        height: 100%;
+        gap: 5px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        white-space: nowrap;
+    }
+}

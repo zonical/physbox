@@ -1,0 +1,73 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@attribute [Title("Player Killfeed Element")]
+@attribute [Icon("screen_share")]
+@attribute [Group("Physbox")]
+@attribute [Tint(EditorTint.Yellow)]
+@inherits PanelComponent
+@implements IGameEvents
+@namespace Physbox
+
+@if (IsProxy) return;
+@if (Player is null) return;
+
+<root>
+	<div class="container root">
+		@foreach ( var entry in Entries.TakeLast(5) )
+		{
+			<KillfeedDisplay Attacker="@(entry.Attacker)" Victim="@(entry.Victim)"></KillfeedDisplay>
+		}
+	</div>
+</root>
+
+@code
+{
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	GameLogicComponent Game => GameLogicComponent.GetGameInstance();
+
+	struct Entry
+	{
+		public Guid Attacker;
+		public Guid Victim;
+		public PropDefinitionResource Prop;
+	}
+
+	List<Entry> Entries = new();
+
+	public void AddEntry(Guid attacker, Guid victim, PropDefinitionResource prop)
+	{
+		Entries.Add(new() { Attacker = attacker, Victim = victim, Prop = prop });
+	}
+
+	public void OnRoundStart()
+	{
+		Entries.Clear();
+	}
+
+	[Rpc.Broadcast]
+	public void OnPlayerDeath( PlayerComponent player, GameObject attacker )
+	{
+		if (IsProxy) return;
+		//Log.Info("test");
+		if (attacker is null || !attacker.IsValid()) return;
+
+		// We were killed by a prop!
+		if ( attacker.Components.TryGet<PropLifeComponent>( out var prop ) )
+		{
+			AddEntry(prop.LastOwnedBy?.Network.Owner.Id ?? Guid.Empty, player.Network.Owner.Id, prop.Definition);
+		}
+
+		// If attacker contains PlayerComponent, we were killed by ourselves.
+		if ( attacker.Components.TryGet<PlayerComponent>( out var playerComp ) )
+		{
+			AddEntry(player.Network.Owner.Id, player.Network.Owner.Id, null);
+		}
+
+	}
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(Entries.Count());
+}

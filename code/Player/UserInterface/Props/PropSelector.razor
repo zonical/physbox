@@ -1,0 +1,42 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Physbox;
+@inherits Panel
+@namespace Physbox
+
+@if (Player is null) return;
+@if (CurrentlyLookingAtObject is null) return;
+@if (Player.HeldGameObject is not null) return;
+
+<root>
+	<div class="background container" style="position:relative; top: 200px;">
+		@if (IsBreakableProp)
+		{
+			@if (Player.CanPickupObjects &&
+				Game.Cookies.Get<bool>("showPropNameOnHover", true))
+			{
+				<label class="small_label" style="padding: 5px">@PropDef?.Name</label>
+			}
+		}
+		else
+		{
+			<label class="small_label" style="padding: 5px">@WorldLife?.Name (@WorldLife?.Health / @WorldLife?.MaxHealth)</label>
+		}
+	</div>
+</root>
+
+@code
+{
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	GameObject CurrentlyLookingAtObject => Player.CurrentlyLookingAtObject;
+
+	bool IsBreakableProp => CurrentlyLookingAtObject?.Components.Get<PropLifeComponent>() is not null;
+
+	PropDefinitionResource PropDef => CurrentlyLookingAtObject?.Components.Get<PropLifeComponent>().Definition;
+	WorldLifeComponent WorldLife => CurrentlyLookingAtObject?.Components.Get<WorldLifeComponent>();
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(Player.HeldGameObject, CurrentlyLookingAtObject);
+}

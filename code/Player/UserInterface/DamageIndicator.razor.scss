@@ -1,0 +1,8 @@
+@import "HudStyle.razor.scss";
+
+DamageIndicator {
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    margin: auto;
+}

@@ -1,0 +1,29 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+
+@if (Player is null) return;
+@if (Game is null || !GameLogicComponent.UseTimer || Game.TimeShouldEnd == -1 || SecondsRemaining < 0) return;
+
+<root>
+	<div class="background container">
+		<p class="small_label">Timer</p>
+		<p class="big_label">@TimeRemaining</p>
+	</div>
+</root>
+
+@code
+{
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	GameLogicComponent Game => GameLogicComponent.GetGameInstance();
+
+	public int SecondsRemaining => Game.TimeShouldEnd - (int)Time.Now;
+	public string TimeRemaining => string.Format("{0}:{1:00}", SecondsRemaining / 60, SecondsRemaining % 60);
+
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(SecondsRemaining);
+}

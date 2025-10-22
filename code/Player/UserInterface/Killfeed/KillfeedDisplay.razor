@@ -1,0 +1,70 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Sandbox.Network;
+@using System;
+@inherits Panel
+@namespace Physbox
+
+<root>
+	<div class="background">
+		@if ( Attacker != Guid.Empty )
+		{
+			<div class="attacker">
+				<div class="text">
+					@Connection.Find(Attacker).DisplayName
+				</div>
+			</div>
+		}
+
+		@if ( IsSuicide )
+		{
+			<div class="suicide">
+				<div class="text" style="padding-left: 8px">
+					bid farwell!
+				</div>
+			</div>
+		}
+		else
+		{
+			<div class="prop">
+				<img Texture="textures/ui/killfeed/default.vtex" />
+			</div>
+
+			<div class="victim">
+				<div class="text">
+					@Connection.Find(Victim).DisplayName
+				</div>
+			</div>
+
+		}
+
+	</div>
+</root>
+
+@code
+{
+	public Guid Attacker { get; set; }
+	public Guid Victim { get; set; }
+	public PropDefinitionResource Prop { get; set; }
+	TimeSince TimeSinceCreation = 0;
+
+	public KillfeedDisplay()
+	{
+		TimeSinceCreation = 0;
+		Style.Opacity = 1;
+	}
+
+	public override void Tick()
+	{
+		if ( TimeSinceCreation.Relative > 5 )
+		{
+			Style.Opacity -= 0.02f;
+			if ( Style.Opacity <= 0 )
+			{
+				Style.Display = DisplayMode.None;
+			}
+		}
+	}
+
+	public bool IsSuicide => Attacker == Victim;
+}

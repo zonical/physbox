@@ -1,0 +1,20 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using Physbox;
+@inherits PanelComponent
+
+<root>
+	<div class="background">
+		<p class="small_label" style="font-size: 64px; color:red">@Damage</p>
+	</div>
+</root>
+
+@code
+{
+	[Property] public int Damage { get; set; } = 0;
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => Time.Now.GetHashCode();
+}

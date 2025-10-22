@@ -1,0 +1,8 @@
+@import "HudStyle.razor.scss";
+
+Score {
+    div {
+        min-width: 80px;
+        align-items: center;
+    }
+}

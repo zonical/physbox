@@ -1,0 +1,32 @@
+﻿* {
+    .container {
+        flex-direction: column;
+    }
+
+    .big_label {
+        font-size: 28px;
+        font-family: Poppins;
+        color: #fff;
+        text-shadow: 1px 1px 2px black;
+    }
+
+    .small_label {
+        font-size: 15px;
+        font-family: Poppins;
+        color: #fff;
+        align-self: center;
+        text-shadow: 1px 1px 2px black;
+    }
+
+    .background {
+        padding: 20px;
+        background-color: #000000ab;
+        border-radius: 20px;
+        backdrop-filter: blur(5px);
+    }
+
+    .align_right {
+        margin-left: auto;
+        margin-right: 0;
+    }
+}

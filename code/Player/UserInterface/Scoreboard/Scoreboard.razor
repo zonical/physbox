@@ -1,0 +1,30 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+
+@if (Player is null) return;
+
+<root>
+	<div class="background container root">
+		<div class="big_label">@ServerDetails</div>
+		<div class="container playerContainer">
+			@foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )
+			{
+				<PlayerScoreboardPanel Player="@player"></PlayerScoreboardPanel>
+			}
+		</div>
+
+	</div>
+</root>
+
+@code
+{
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	public string ServerDetails => $"Server: {Networking.ServerName} ({Connection.All.Count} / {@Networking.MaxPlayers}) - {Networking.MapName} playing {GameLogicComponent.GameMode}";
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(Time.Now);
+}

@@ -1,0 +1,10 @@
+@import "HudStyle.razor.scss";
+
+DeadMessage {
+    position:absolute;
+
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    margin:auto;
+}

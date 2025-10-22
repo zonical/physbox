@@ -1,0 +1,37 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+
+@if (Player is null) return;
+
+<root>
+	<div class="background thisRoot">
+		<img src="avatar:@Player.Network.Owner.SteamId" />
+		<div class="name big_label">
+			@Player.Network.Owner.DisplayName
+		</div>
+		<div class="rightHandSideContainer">
+			<div class="valueContainer">
+				<div class="small_label">Kills</div>
+				<div class="big_label">@Player.Kills</div>
+			</div>
+			<div class="valueContainer">
+				<div class="small_label">Deaths</div>
+				<div class="big_label">@Player.Deaths</div>
+			</div>
+		</div>
+
+	</div>
+</root>
+
+@code
+{
+	public PlayerComponent Player { get; set; }
+	public string ServerDetails => $"Server: {Networking.ServerName} ({Connection.All.Count} / {@Networking.MaxPlayers}) - {Networking.MapName} playing {GameLogicComponent.GameMode}";
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(Time.Now);
+}
