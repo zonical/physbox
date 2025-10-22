@@ -12,8 +12,12 @@ public class BaseLifeComponent : Component, Component.IDamageable
 
 	[Feature( "Life" ), Property, Order( 102 ), Sync]
 	public GameObject LastHitBy { get; set; }
+
 	[Feature( "Life" ), Property, Order( 103 ), Sync]
 	public bool DamageImmunity { get; set; } = false;
+
+	[Feature( "Life" ), Property, ReadOnly, Order( 104 )]
+	public DamageInfo DeathDamageInfo { get; set; } = null;
 
 	public bool IsAlive => Health > 0;
 
@@ -26,7 +30,7 @@ public class BaseLifeComponent : Component, Component.IDamageable
 	{
 		OnDamage( damage );
 	}
-	
+
 	public virtual void OnDamage( in DamageInfo damage )
 	{
 		if ( !IsAlive ) return;
@@ -38,11 +42,19 @@ public class BaseLifeComponent : Component, Component.IDamageable
 		// Oh no, we died! :(
 		if ( Health == 0 )
 		{
+			DeathDamageInfo = damage;
 			Die();
 		}
 	}
-	public virtual void Spawn() { }
+	public virtual void Spawn()
+	{
+		Health = MaxHealth;
+		DeathDamageInfo = null;
+	}
 
-	public virtual void Die() { }
+	public virtual void Die()
+	{
+
+	}
 
 }

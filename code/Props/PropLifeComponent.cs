@@ -65,7 +65,8 @@ public sealed class PropLifeComponent : BaseLifeComponent
 
 	public override void Spawn()
 	{
-		Health = MaxHealth;
+		base.Spawn();
+
 		DamageImmunity = true;
 
 		Invoke( PropDamageImmunityTime, () => { DamageImmunity = false; } );

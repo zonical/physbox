@@ -150,7 +150,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			var objectTypeTuple = (collision.GetObjectType( collision.A ), collision.GetObjectType( collision.B ));
 
 			// Anything marked with CollisionEvent.ObjectType.None will be ignored.
-			if ( CollisionFunctions.ContainsKey( objectTypeTuple ) ) 
+			if ( CollisionFunctions.ContainsKey( objectTypeTuple ) )
 			{
 				CollisionFunctions[objectTypeTuple].Invoke( collision, collision.A, collision.B );
 				if ( VerboseCollisionLogging )
@@ -188,7 +188,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 		if ( @event.AbsoluteSpeed > DamageSpeedThreshold )
 		{
 			var damage = (int)float.Sqrt( @event.AbsoluteSpeed * 0.8f );
-			
+
 			var propLife = @event.GetLifeComponent( prop );
 			if ( propLife is not null )
 			{
@@ -211,7 +211,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			if ( lifeA is not null )
 			{
 				var probB_RB = @event.GetRigidbody( propB );
-				
+
 				var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probB_RB?.MassOverride ?? 0 );
 				lifeA.OnDamage( new DamageInfo( damage, propB, null ) );
 			}
@@ -233,7 +233,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 		{
 			var damage = (int)float.Sqrt( @event.AbsoluteSpeed );
 			var life = @event.GetLifeComponent( player );
-			
+
 			if ( life is not null )
 			{
 				life.RequestDamage( new DamageInfo( damage, world, null ) );
@@ -277,8 +277,8 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				//Log.Info( $"{ result.GameObject}, {result.Distance}" );
 
 				// Apply bonus damage if we are reasonably above the ground.
-				var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) + ( result.Distance > 32 ? 10 : 0 );
-				
+				var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) + (result.Distance > 32 ? 10 : 0);
+
 				var rigidBody = @event.GetRigidbody( prop );
 				if ( rigidBody is not null )
 				{

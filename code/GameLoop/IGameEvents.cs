@@ -10,7 +10,7 @@
 	void OnPlayerSpawn( PlayerComponent player ) { }
 
 	// Called when a player dies.
-	void OnPlayerDeath( PlayerComponent player, GameObject attacker ) { }
+	void OnPlayerDeath( PlayerComponent victim, DamageInfo info ) { }
 
 	// Called when a player is fully connected and their player prefab has been created.
 	void OnPlayerReady( PlayerComponent player ) { }

@@ -180,6 +180,7 @@
         "CanThrowObject": true,
         "CurrentlyLookingAtObject": null,
         "DamageImmunity": false,
+        "DeathDamageInfo": null,
         "Deaths": 0,
         "ForceColorGradient": {
           "blend": "Linear",
@@ -215,8 +216,8 @@
         "Ragdoll": null
       },
       {
-        "__type": "Physbox.HudRoot",
-        "__guid": "06fa852f-89ab-41f5-9648-7a4e834a9682",
+        "__type": "Physbox.Killfeed",
+        "__guid": "a5fcd702-38b0-44ad-84c3-1c5003ebb90f",
         "__enabled": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
@@ -226,8 +227,8 @@
         "OnComponentUpdate": null
       },
       {
-        "__type": "Physbox.Killfeed",
-        "__guid": "eda69ad8-911b-46aa-a716-5429e37c4ffe",
+        "__type": "Physbox.HudRoot",
+        "__guid": "06fa852f-89ab-41f5-9648-7a4e834a9682",
         "__enabled": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,

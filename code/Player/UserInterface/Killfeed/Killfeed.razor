@@ -45,25 +45,35 @@
 		Entries.Clear();
 	}
 
-	[Rpc.Broadcast]
-	public void OnPlayerDeath( PlayerComponent player, GameObject attacker )
+	[Rpc.Broadcast] // I don't know why I have to do this, but my networking sucks apparently.
+	public void OnPlayerDeath( PlayerComponent victim, DamageInfo info )
 	{
-		if (IsProxy) return;
-		//Log.Info("test");
-		if (attacker is null || !attacker.IsValid()) return;
+		var attacker = info.Attacker;
+		if (attacker is null) return;
 
-		// We were killed by a prop!
-		if ( attacker.Components.TryGet<PropLifeComponent>( out var prop ) )
+		Log.Info(attacker);
+		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) )
 		{
-			AddEntry(prop.LastOwnedBy?.Network.Owner.Id ?? Guid.Empty, player.Network.Owner.Id, prop.Definition);
-		}
+			Log.Info("test");
+			var victimID = victim.Network.Owner.Id;
+			if (victim != attackerPlayer)
+			{
+				var attackerID = attacker.Network.Owner.Id;
 
-		// If attacker contains PlayerComponent, we were killed by ourselves.
-		if ( attacker.Components.TryGet<PlayerComponent>( out var playerComp ) )
-		{
-			AddEntry(player.Network.Owner.Id, player.Network.Owner.Id, null);
-		}
+				// Get the prop that killed us.
+				var propDef = (PropDefinitionResource)null;
+				var prop = info.Weapon.GetComponent<PropLifeComponent>();
 
+				propDef = prop?.Definition;
+
+				AddEntry(attackerID, victimID, propDef);
+			}
+			// We killed ourselves.
+			else
+			{
+				AddEntry(victimID, victimID, null);
+			}
+		}
 	}
 
 	/// <summary>

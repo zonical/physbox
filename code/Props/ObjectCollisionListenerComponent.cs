@@ -11,11 +11,12 @@ public sealed class ObjectCollisionListenerComponent : Component, Component.ICol
 {
 	[Description( "This does not need to be set for most purposes. See PlayerComponent.CreateHitbox()" )]
 	[Property, Sync] public GameObject CollisionProxy { get; set; }
-	[Property] public TagSet IgnoreTags = new() 
-	{ 
-		PhysboxConstants.HeldPropTag, 
-		PhysboxConstants.DebrisTag, 
-		PhysboxConstants.IgnoreBreakablePropTag 
+	[Property]
+	public TagSet IgnoreTags = new()
+	{
+		PhysboxConstants.HeldPropTag,
+		PhysboxConstants.DebrisTag,
+		PhysboxConstants.IgnoreBreakablePropTag
 	};
 	[Property, ReadOnly] public List<Guid> RecentlyHitBy = new();
 
@@ -32,10 +33,10 @@ public sealed class ObjectCollisionListenerComponent : Component, Component.ICol
 
 		// See if the thing colliding with us has their own collision proxy.
 		var other = collision.Other.GameObject;
-		var otherCollider = other.Components.Get<ObjectCollisionListenerComponent>( 
-			FindMode.Enabled | 
-			FindMode.InSelf | 
-			FindMode.InAncestors | 
+		var otherCollider = other.Components.Get<ObjectCollisionListenerComponent>(
+			FindMode.Enabled |
+			FindMode.InSelf |
+			FindMode.InAncestors |
 			FindMode.InChildren );
 		if ( otherCollider?.CollisionProxy is not null )
 		{

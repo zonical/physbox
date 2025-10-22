@@ -29,6 +29,8 @@ public partial class PlayerComponent
 		SpawnCancellationTokenSource.Dispose();
 		SpawnCancellationToken = CancellationToken.None;
 
+		base.Spawn();
+
 		// Revive and reset the player.
 		Health = 100;
 		FreeCam = false;
@@ -66,7 +68,8 @@ public partial class PlayerComponent
 		HidePlayer();
 		Hitbox.Enabled = false;
 
-		Scene.RunEvent<IGameEvents>( x => x.OnPlayerDeath( this, GameObject ) );
+		// Let the game know we died.
+		Scene.RunEvent<IGameEvents>( x => x.OnPlayerDeath( this, DeathDamageInfo ) );
 	}
 
 	[Rpc.Broadcast]

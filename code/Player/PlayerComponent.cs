@@ -206,7 +206,7 @@ public partial class PlayerComponent :
 	{
 		Hitbox = new GameObject( $"Player - {Network.Owner.DisplayName} (hitbox)" );
 		Hitbox.Tags.Add( PhysboxConstants.BreakableOnlyTag );
-		
+
 		var box = Hitbox.AddComponent<BoxCollider>();
 		box.Scale = HitboxSize;
 		box.Center = HitboxOffset;

@@ -11,27 +11,24 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	public static int DeathmatchKillsToWin { get; set; } = 10;
 
 	[Rpc.Broadcast]
-	void IGameEvents.OnPlayerDeath( PlayerComponent player, GameObject attacker )
+	void IGameEvents.OnPlayerDeath( PlayerComponent victim, DamageInfo info )
 	{
 		if ( RoundOver ) return;
 
-		player.Deaths++;
+		victim.Deaths++;
+		var attacker = info.Attacker;
 
 		// Add kills to attacking player.
-		if ( attacker is not null && attacker.Components.TryGet<PropLifeComponent>( out var prop ) )
+		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) && attackerPlayer != victim )
 		{
-			if ( prop.LastOwnedBy is not null )
-			{
-				if ( prop.LastOwnedBy != player )
-				{
-					prop.LastOwnedBy.Kills++;
-					Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( prop.LastOwnedBy, prop.LastOwnedBy.Kills ) );
-				}
-				Log.Info( $"{prop.LastOwnedBy.Network.Owner.DisplayName} killed {player.Network.Owner.DisplayName}" );
-			}
+			attackerPlayer.Kills++;
+
+			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( attackerPlayer, attackerPlayer.Kills ) );
+
+			Log.Info( $"{attacker.Network.Owner.DisplayName} killed {victim.Network.Owner.DisplayName}" );
 		}
 
-		player.RequestSpawn();
+		victim.RequestSpawn();
 	}
 
 	[Rpc.Broadcast]
