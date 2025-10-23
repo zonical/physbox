@@ -6,19 +6,20 @@
 @if (Player is null) return;
 
 <root>
-	<div class="background thisRoot">
+	<div class="background">
 		<img src="avatar:@Player.Network.Owner.SteamId" />
 		<div class="name big_label">
 			@Player.Network.Owner.DisplayName
 		</div>
-		<div class="rightHandSideContainer">
-			<div class="valueContainer">
-				<div class="small_label">Kills</div>
+		<div class="playerStats">
+			<div class="value">
 				<div class="big_label">@Player.Kills</div>
 			</div>
-			<div class="valueContainer">
-				<div class="small_label">Deaths</div>
+			<div class="value">
 				<div class="big_label">@Player.Deaths</div>
+			</div>
+			<div class="value">
+				<div class="big_label">@((int)(Player.Network.Owner.Ping))</div>
 			</div>
 		</div>
 

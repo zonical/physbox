@@ -29,6 +29,8 @@ public partial class PlayerComponent :
 	[Sync] private bool HasDied { get; set; } = false;
 	[Property] public Vector3 HitboxSize { get; set; } = new();
 	[Property] public Vector3 HitboxOffset { get; set; } = new();
+	[Property, Sync( SyncFlags.FromHost )] public bool IsBot { get; set; }
+	[Property, Sync( SyncFlags.FromHost ), ShowIf( "IsBot", true )] public string BotName { get; set; }
 
 	// ==================== [ GAME OBJECTS ] ====================
 
@@ -43,7 +45,6 @@ public partial class PlayerComponent :
 		Nametag.Name = Network.Owner.DisplayName;
 		LocalPlayer = this;
 
-		// Dress the player.
 		DressPlayer();
 		InitaliseCamera();
 		HidePlayer();
@@ -81,9 +82,67 @@ public partial class PlayerComponent :
 		}
 	}
 
+	[Rpc.Owner]
+	public void InitBot()
+	{
+		var names = new List<string>()
+		{
+			"Adam",
+			"Rhys",
+			"Chloe",
+			"Jasmine",
+			"Jo",
+			"Jack",
+			"Maverick",
+			"Ruth",
+			"Paul",
+			"Patrick",
+			"Xavier",
+			"Bridget",
+			"Bianca",
+			"Josh"
+		};
+
+		BotName = "BOT " + Game.Random.FromList( names );
+		Nametag.Name = BotName;
+		GameObject.Name = BotName;
+
+		// If we have the PlayerController component for what ever reason,
+		// disable it. We only have one that we locally control.
+		var playerController = GetComponent<PlayerController>();
+		if ( playerController is not null )
+		{
+			playerController.Enabled = false;
+		}
+
+		HidePlayer();
+		CreateHitbox();
+
+		var game = GameLogicComponent.GetGameInstance();
+		if ( !game.RoundOver )
+		{
+			RequestSpawn();
+		}
+	}
+
 	protected override void OnUpdate()
 	{
 		if ( IsProxy ) return;
+
+		// Debug hitbox drawing. Do this here first so we
+		// can also render bot hitboxes when they spawn in.
+		if ( Hitbox is not null )
+		{
+			Hitbox.WorldPosition = WorldPosition;
+			if ( PlayerConvars.DrawPlayerHitboxes )
+			{
+				DebugOverlay.Box( Hitbox.GetBounds(), Color.Red );
+			}
+		}
+
+		// Don't execute anything else if we're a bot.
+		// We've got our own code for that somewhere else.
+		if ( IsBot ) return;
 
 		if ( FreeCam )
 		{
@@ -116,20 +175,12 @@ public partial class PlayerComponent :
 
 				HandleThrowerInput();
 			}
-
-			if ( Hitbox is not null )
-			{
-				Hitbox.WorldPosition = WorldPosition;
-				if ( PlayerConvars.DrawPlayerHitboxes )
-				{
-					DebugOverlay.Box( Hitbox.GetBounds(), Color.Red );
-				}
-			}
 		}
 	}
 
 	protected override void OnFixedUpdate()
 	{
+		// Contrary to OnUpdate() above, we can let bots build up force.
 		if ( IsProxy ) return;
 
 		// If we are holding down the attack button, charge up the force.
@@ -204,7 +255,8 @@ public partial class PlayerComponent :
 	/// </summary>
 	private void CreateHitbox()
 	{
-		Hitbox = new GameObject( $"Player - {Network.Owner.DisplayName} (hitbox)" );
+		var hitboxname = !IsBot ? $"Player - {Network.Owner.DisplayName} (hitbox)" : $"{BotName} (hitbox)";
+		Hitbox = new GameObject( hitboxname );
 		Hitbox.Tags.Add( PhysboxConstants.BreakableOnlyTag );
 
 		var box = Hitbox.AddComponent<BoxCollider>();

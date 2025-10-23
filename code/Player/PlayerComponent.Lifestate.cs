@@ -33,10 +33,14 @@ public partial class PlayerComponent
 
 		// Revive and reset the player.
 		Health = 100;
-		FreeCam = false;
 		ShowPlayer();
-		DressPlayer();
 		Hitbox.Enabled = true;
+
+		if ( !IsBot )
+		{
+			FreeCam = false;
+			DressPlayer();
+		}
 
 		// Teleport to spawnpoint.
 		var regularSpawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() );
@@ -62,7 +66,10 @@ public partial class PlayerComponent
 	[Rpc.Owner( NetFlags.OwnerOnly )]
 	public override void Die()
 	{
-		FreeCam = true;
+		if ( !IsBot )
+		{
+			FreeCam = true;
+		}
 
 		CreateRagdoll();
 		HidePlayer();

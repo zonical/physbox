@@ -3,7 +3,7 @@
 @inherits PanelComponent
 @namespace Sandbox
 
-@if (!IsProxy) return;
+@if (!IsProxy && !IsBot()) return;
 
 <root>
 	<div class="background big_label" style="font-size: 40px">@Name</div>
@@ -13,6 +13,16 @@
 {
 
 	[Sync] public string Name { get; set; } = "Placeholder";
+
+	public bool IsBot()
+	{
+		var owner = GameObject.Parent;
+		if ( owner.Components.TryGet<PlayerComponent>( out var player ) )
+		{
+			return player.IsBot;
+		}
+		return false;
+	}
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt

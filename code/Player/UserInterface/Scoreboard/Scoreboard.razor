@@ -6,8 +6,13 @@
 @if (Player is null) return;
 
 <root>
-	<div class="background container root">
-		<div class="big_label">@ServerDetails</div>
+	<div class="background container">
+		<div class="big_label" style="font-size: 22px">@ServerDetails</div>
+		<div class="statsHeader">
+			<div class="small_label" style="margin-right:28px">Kills</div>
+			<div class="small_label" style="margin-right:4px">Deaths</div>
+			<div class="small_label" style="margin-left:20px">Ping</div>
+		</div>
 		<div class="container playerContainer">
 			@foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )
 			{
@@ -21,7 +26,7 @@
 @code
 {
 	PlayerComponent Player => PlayerComponent.LocalPlayer;
-	public string ServerDetails => $"Server: {Networking.ServerName} ({Connection.All.Count} / {@Networking.MaxPlayers}) - {Networking.MapName} playing {GameLogicComponent.GameMode}";
+	public string ServerDetails => $"\"{Networking.ServerName}\" ({Connection.All.Count} / {@Networking.MaxPlayers}) - {GameLogicComponent.GameMode} on {Networking.MapName}";
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
