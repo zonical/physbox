@@ -1,12 +1,8 @@
 @import "../HudStyle.razor.scss";
 
 Charge {
+    position: absolute;
+    justify-content: center;
     flex-direction: column;
-
-    .info_text {
-        font-size: 20px;
-        font-family: Poppins;
-        color: #fff;
-        text-shadow: 1px 1px 2px black;
-    }
+    bottom: 20px;
 }

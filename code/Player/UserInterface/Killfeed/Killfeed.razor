@@ -51,10 +51,8 @@
 		var attacker = info.Attacker;
 		if (attacker is null) return;
 
-		Log.Info(attacker);
 		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) )
 		{
-			Log.Info("test");
 			var victimID = victim.Network.Owner.Id;
 			if (victim != attackerPlayer)
 			{

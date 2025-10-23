@@ -19,7 +19,7 @@
 
 	@if (Player.IsAlive)
 	{
-		<div style="position: absolute; bottom: 20px; left: 50px; gap: 20px;">
+		<div style="position: absolute; bottom: 20px; left: 40px; gap: 20px;">
 			<Health></Health>
 			<Score></Score>
 		</div>
@@ -29,10 +29,8 @@
 			<PropSelector></PropSelector>
 		}
 
-		<div style="position:absolute; bottom: 20px; right: 50px; flex-direction:column;">
-			<Charge class="align_right" style="padding-bottom: 20px;"></Charge>
-			<HeldProp></HeldProp>
-		</div>
+		<Charge></Charge>
+		<HeldProp></HeldProp>
 	}
 	else
 	{

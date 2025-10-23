@@ -66,6 +66,8 @@ public partial class PlayerComponent
 
 		CreateRagdoll();
 		HidePlayer();
+		DropObject();
+
 		Hitbox.Enabled = false;
 
 		// Let the game know we died.

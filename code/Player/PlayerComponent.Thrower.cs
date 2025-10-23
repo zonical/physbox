@@ -18,6 +18,7 @@ public partial class PlayerComponent
 	// ==================== [ VARIABLES ] ====================
 	private PropDefinitionResource HeldProp => HeldGameObject?.GetComponent<PropLifeComponent>().Definition;
 	private Angles AdditionalPropRotation = new Angles();
+	public int Throws = 0;
 	public float BuiltUpForce = 0;
 
 	private void DrawCrosshair()
@@ -41,6 +42,8 @@ public partial class PlayerComponent
 			{
 				ThrowHeldObject();
 				AdditionalPropRotation = new Angles();
+
+				Throws++;
 			}
 			else
 			{
@@ -180,6 +183,7 @@ public partial class PlayerComponent
 	private void BroadcastModelTintChange( ModelRenderer ren, float tint )
 	{
 		ren.Tint = Color.White.WithAlpha( tint );
+		//ren.SetMaterial( Material.FromShader( "shaders/charge.shader" ) );
 	}
 
 	private Vector3 CalculateThrowVelocity( float mass )

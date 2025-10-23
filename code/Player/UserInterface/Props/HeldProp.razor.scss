@@ -1,5 +1,7 @@
 @import "../HudStyle.razor.scss";
 
-HeldProp
-{
+HeldProp {
+    position: absolute;
+    bottom: 20px;
+    right: 40px;
 }

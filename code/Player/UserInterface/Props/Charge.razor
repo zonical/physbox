@@ -6,39 +6,39 @@
 @if (Player is null || Player.HeldGameObject is null || !Player.CanPickupObjects) return;
 
 <root>
-	@if (Game.Cookies.Get<bool>("showControls", true))
-	{
-		<div class="container align_right" style="padding-bottom: 20px;">
-			<p class="info_text">
-				<img src=@Input.GetGlyph("attack1", InputGlyphSize.Small, false).ResourcePath />
-				Throw
-			</p>
-			<p class="info_text">
-				<img src=@Input.GetGlyph("drop", InputGlyphSize.Small, false).ResourcePath />
-				Drop
-			</p>
-			<p class="info_text">
-				<img src=@Input.GetGlyph("pan_left", InputGlyphSize.Small, false).ResourcePath />
-				Rotate Left
-			</p>
-			<p class="info_text">
-				<img src=@Input.GetGlyph("pan_right", InputGlyphSize.Small, false).ResourcePath />
-				Rotate Right
-			</p>
+	<div class="container">
+		@if (Player.Throws < 4 )
+		{
+			<div style="padding-bottom: 20px; gap: 20px;">
+				<div class="info_text">
+					<img src=@Input.GetGlyph("attack1", InputGlyphSize.Small, false).ResourcePath />
+					Throw
+				</div>
+				<div class="info_text">
+					<img src=@Input.GetGlyph("drop", InputGlyphSize.Small, false).ResourcePath />
+					Drop
+				</div>
+				<div class="info_text">
+					<img src=@Input.GetGlyph("pan_left", InputGlyphSize.Small, false).ResourcePath />
+					Rotate Left
+				</div>
+				<div class="info_text">
+					<img src=@Input.GetGlyph("pan_right", InputGlyphSize.Small, false).ResourcePath />
+					Rotate Right
+				</div>
+			</div>
+		}
+		<div class="background container" style="width: 220px; margin: auto;">
+			<div style="height:45px">
+				<rect style="position:absolute; height: 45px; width: 180px; background-color: black"></rect>
+				<rect style="position:absolute; height: 45px;
+					width: @( 1.8 * float.Round( PercentageCharged * 100 ) );
+					background-color:@Player.ForceColorGradient.Evaluate(PercentageCharged).Hex;">
+				</rect>
+			</div>
 		</div>
-	}
-
-	<div class="background container" style="width: 220px; height: 135px;">
-
-		<p class="small_label" style="font-style: italic; padding-bottom: 10px;">Charge (@float.Round(PercentageCharged * 100)%)</p>
-		<rect class="container" style="position:relative; top: 50%;">
-			<rect style="position:absolute; bottom: 0; height: 45px; width: 180px; background-color: black"></rect>
-			<rect style="position:absolute; bottom: 0; width: @( 1.8 * float.Round( PercentageCharged * 100 ) );
-				height: 45px;
-				background-color:@Player.ForceColorGradient.Evaluate(PercentageCharged).Hex;">
-			</rect>
-		</rect>
 	</div>
+		
 </root>
 
 @code

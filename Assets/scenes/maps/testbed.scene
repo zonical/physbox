@@ -877,6 +877,7 @@
           "__guid": "7fdbdd65-a2e0-4c48-9ddf-678985ef78ab",
           "__enabled": true,
           "DamageImmunity": false,
+          "DeathDamageInfo": null,
           "Definition": null,
           "Health": 0,
           "LastHitBy": null,
@@ -928,6 +929,7 @@
           "__guid": "95014a45-b956-4602-bd72-85f0cabecd1f",
           "__enabled": true,
           "DamageImmunity": false,
+          "DeathDamageInfo": null,
           "Definition": null,
           "Health": 0,
           "LastHitBy": null,
@@ -4955,7 +4957,7 @@
               "Damage": 10,
               "DamageTags": "",
               "Exclude": "",
-              "Include": "player,breakable",
+              "Include": "",
               "OnComponentDestroy": null,
               "OnComponentDisabled": null,
               "OnComponentEnabled": null,
@@ -5546,6 +5548,7 @@
               "__guid": "5256c166-d7ac-4d1f-8f42-852945339ee8",
               "__enabled": true,
               "DamageImmunity": false,
+              "DeathDamageInfo": null,
               "Health": 0,
               "LastHitBy": null,
               "MaxHealth": 100,
@@ -7848,7 +7851,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 5,
                         "Value": " Button pressed!",
                         "DstId": 1,
                         "DstName": "format"
@@ -8647,7 +8650,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 3,
+                        "Id": 6,
                         "Value": true,
                         "DstId": 2,
                         "DstName": "state"
@@ -9101,7 +9104,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 5,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -9555,7 +9558,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 5,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -10010,7 +10013,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 5,
                         "Value": false,
                         "DstId": 1,
                         "DstName": "state"
@@ -10565,6 +10568,7 @@
               "__guid": "de0e542f-bd9e-4a3e-a24f-49fe26892a3c",
               "__enabled": true,
               "DamageImmunity": false,
+              "DeathDamageInfo": null,
               "Definition": "props/crate.pdef",
               "Health": 100,
               "LastHitBy": null,

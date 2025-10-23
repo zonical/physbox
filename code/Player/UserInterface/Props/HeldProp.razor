@@ -1,4 +1,4 @@
-@using Sandbox;
+﻿@using Sandbox;
 @using Sandbox.UI;
 @inherits Panel
 @namespace Physbox
@@ -8,8 +8,11 @@
 <root>
 	<div class="background container">
 		<p class="small_label" style="font-style: italic;">@PropDef.Name</p>
-		<p class="big_label">Health: @PropLife.Health / @PropLife.MaxHealth</p>
-		<p class="big_label">Mass: @PropDef.Mass</p>
+		<div style="gap: 10px">
+			<div class="big_label">❤️</div>
+			<div class="big_label">@PropLife.Health / @PropLife.MaxHealth</div>
+		</div>
+		
 	</div>
 
 </root>
