@@ -9,4 +9,5 @@ public static partial class PhysboxConstants
 	public static readonly string BreakableOnlyTag = "breakable_only";
 	public static readonly string PlayerTag = "player";
 	public static readonly string RagdollTag = "ragdoll";
+	public static readonly string HitboxTag = "hitbox";
 }

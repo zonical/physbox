@@ -11,7 +11,7 @@
 		{
 			<div class="attacker">
 				<div class="text">
-					@Connection.Find(Attacker).DisplayName
+					@GetName(Attacker)
 				</div>
 			</div>
 		}
@@ -32,7 +32,7 @@
 
 			<div class="victim">
 				<div class="text">
-					@Connection.Find(Victim).DisplayName
+					@GetName(Victim)
 				</div>
 			</div>
 
@@ -52,6 +52,25 @@
 	{
 		TimeSinceCreation = 0;
 		Style.Opacity = 1;
+	}
+
+	public string GetName(Guid id)
+	{
+		var go = Scene.Directory.FindByGuid(id);
+		if (go is not null)
+		{
+			var player = go.Components.Get<PlayerComponent>(
+				FindMode.EverythingInSelf |
+				FindMode.EverythingInAncestors |
+				FindMode.EverythingInDescendants);
+
+			if (player is not null)
+			{
+				return player.IsPlayer ? player.Network.Owner.DisplayName : player.BotName;
+			}
+		}
+
+		return "[PLACEHOLDER]";
 	}
 
 	public override void Tick()

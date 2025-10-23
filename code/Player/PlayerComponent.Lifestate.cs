@@ -36,7 +36,7 @@ public partial class PlayerComponent
 		ShowPlayer();
 		Hitbox.Enabled = true;
 
-		if ( !IsBot )
+		if ( IsPlayer )
 		{
 			FreeCam = false;
 			DressPlayer();
@@ -48,6 +48,12 @@ public partial class PlayerComponent
 		{
 			WorldPosition = regularSpawnpoint.WorldPosition;
 			WorldRotation = regularSpawnpoint.WorldRotation;
+
+			// If we are a bot, force set our destination.
+			if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
+			{
+				bot.Agent.SetAgentPosition( WorldPosition );
+			}
 		}
 
 		// Delete our ragdoll.
@@ -66,7 +72,7 @@ public partial class PlayerComponent
 	[Rpc.Owner( NetFlags.OwnerOnly )]
 	public override void Die()
 	{
-		if ( !IsBot )
+		if ( IsPlayer )
 		{
 			FreeCam = true;
 		}
@@ -75,10 +81,21 @@ public partial class PlayerComponent
 		HidePlayer();
 		DropObject();
 
+		// If we are a bot, stop moving to our destination and forget everything.
+		if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
+		{
+			bot.Agent.Stop();
+			
+			bot.InterestedPlayer = null;
+			bot.InterestedProp = null;
+			bot.PickupAttemptsRemaining = bot.MaximumPickupAttempts;
+			bot.ThrowAttemptsRemaining = bot.MaximumThrowAttempts;
+		}
+
 		Hitbox.Enabled = false;
 
 		// Let the game know we died.
-		Scene.RunEvent<IGameEvents>( x => x.OnPlayerDeath( this, DeathDamageInfo ) );
+		Scene.RunEvent<IGameEvents>( x => x.OnPlayerDeath( GameObject, DeathDamageInfo ) );
 	}
 
 	[Rpc.Broadcast]

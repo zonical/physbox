@@ -16,10 +16,22 @@ public partial class PlayerComponent :
 	public static PlayerComponent LocalPlayer { get; private set; }
 
 	// ==================== [ COMPONENTS ] ====================
+	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )] 
 	public PlayerController PlayerController => Components.GetOrCreate<PlayerController>();
-	public Voice Voice => Components.GetOrCreate<Voice>();
+
+	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
+	public Voice Voice => Components.Get<Voice>();
+
+	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
 	public CameraComponent Camera { get; set; } // This is manually set in InitaliseCamera().
+
+	[Property, ReadOnly, Feature( "Components" )]
+	public NavMeshAgent BotAgent => Components.Get<NavMeshAgent>();
+
+	[Property, ReadOnly, Feature( "Components" )]
 	private Nametag Nametag => Components.GetInChildren<Nametag>( true );
+
+	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
 	private HudRoot Hud => Components.Get<HudRoot>( true );
 
 	// ==================== [ PROPERTIES ] ====================
@@ -38,6 +50,8 @@ public partial class PlayerComponent :
 	[Property, Sync, ReadOnly] private GameObject Hitbox { get; set; }
 
 	// ==========================================================
+
+	public bool IsPlayer => !IsBot;
 
 	[Rpc.Owner]
 	public void InitPlayer()
@@ -107,13 +121,29 @@ public partial class PlayerComponent :
 		Nametag.Name = BotName;
 		GameObject.Name = BotName;
 
+		// Create a fake connection.
+		Sandbox.Debug.Networking.AddEmptyConnection();
+
 		// If we have the PlayerController component for what ever reason,
 		// disable it. We only have one that we locally control.
 		var playerController = GetComponent<PlayerController>();
 		if ( playerController is not null )
 		{
 			playerController.Enabled = false;
+
+			// Delete all of our existing colliders.
+			foreach ( var collider in Components.GetAll<Collider>(
+				FindMode.EverythingInSelf |
+				FindMode.EverythingInAncestors |
+				FindMode.EverythingInDescendants ) )
+			{
+				collider.Destroy();
+			}
 		}
+
+		// Make our agent move very quickly.
+		BotAgent.Acceleration = PlayerConvars.RunSpeed;
+		BotAgent.MaxSpeed = PlayerConvars.RunSpeed;
 
 		HidePlayer();
 		CreateHitbox();
@@ -129,8 +159,7 @@ public partial class PlayerComponent :
 	{
 		if ( IsProxy ) return;
 
-		// Debug hitbox drawing. Do this here first so we
-		// can also render bot hitboxes when they spawn in.
+		// Debug hitbox drawing.
 		if ( Hitbox is not null )
 		{
 			Hitbox.WorldPosition = WorldPosition;
@@ -140,10 +169,12 @@ public partial class PlayerComponent :
 			}
 		}
 
-		// Don't execute anything else if we're a bot.
-		// We've got our own code for that somewhere else.
-		if ( IsBot ) return;
+		if ( IsPlayer ) OnPlayerUpdate();
+		if ( IsBot ) OnBotUpdate();
+	}
 
+	private void OnPlayerUpdate()
+	{
 		if ( FreeCam )
 		{
 			HandleNoclipMovement();
@@ -175,6 +206,16 @@ public partial class PlayerComponent :
 
 				HandleThrowerInput();
 			}
+		}
+	}
+
+	private void OnBotUpdate()
+	{
+		if ( !IsAlive ) return;
+
+		if ( HeldGameObject is not null )
+		{
+			PositionHeldObject();
 		}
 	}
 
@@ -255,9 +296,9 @@ public partial class PlayerComponent :
 	/// </summary>
 	private void CreateHitbox()
 	{
-		var hitboxname = !IsBot ? $"Player - {Network.Owner.DisplayName} (hitbox)" : $"{BotName} (hitbox)";
+		var hitboxname = IsPlayer ? $"Player - {Network.Owner.DisplayName} (hitbox)" : $"{BotName} (hitbox)";
 		Hitbox = new GameObject( hitboxname );
-		Hitbox.Tags.Add( PhysboxConstants.BreakableOnlyTag );
+		Hitbox.Tags.Add( PhysboxConstants.BreakableOnlyTag, PhysboxConstants.HitboxTag );
 
 		var box = Hitbox.AddComponent<BoxCollider>();
 		box.Scale = HitboxSize;

@@ -1,4 +1,5 @@
 using Sandbox;
+using System.Collections.Generic;
 
 [Group( "Physbox" )]
 [Title( "Teleporter" )]
@@ -19,15 +20,23 @@ public sealed class TeleportVolumeComponent : Component, Component.ITriggerListe
 	{
 		if ( other.Tags.Contains( PhysboxConstants.PlayerTag ) && Destination is not null )
 		{
-			var playerController = other.Components.Get<PlayerController>( FindMode.EverythingInSelfAndAncestors );
+			var player = other.Components.Get<PlayerComponent>( FindMode.EverythingInSelfAndAncestors );
+			var playerController = player.PlayerController;
 
-			playerController.GameObject.WorldPosition = Destination.WorldPosition;
+			player.WorldPosition = Destination.WorldPosition;
+			player.Network.ClearInterpolation();
 			playerController.EyeAngles = Destination.WorldRotation;
-			playerController.Network.ClearInterpolation();
 
-			var rigid = playerController.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndChildren );
+			var rigid = player.Components.Get<Rigidbody>( FindMode.EverythingInSelfAndChildren );
 			rigid.Velocity = (playerController.Velocity * 2) + (LaunchDirection.Forward * Speed);
 			rigid.AngularVelocity = (playerController.Velocity * 2) + (LaunchDirection.Forward * Speed);
+
+			// If we are a bot, stop moving to our destination and forget everything.
+			if ( player.IsBot && player.Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
+			{
+				bot.Agent.Stop();
+				bot.Agent.SetAgentPosition( Destination.WorldPosition );
+			}
 		}
 	}
 

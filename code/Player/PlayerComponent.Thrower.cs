@@ -74,9 +74,18 @@ public partial class PlayerComponent
 	{
 		if ( IsProxy ) return;
 
-		var targetPos = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + (Camera.WorldRotation.Forward * 64);
-		HeldGameObject.WorldPosition = targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
-		HeldGameObject.WorldRotation = Camera.WorldRotation * HeldProp.HeldRotationOffset.ToRotation() * AdditionalPropRotation.ToRotation();
+		if ( IsPlayer )
+		{
+			var targetPos = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + (Camera.WorldRotation.Forward * 64);
+			HeldGameObject.WorldPosition = targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
+			HeldGameObject.WorldRotation = Camera.WorldRotation * HeldProp.HeldRotationOffset.ToRotation() * AdditionalPropRotation.ToRotation();
+		}
+		else if ( IsBot )
+		{
+			var zOffset = 56; // 72 (eye height) - 16
+			var targetPos = WorldPosition + new Vector3( 0, 0, zOffset ) + (WorldRotation.Forward * 64);
+			HeldGameObject.WorldPosition = targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, WorldRotation );
+		}
 	}
 
 	private void FindPotentialTarget()
@@ -117,7 +126,7 @@ public partial class PlayerComponent
 		}
 	}
 
-	private void PickupObject( GameObject go )
+	public void PickupObject( GameObject go )
 	{
 		// Move GameObject in front of us.
 		go.SetParent( GameObject );
@@ -130,10 +139,10 @@ public partial class PlayerComponent
 
 		if ( HeldGameObject.Components.TryGet<PropLifeComponent>( out var propLifeComponent ) )
 		{
-			propLifeComponent.LastOwnedBy = LocalPlayer;
+			propLifeComponent.LastOwnedBy = this;
 
 			// Alter our speed.
-			if ( PlayerConvars.SpeedAffectedByMass )
+			if ( PlayerConvars.SpeedAffectedByMass && IsPlayer )
 			{
 				var subtractAmount = float.Round( float.Sqrt( propLifeComponent.Definition.Mass ) * 10 );
 
@@ -188,7 +197,8 @@ public partial class PlayerComponent
 
 	private Vector3 CalculateThrowVelocity( float mass )
 	{
-		return Camera.WorldRotation.Forward * (MathF.Sqrt( (500 - mass) * 1000 ) * BuiltUpForce);
+		var forward = IsPlayer ? Camera.WorldRotation.Forward : WorldRotation.Forward;
+		return forward * (MathF.Sqrt( (500 - mass) * 1000 ) * BuiltUpForce);
 	}
 
 	private GameObject FreeAndReturnHeldObject()
@@ -238,7 +248,7 @@ public partial class PlayerComponent
 		}
 	}
 
-	private void ThrowHeldObject()
+	public void ThrowHeldObject()
 	{
 		if ( IsProxy ) return;
 

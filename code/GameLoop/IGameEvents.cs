@@ -7,14 +7,14 @@
 	void OnRoundEnd() { }
 
 	// Called when a player is spawned.
-	void OnPlayerSpawn( PlayerComponent player ) { }
+	void OnPlayerSpawn( GameObject player ) { }
 
 	// Called when a player dies.
-	void OnPlayerDeath( PlayerComponent victim, DamageInfo info ) { }
+	void OnPlayerDeath( GameObject victim, DamageInfo info ) { }
 
 	// Called when a player is fully connected and their player prefab has been created.
-	void OnPlayerReady( PlayerComponent player ) { }
+	void OnPlayerReady( GameObject player ) { }
 
 	// Called when the score of a player has been updated.
-	void OnPlayerScoreUpdate( PlayerComponent player, int score ) { }
+	void OnPlayerScoreUpdate( GameObject player, int score ) { }
 };

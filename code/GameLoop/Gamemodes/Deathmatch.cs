@@ -11,28 +11,28 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	public static int DeathmatchKillsToWin { get; set; } = 10;
 
 	[Rpc.Broadcast]
-	void IGameEvents.OnPlayerDeath( PlayerComponent victim, DamageInfo info )
+	void IGameEvents.OnPlayerDeath( GameObject victim, DamageInfo info )
 	{
 		if ( RoundOver ) return;
 
-		victim.Deaths++;
+		var victimPlayer = victim.GetComponent<PlayerComponent>();
+		if ( victimPlayer is null ) return;
+
+		victimPlayer.Deaths++;
 		var attacker = info.Attacker;
 
 		// Add kills to attacking player.
-		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) && attackerPlayer != victim )
+		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) && attackerPlayer != victimPlayer )
 		{
 			attackerPlayer.Kills++;
-
-			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( attackerPlayer, attackerPlayer.Kills ) );
-
-			Log.Info( $"{attacker.Network.Owner.DisplayName} killed {victim.Network.Owner.DisplayName}" );
+			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( attacker, attackerPlayer.Kills ) );
 		}
 
-		victim.RequestSpawn();
+		victimPlayer.RequestSpawn();
 	}
 
 	[Rpc.Broadcast]
-	void IGameEvents.OnPlayerScoreUpdate( PlayerComponent player, int score )
+	void IGameEvents.OnPlayerScoreUpdate( GameObject player, int score )
 	{
 		if ( RoundOver ) return;
 
@@ -52,8 +52,11 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 
 		foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )
 		{
-			player.SpawnCancellationTokenSource.Cancel();
-
+			if ( player.SpawnCancellationToken.CanBeCanceled )
+			{
+				player.SpawnCancellationTokenSource.Cancel();
+			}
+			
 			player.Kills = 0;
 			player.Deaths = 0;
 			player.Spawn();

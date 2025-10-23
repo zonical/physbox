@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using System.Numerics;
 using System.Threading.Channels;
 
 public static partial class PhysboxDebug
@@ -25,5 +26,17 @@ public static partial class PhysboxDebug
 		// initalise them. Doing this in OnNetworkSpawn is too early.
 		var player = go.GetComponent<PlayerComponent>();
 		player.InitBot();
+	}
+
+	[ConCmd( "pb_bot_suicide" )]
+	public static void DebugBotSuicide( Connection caller )
+	{
+		if ( !caller.IsHost ) return;
+
+		foreach ( var bot in Game.ActiveScene.GetAllComponents<PlayerComponent>().Where( x => x.IsBot ) ) 
+		{
+			var damageinfo = new DamageInfo( 9999, bot.GameObject, null );
+			bot.OnDamage( damageinfo );
+		}
 	}
 }

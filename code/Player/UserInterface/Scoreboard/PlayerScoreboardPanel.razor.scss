@@ -6,6 +6,7 @@ PlayerScoreboardPanel {
     height: 48px;
     gap: 20px;
     align-items: center;
+    flex-shrink: 0;
 
     .background {
         border-radius: 0px;

@@ -46,17 +46,20 @@
 	}
 
 	[Rpc.Broadcast] // I don't know why I have to do this, but my networking sucks apparently.
-	public void OnPlayerDeath( PlayerComponent victim, DamageInfo info )
+	public void OnPlayerDeath( GameObject victim, DamageInfo info )
 	{
+		var victimPlayer = victim.Components.Get<PlayerComponent>();
+		if (victimPlayer is null) return;
+
 		var attacker = info.Attacker;
 		if (attacker is null) return;
 
 		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) )
 		{
-			var victimID = victim.Network.Owner.Id;
-			if (victim != attackerPlayer)
+			var victimID = victim.Id;
+			if (victimPlayer != attackerPlayer)
 			{
-				var attackerID = attacker.Network.Owner.Id;
+				var attackerID = attacker.Id;
 
 				// Get the prop that killed us.
 				var propDef = (PropDefinitionResource)null;

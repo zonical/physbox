@@ -7851,7 +7851,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 2,
                         "Value": " Button pressed!",
                         "DstId": 1,
                         "DstName": "format"
@@ -8650,7 +8650,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 6,
+                        "Id": 3,
                         "Value": true,
                         "DstId": 2,
                         "DstName": "state"
@@ -9104,7 +9104,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 2,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -9558,7 +9558,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 2,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -10013,7 +10013,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 2,
                         "Value": false,
                         "DstId": 1,
                         "DstName": "state"
@@ -11150,7 +11150,7 @@
       "Tags": "deathmatch,hidden"
     },
     "NavMesh": {
-      "Enabled": false,
+      "Enabled": true,
       "IncludeStaticBodies": true,
       "IncludeKeyframedBodies": true,
       "EditorAutoUpdate": true,
@@ -11158,7 +11158,7 @@
       "AgentRadius": 16,
       "AgentStepSize": 18,
       "AgentMaxSlope": 40,
-      "ExcludedBodies": "",
+      "ExcludedBodies": "no_breakable,hitbox",
       "IncludedBodies": ""
     }
   },

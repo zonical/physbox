@@ -74,7 +74,7 @@ public static partial class PhysboxDebug
 		}
 
 		player.Kills += kills;
-		player.Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( player, player.Kills ) );
+		player.Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( player.GameObject, player.Kills ) );
 	}
 
 	[ConVar( "pb_debug_thrower_preview" )]
