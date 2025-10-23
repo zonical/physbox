@@ -1,5 +1,6 @@
 ﻿using Physbox;
 using System;
+using System.Threading.Channels;
 
 public partial class PlayerComponent :
 	BaseLifeComponent,
@@ -8,6 +9,8 @@ public partial class PlayerComponent :
 	Component.INetworkListener
 {
 	private bool _freeCam = false;
+	private float _yaw = 0;
+	private float _pitch = 0;
 	public bool FreeCam
 	{
 		get { return _freeCam; }
@@ -32,14 +35,21 @@ public partial class PlayerComponent :
 	{
 		if ( Camera is null )
 		{
-			var go = new GameObject( true, "Camera" );
-			go.WorldPosition = GameObject.WorldPosition;
-			go.WorldRotation = GameObject.WorldRotation;
+			var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/camera.prefab" );
+			if ( prefab is null )
+			{
+				Log.Error( "Could not find prefab file." );
+				return;
+			}
 
+			var prefabScene = SceneUtility.GetPrefabScene( prefab );
+			var go = prefabScene.Clone( new(), name: "Camera" );
+			go.BreakFromPrefab();
 			go.NetworkMode = NetworkMode.Never;
-			go.SetParent( GameObject );
-			Camera = go.AddComponent<CameraComponent>();
-			go.AddComponent<Highlight>();
+
+			go.Parent = GameObject;
+
+			Camera = go.GetComponent<CameraComponent>();
 		}
 
 		Camera.IsMainCamera = true;
@@ -67,21 +77,14 @@ public partial class PlayerComponent :
 
 	private void HandleNoclipMovement()
 	{
-		Camera.WorldRotation *= Input.AnalogLook;
+		float mouseX = -Input.MouseDelta.x * Time.Delta * ( Preferences.Sensitivity * 3 );
+		float mouseY = Input.MouseDelta.y * Time.Delta * ( Preferences.Sensitivity * 3 );
 
-		/*Camera.WorldRotation *= new Angles(
-			Mouse.Delta.y * ( ( Preferences.Sensitivity * 3 )  * Time.Delta ), 
-			-Mouse.Delta.x * ( ( Preferences.Sensitivity * 3 ) * Time.Delta ), 
-			0).ToRotation();*/
+		_yaw += mouseX;
+		_pitch += mouseY;
+		_pitch = MathX.Clamp( _pitch, -90f, 90f );
 
-		var angles = Camera.WorldRotation.Angles();
-		if ( angles.pitch > 89 ) Camera.WorldRotation = angles.WithPitch( 89 );
-		if ( angles.pitch < -89 ) Camera.WorldRotation = angles.WithPitch( -89 );
-
-		if ( angles.yaw > 180 ) Camera.WorldRotation = angles.WithYaw( 180 );
-		if ( angles.yaw < -180 ) Camera.WorldRotation = angles.WithYaw( -180 );
-
-		Camera.WorldRotation = Camera.WorldRotation.Angles().WithRoll( 0 );
+		Camera.LocalRotation = Rotation.From( new Angles( _pitch, _yaw, 0 ) );
 
 		if ( Input.Down( "forward" ) )
 		{
