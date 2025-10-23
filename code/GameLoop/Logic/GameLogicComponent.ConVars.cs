@@ -22,7 +22,7 @@ public partial class GameLogicComponent
 {
 
 	// Current active gamemode. This is hidden, but doesn't automatically update. Call SetGameMode() to change the value.
-	[ConVar( "pb_gamemode", ConVarFlags.GameSetting | ConVarFlags.Replicated ),
+	[ConVar( "pb_gamemode", ConVarFlags.Replicated | ConVarFlags.Hidden ),
 		Group( "Gameplay" )]
 	public static PhysboxConstants.GameModes GameMode { get; set; } = PhysboxConstants.GameModes.Deathmatch;
 
