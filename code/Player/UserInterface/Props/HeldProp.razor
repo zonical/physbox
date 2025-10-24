@@ -6,13 +6,12 @@
 @if (Player is null || Player.HeldGameObject is null || !Player.CanPickupObjects) return;
 
 <root>
-	<div class="background container">
-		<p class="small_label" style="font-style: italic;">@PropDef.Name</p>
+	<div style="flex-direction:column; justify-content: center;">
+		<div class="small_label" style="font-style: italic;">@PropDef.Name</div>
 		<div style="gap: 10px">
 			<div class="big_label">❤️</div>
 			<div class="big_label">@PropLife.Health / @PropLife.MaxHealth</div>
 		</div>
-		
 	</div>
 
 </root>

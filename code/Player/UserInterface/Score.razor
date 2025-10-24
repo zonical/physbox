@@ -7,9 +7,9 @@
 @if (GameLogicComponent.GameMode != PhysboxConstants.GameModes.Deathmatch) return;
 
 <root>
-	<div class="background container">
-		<p class="small_label">Kills</p>
-		<p class="big_label">@Player.Kills</p>
+	<div style="flex-direction:column; justify-content: center;">
+		<div class="small_label">Kills</div>
+		<div class="big_label" style="justify-content: center;">@Player.Kills</div>
 	</div>
 </root>
 

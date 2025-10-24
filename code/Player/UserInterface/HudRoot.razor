@@ -10,7 +10,10 @@
 @if (Player is null || IsProxy || !DrawHud) return;
 
 <root>
-	<Timer></Timer>
+	@if ( GameLogicComponent.UseTimer && !Game.RoundOver )
+	{
+		<Timer></Timer>
+	}
 
 	@if ( Input.Down( "score" ))
 	{
@@ -19,18 +22,19 @@
 
 	@if (Player.IsAlive)
 	{
-		<div style="position: absolute; bottom: 20px; left: 40px; gap: 20px;">
-			<Health></Health>
-			<Score></Score>
-		</div>
+		<Health></Health>
+		<Score></Score>
 
 		@if (!Input.Down("score"))
 		{
 			<PropSelector></PropSelector>
 		}
 
-		<Charge></Charge>
-		<HeldProp></HeldProp>
+		@if ( Player.HeldGameObject is not null )
+		{
+			<Charge></Charge>
+			<HeldProp></HeldProp>
+		}
 	}
 	else
 	{
@@ -44,6 +48,7 @@
 	public static bool DrawHud { get; set; } = true;
 
 	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	GameLogicComponent Game => GameLogicComponent.GetGameInstance();
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt

@@ -1,10 +1,14 @@
 @import "HudStyle.razor.scss";
 
 DeadMessage {
-    position:absolute;
-
+    position: absolute;
     align-items: center;
     justify-content: center;
-    height: 100px;
-    margin:auto;
+    height: 150px;
+    width: 300px;
+    margin: auto;
+    background-repeat: no-repeat;
+    background-image: url(materials/ui/hud_background_5.png);
+    background-size: 300px 150px;
+    background-image-tint: #000000ab;
 }

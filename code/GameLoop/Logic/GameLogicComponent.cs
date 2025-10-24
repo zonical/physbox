@@ -48,6 +48,28 @@ public partial class GameLogicComponent :
 
 		// Start game.
 		StartGame();
+
+		// Spawn bots.
+		for ( int i = 0; i < MaxBots; i++ )
+		{
+			var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/bot.prefab" );
+			if ( prefab is null )
+			{
+				Log.Error( "Could not find prefab file." );
+				return;
+			}
+
+			// Spawn this object and make the client the owner.
+			var prefabScene = SceneUtility.GetPrefabScene( prefab );
+			var go = prefabScene.Clone( new(), name: $"BOT (Placeholder)" );
+			go.BreakFromPrefab();
+			go.NetworkSpawn();
+
+			// Once the player has been spawned on the network, we can go ahead and
+			// initalise them. Doing this in OnNetworkSpawn is too early.
+			var player = go.GetComponent<PlayerComponent>();
+			player.InitBot();
+		}
 	}
 
 

@@ -71,7 +71,10 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 		// Stop players from respawning.
 		foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )
 		{
-			player.SpawnCancellationTokenSource.Cancel();
+			if ( player.SpawnCancellationToken.CanBeCanceled )
+			{
+				player.SpawnCancellationTokenSource.Cancel();
+			}
 		}
 	}
 }

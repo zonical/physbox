@@ -4,10 +4,15 @@ Timer {
     margin-left: auto;
     margin-right: auto;
     position: absolute;
-    top: 20px;
+    top: 10px;
 
-    div {
-        width: 150px;
-        align-items: center;
-    }
+    width: 170px;
+    height: 120px;
+    align-items: center;
+    justify-content: center;
+
+    background-repeat: no-repeat;
+    background-image: url(materials/ui/hud_background_2.png);
+    background-size: 170px 120px;
+    background-image-tint: #000000ab;
 }

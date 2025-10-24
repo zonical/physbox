@@ -1,7 +1,6 @@
 using Physbox;
 using System;
-using System.Linq;
-using System.Threading;
+using Sandbox.Network;
 
 [Group( "Physbox" )]
 [Title( "Physbox Player" )]
@@ -25,7 +24,7 @@ public partial class PlayerComponent :
 	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
 	public CameraComponent Camera { get; set; } // This is manually set in InitaliseCamera().
 
-	[Property, ReadOnly, Feature( "Components" )]
+	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", true )]
 	public NavMeshAgent BotAgent => Components.Get<NavMeshAgent>();
 
 	[Property, ReadOnly, Feature( "Components" )]
@@ -117,7 +116,7 @@ public partial class PlayerComponent :
 			"Josh"
 		};
 
-		BotName = "BOT " + Game.Random.FromList( names );
+		BotName = "[BOT] " + Game.Random.FromList( names );
 		Nametag.Name = BotName;
 		GameObject.Name = BotName;
 
@@ -187,6 +186,7 @@ public partial class PlayerComponent :
 		if ( IsAlive && !FreeCam )
 		{
 			DrawCrosshair();
+			HandleUseInput();
 
 			if ( CanPickupObjects )
 			{
@@ -229,14 +229,6 @@ public partial class PlayerComponent :
 		{
 			BuiltUpForce = float.Min( BuiltUpForce + ForcePerFrame, MaxForce );
 		}
-	}
-
-	public override void OnDamage( in DamageInfo damage )
-	{
-		if ( IsProxy ) return;
-		if ( GodMode ) return;
-
-		base.OnDamage( damage );
 	}
 
 	void IGameEvents.OnRoundStart()
@@ -321,6 +313,44 @@ public partial class PlayerComponent :
 			Gizmo.Draw.LineThickness = 1f;
 			Gizmo.Draw.Color = Gizmo.Colors.Red.WithAlpha( Gizmo.IsSelected ? 1f : 0.2f );
 			Gizmo.Draw.LineBBox( in box );
+		}
+	}
+
+	private void HandleUseInput()
+	{
+		if ( Input.Pressed( "use" ) )
+		{
+			// Find objects in front of to use!
+			var ray = new Ray( Camera.WorldPosition, Camera.WorldRotation.Forward );
+			var trace = Scene.Trace.Ray( ray, 256 )
+				.IgnoreGameObject( GameObject )
+				.IgnoreGameObject( Hitbox )
+				.WithoutTags(
+					PhysboxConstants.BreakablePropTag,
+					PhysboxConstants.RagdollTag,
+					PhysboxConstants.DebrisTag )
+				.Run();
+
+			if ( trace.GameObject is not null )
+			{
+				var pressEvent = new IPressable.Event( this, ray );
+
+				// Find all pressables and... use them!
+				foreach ( var pressable in trace.GameObject.Components.GetAll<IPressable>( 
+					FindMode.EnabledInSelf | 
+					FindMode.InDescendants | 
+					FindMode.InAncestors ) )
+				{
+					if ( pressable.CanPress( pressEvent ) )
+					{
+						var success = pressable.Press( pressEvent );
+						if ( success )
+						{
+							pressable.Release( pressEvent );
+						}
+					}
+				}
+			}
 		}
 	}
 

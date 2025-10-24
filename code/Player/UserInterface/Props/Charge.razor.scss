@@ -5,4 +5,11 @@ Charge {
     justify-content: center;
     flex-direction: column;
     bottom: 20px;
+
+    .chargeBarTexture {
+        //mask-image: url("materials/dev/gray_grid_4_color.tga");
+        //mask-repeat: repeat;
+        //mask-position: center;
+        //mask-size: 72px;
+    }
 }

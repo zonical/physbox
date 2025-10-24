@@ -6,10 +6,15 @@
 @if (Player is null) return;
 
 <root>
-	<div class="background container">
-		<p class="small_label">Health</p>
-		<p class="big_label">@Player.Health / @Player.MaxHealth</p>
+	<div style="flex-direction:column; margin: auto;">
+		<div class="small_label">
+			Health
+		</div>
+		<div class="big_label">
+			@Player.Health / @Player.MaxHealth
+		</div>
 	</div>
+
 </root>
 
 @code

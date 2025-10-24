@@ -1,8 +1,14 @@
 @import "HudStyle.razor.scss";
 
 Health {
-    div {
-        width: 200px;
-        align-items: center;
-    }
+    position: absolute;
+    bottom: 20px;
+    left: 40px;
+    width: 150px;
+    height: 150px;
+    justify-content: center;
+    background-repeat: no-repeat;
+    background-image: url(materials/ui/hud_background_1.png);
+    background-size: 150px 150px;
+    background-image-tint: #000000ab;
 }

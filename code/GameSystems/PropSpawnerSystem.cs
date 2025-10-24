@@ -4,11 +4,11 @@ using System;
 
 public class PropSpawnerSystem : GameObjectSystem
 {
-	[ConVar( "pb_spawner_max_props", ConVarFlags.GameSetting | ConVarFlags.Replicated ),
+	[ConVar( "pb_spawner_max_props", ConVarFlags.Replicated ),
 		Title( "Maximum Number of Props" ), Group( "Props" )]
 	public static int MaximumProps { get; set; } = 100;
 
-	[ConVar( "pb_spawner_delay", ConVarFlags.GameSetting | ConVarFlags.Replicated ),
+	[ConVar( "pb_spawner_delay", ConVarFlags.Replicated ),
 		Title( "Delay Between Prop Spawns" ), Group( "Props" )]
 	public static int Delay { get; set; } = 3;
 

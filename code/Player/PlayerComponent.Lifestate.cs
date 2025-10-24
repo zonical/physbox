@@ -47,7 +47,7 @@ public partial class PlayerComponent
 		if ( regularSpawnpoint is not null )
 		{
 			WorldPosition = regularSpawnpoint.WorldPosition;
-			WorldRotation = regularSpawnpoint.WorldRotation;
+			PlayerController.EyeAngles = regularSpawnpoint.WorldRotation;
 
 			// If we are a bot, force set our destination.
 			if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
@@ -112,5 +112,13 @@ public partial class PlayerComponent
 		PlayerController.Renderer.Enabled = true;
 		PlayerController.ColliderObject.Enabled = true;
 		Nametag.Enabled = true;
+	}
+
+	public override void OnDamage( in DamageInfo damage )
+	{
+		if ( IsProxy ) return;
+		if ( GodMode ) return;
+
+		base.OnDamage( damage );
 	}
 }

@@ -28,7 +28,6 @@ public partial class GameLogicComponent
 
 	// When a round ends (firing OnRoundEnd() event), this is the amount of time before RestartGame() is called.
 	[ConVar( "pb_round_intermission",
-		ConVarFlags.GameSetting,
 		Help = "How long the intermission between rounds should last." ),
 		Group( "Gameplay" ),
 		Range( 0, 10.0f ),
@@ -38,15 +37,24 @@ public partial class GameLogicComponent
 	// If this game is using a timer, we will fire OnRoundEnd() once it ends.
 	// This value is set in each gamemode component.
 	[ConVar( "pb_use_timer",
-		ConVarFlags.GameSetting | ConVarFlags.Replicated,
+		ConVarFlags.Replicated,
 		Help = "How long the intermission between rounds should last." ),
 		Group( "Gameplay" )]
 	public static bool UseTimer { get; set; } = false;
 
 	[ConVar( "pb_timer_seconds",
-		ConVarFlags.GameSetting | ConVarFlags.Replicated,
+		ConVarFlags.Replicated,
 		Help = "How long a round lasts in seconds." ),
 		Group( "Gameplay" ),
 		Title( "Round length (seconds)" )]
 	public static int TimerLengthInSeconds { get; set; } = 300;
+
+	[ConVar( "pb_maxbots", ConVarFlags.GameSetting,
+		Help = "The maximum amount of bots in this game",
+		Max = 63,
+		Min = 0 ),
+	Group( "Bots" ),
+	Title( "Amount of Bots" )]
+	public static int MaxBots { get; set; } = 0;
+
 }

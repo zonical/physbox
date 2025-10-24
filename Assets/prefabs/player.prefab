@@ -44,7 +44,7 @@
         "DuckedHeight": 36,
         "DuckedSpeed": 70,
         "EnableFootstepSounds": true,
-        "EnablePressing": true,
+        "EnablePressing": false,
         "EyeDistanceFromTop": 8,
         "FootstepMixer": {
           "Name": "unknown",
@@ -176,6 +176,9 @@
         "__type": "PlayerComponent",
         "__guid": "43484090-1c15-428d-8c66-e8acbe55e179",
         "__enabled": true,
+        "BotAgent": null,
+        "BotName": null,
+        "Camera": null,
         "CanPickupObjects": true,
         "CanThrowObject": true,
         "CurrentlyLookingAtObject": null,
@@ -203,17 +206,42 @@
         "Hitbox": null,
         "HitboxOffset": "0,0,36",
         "HitboxSize": "40,40,72",
+        "Hud": {
+          "_type": "component",
+          "component_id": "06fa852f-89ab-41f5-9648-7a4e834a9682",
+          "go": "139d943f-fe4c-44e2-b53b-92fe622ef708",
+          "component_type": "HudRoot"
+        },
+        "IsBot": false,
         "Kills": 0,
         "LastHitBy": null,
         "MaxForce": 3,
         "MaxHealth": 100,
+        "Nametag": {
+          "_type": "component",
+          "component_id": "cd90ed5f-4ad1-4640-9c23-3b7d322d065d",
+          "go": "767b2b29-fdd8-49c0-8c9b-91d77beec0e3",
+          "component_type": "Nametag"
+        },
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
-        "Ragdoll": null
+        "PlayerController": {
+          "_type": "component",
+          "component_id": "1289b948-56d6-49f9-9aa2-441ba56c4221",
+          "go": "139d943f-fe4c-44e2-b53b-92fe622ef708",
+          "component_type": "PlayerController"
+        },
+        "Ragdoll": null,
+        "Voice": {
+          "_type": "component",
+          "component_id": "b8ede4ef-8065-4816-a9bf-6dde0d338b82",
+          "go": "139d943f-fe4c-44e2-b53b-92fe622ef708",
+          "component_type": "Voice"
+        }
       },
       {
         "__type": "Physbox.Killfeed",

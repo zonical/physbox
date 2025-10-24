@@ -3,11 +3,11 @@ using System;
 
 public static class PlayerConvars
 {
-	[ConVar( "pb_player_respawn_immunity", ConVarFlags.GameSetting | ConVarFlags.Replicated ),
+	[ConVar( "pb_player_respawn_immunity", ConVarFlags.Replicated ),
 		Group( "Player" )]
 	public static float RespawnImmunity { get; set; } = 3.0f;
 
-	[ConVar( "pb_player_respawn_time", ConVarFlags.GameSetting | ConVarFlags.Replicated ),
+	[ConVar( "pb_player_respawn_time", ConVarFlags.Replicated ),
 		Group( "Player" )]
 	public static float RespawnTime { get; set; } = 3.0f;
 
@@ -20,11 +20,11 @@ public static class PlayerConvars
 	[ConVar( "pb_player_duck_speed", ConVarFlags.Server )]
 	public static float DuckedSpeed { get; set; } = 240;
 
-	[ConVar( "pb_player_speed_affected_by_mass", ConVarFlags.GameSetting | ConVarFlags.Replicated ),
+	[ConVar( "pb_player_speed_affected_by_mass", ConVarFlags.Replicated ),
 		Group( "Player" )]
 	public static bool SpeedAffectedByMass { get; set; } = true;
 
-	[ConVar( "pb_player_deadtalk", ConVarFlags.GameSetting | ConVarFlags.Replicated ),
+	[ConVar( "pb_player_deadtalk", ConVarFlags.Replicated ),
 		Title( "Talk while Dead" ), Group( "Player" )]
 	public static bool Deadtalk { get; set; } = true;
 

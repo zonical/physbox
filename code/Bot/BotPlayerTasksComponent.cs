@@ -125,7 +125,7 @@ public partial class BotPlayerTasksComponent : Component
 		// We do not have a prop, so lets go and find one!
 		if ( !IsHoldingSomething && InterestedProp is null )
 		{
-			var nearestProp = FindNearestWithTag( PhysboxConstants.BreakablePropTag, PropSearchRadius );
+			var nearestProp = FindNearestProp( PropSearchRadius );
 			if ( nearestProp is not null )
 			{
 				InterestedProp = nearestProp;
@@ -191,10 +191,11 @@ public partial class BotPlayerTasksComponent : Component
 		}
 	}
 
-	private GameObject? FindNearestWithTag( string tag, int radius )
+	private GameObject? FindNearestProp( int radius )
 	{
 		var trace = Scene.Trace.Sphere( radius, new Ray( WorldPosition, Vector3.Zero ), 1 )
-			.WithTag( tag )
+			.WithTag( PhysboxConstants.BreakablePropTag )
+			.WithoutTags( PhysboxConstants.HeldPropTag )
 			.IgnoreGameObject( GameObject )
 			.Run();
 
@@ -237,23 +238,6 @@ public partial class BotPlayerTasksComponent : Component
 		foreach ( var trace in traces )
 		{
 			if ( trace.GameObject == prop )
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private bool IsInThrowRadius( GameObject player )
-	{
-		var traces = Scene.Trace.Sphere( PlayerThrowRadius, new Ray( WorldPosition, Vector3.Zero ), 1 )
-			.WithTag( PhysboxConstants.PlayerTag )
-			.RunAll();
-
-		foreach ( var trace in traces )
-		{
-			if ( trace.GameObject == player )
 			{
 				return true;
 			}
