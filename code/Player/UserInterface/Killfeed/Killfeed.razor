@@ -16,7 +16,7 @@
 	<div class="container root">
 		@foreach ( var entry in Entries.TakeLast(5) )
 		{
-			<KillfeedDisplay Attacker="@(entry.Attacker)" Victim="@(entry.Victim)"></KillfeedDisplay>
+			<KillfeedDisplay Attacker="@(entry.Attacker)" Victim="@(entry.Victim)" Prop="@(entry.Prop)"></KillfeedDisplay>
 		}
 	</div>
 </root>
@@ -45,7 +45,7 @@
 		Entries.Clear();
 	}
 
-	[Rpc.Broadcast] // I don't know why I have to do this, but my networking sucks apparently.
+	[Rpc.Broadcast]
 	public void OnPlayerDeath( GameObject victim, DamageInfo info )
 	{
 		var victimPlayer = victim.Components.Get<PlayerComponent>();
@@ -57,13 +57,12 @@
 		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) )
 		{
 			var victimID = victim.Id;
-			if (victimPlayer != attackerPlayer)
-			{
-				var attackerID = attacker.Id;
+			var attackerID = attacker.Id;
 
+			if (victimID != attackerID)
+			{
 				// Get the prop that killed us.
 				var prop = info.Weapon.GetComponent<PropLifeComponent>();
-
 				AddEntry(attackerID, victimID, prop.Definition);
 			}
 			// We killed ourselves.

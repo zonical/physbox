@@ -247,6 +247,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 		{
 			var propLife = @event.GetLifeComponent( prop ) as PropLifeComponent;
 			var attacker = (GameObject)null;
+			attacker = propLife.LastOwnedBy?.GameObject ?? propLife.GameObject;
 
 			if ( propLife is not null )
 			{

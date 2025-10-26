@@ -33,6 +33,9 @@ public partial class PlayerComponent :
 	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
 	private HudRoot Hud => Components.Get<HudRoot>( true );
 
+	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
+	private Killfeed Killfeed => Components.Get<Killfeed>( true );
+
 	// ==================== [ PROPERTIES ] ====================
 	[Sync, Property, ReadOnly] public int Kills { get; set; } = 0;
 	[Sync, Property, ReadOnly] public int Deaths { get; set; } = 0;

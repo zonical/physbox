@@ -4,7 +4,7 @@ using Sandbox;
 [Hide]
 public class BaseLifeComponent : Component, Component.IDamageable
 {
-	[Feature( "Life" ), Property, Order( 100 ), ReadOnly, Sync]
+	[Feature( "Life" ), Property, Order( 100 ), Sync]
 	public int Health { get; set; }
 
 	[Feature( "Life" ), Property, Order( 101 ), Sync]
