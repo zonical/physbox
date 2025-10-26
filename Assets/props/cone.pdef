@@ -1,0 +1,11 @@
+{
+  "Name": "Coned",
+  "Model": "models/citizen_props/roadcone01.vmdl",
+  "Mass": 50,
+  "MaxHealth": 100,
+  "HeldPositionOffset": "-20,0,0",
+  "HeldRotationOffset": "0,0,0",
+  "KillfeedIcon": "d:/s&box/physbox/assets/materials/ui/props_generated/roadcone01.png",
+  "__references": [],
+  "__version": 0
+}

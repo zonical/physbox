@@ -62,12 +62,9 @@
 				var attackerID = attacker.Id;
 
 				// Get the prop that killed us.
-				var propDef = (PropDefinitionResource)null;
 				var prop = info.Weapon.GetComponent<PropLifeComponent>();
 
-				propDef = prop?.Definition;
-
-				AddEntry(attackerID, victimID, propDef);
+				AddEntry(attackerID, victimID, prop.Definition);
 			}
 			// We killed ourselves.
 			else

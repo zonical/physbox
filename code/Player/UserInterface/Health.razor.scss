@@ -11,4 +11,29 @@ Health {
     background-image: url(materials/ui/hud_background_1.png);
     background-size: 150px 150px;
     background-image-tint: #000000ab;
+    animation-name: HudElementAnimation;
+    animation-duration: 10s;
+    animation-iteration-count: infinite;
+}
+
+@keyframes HudElementAnimation {
+    0% {
+        transform: translate(0px, 2px) rotate(0.5deg);
+    }
+
+    25% {
+        transform: translate(2px, 0px) rotate(-0.5deg);
+    }
+
+    50% {
+        transform: translate(0px, -2px) rotate(0.5deg);
+    }
+
+    75% {
+        transform: translate(-2px, 0px) rotate(-0.5deg);
+    }
+
+    100% {
+        transform: translate(0px, 2px) rotate(0.5deg);
+    }
 }

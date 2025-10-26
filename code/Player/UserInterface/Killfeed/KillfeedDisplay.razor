@@ -26,9 +26,17 @@
 		}
 		else
 		{
-			<div class="prop">
-				<img Texture="textures/ui/killfeed/default.vtex" />
-			</div>
+			@if ( Prop is not null )
+			{
+				<div class="prop">
+					<img src=url(@Prop.KillfeedIcon) />
+				</div>
+			}
+			else
+			{
+				<div class="text">killed</div>
+			}
+
 
 			<div class="victim">
 				<div class="text">

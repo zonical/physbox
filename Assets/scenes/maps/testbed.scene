@@ -917,7 +917,7 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "Prop": "props/crate.pdef",
+          "Prop": "props/cone.pdef",
           "Sleeping": false,
           "TraceDirection": "0,0,-1",
           "TraceDistance": 200,
@@ -1004,7 +1004,7 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "Prop": "props/crate.pdef",
+          "Prop": "props/cone.pdef",
           "Sleeping": false,
           "TraceDirection": "0,0,-1",
           "TraceDistance": 200,
@@ -1074,7 +1074,7 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "Prop": "props/crate.pdef",
+          "Prop": "props/cone.pdef",
           "Sleeping": false,
           "TraceDirection": "0,0,-1",
           "TraceDistance": 200,
@@ -4038,7 +4038,7 @@
       "__guid": "791f9685-3541-4a72-b934-817adf25ca23",
       "__version": 1,
       "Flags": 0,
-      "Name": "Crate Spawners (1)",
+      "Name": "Cone Spawners",
       "Position": "783.9998,-0.0008708953,176",
       "Rotation": "0,0,0.0000004629281,-0.9999999",
       "Scale": "1,1,1",
@@ -4071,7 +4071,7 @@
           },
           "Scale": 0.4,
           "TextScope": {
-            "Text": "Crate Spawners",
+            "Text": "Cone Spawners",
             "TextColor": "1,1,1,1",
             "FontName": "Poppins",
             "FontSize": 100,
@@ -7851,7 +7851,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 4,
                         "Value": " Button pressed!",
                         "DstId": 1,
                         "DstName": "format"
@@ -8650,7 +8650,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 3,
+                        "Id": 5,
                         "Value": true,
                         "DstId": 2,
                         "DstName": "state"
@@ -9104,7 +9104,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 4,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -9558,7 +9558,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 4,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -10013,7 +10013,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
+                        "Id": 4,
                         "Value": false,
                         "DstId": 1,
                         "DstName": "state"

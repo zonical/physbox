@@ -253,8 +253,6 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				var damage = (int)float.Sqrt( @event.AbsoluteSpeed );
 				propLife.OnDamage( new DamageInfo( damage, null, null ) );
 
-				attacker = propLife.LastOwnedBy?.GameObject ?? propLife.GameObject;
-
 				// Bounce back.
 				var rigidBody = @event.GetRigidbody( prop );
 				if ( rigidBody is not null )
