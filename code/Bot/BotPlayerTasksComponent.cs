@@ -14,7 +14,7 @@ public partial class BotPlayerTasksComponent : Component
 	[Property, Feature( "Prop Searching" ), ReadOnly]
 	public bool IsHoldingSomething => Player.HeldGameObject is not null;
 
-	[Property, Feature( "Prop Searching" )] 
+	[Property, Feature( "Prop Searching" )]
 	public GameObject InterestedProp { get; set; }
 
 	[Property, Feature( "Prop Searching" )]
@@ -65,7 +65,7 @@ public partial class BotPlayerTasksComponent : Component
 
 		UpdateRotation();
 
-		if ( IsHoldingSomething && 
+		if ( IsHoldingSomething &&
 			InterestedPlayer is not null &&
 			Vector3.DistanceBetween( WorldPosition, InterestedPlayer.WorldPosition ) < PlayerThrowRadius )
 		{

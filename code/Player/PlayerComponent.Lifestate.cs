@@ -85,7 +85,7 @@ public partial class PlayerComponent
 		if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
 		{
 			bot.Agent.Stop();
-			
+
 			bot.InterestedPlayer = null;
 			bot.InterestedProp = null;
 			bot.PickupAttemptsRemaining = bot.MaximumPickupAttempts;

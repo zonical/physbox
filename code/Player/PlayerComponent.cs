@@ -15,7 +15,7 @@ public partial class PlayerComponent :
 	public static PlayerComponent LocalPlayer { get; private set; }
 
 	// ==================== [ COMPONENTS ] ====================
-	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )] 
+	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
 	public PlayerController PlayerController => Components.GetOrCreate<PlayerController>();
 
 	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
@@ -336,9 +336,9 @@ public partial class PlayerComponent :
 				var pressEvent = new IPressable.Event( this, ray );
 
 				// Find all pressables and... use them!
-				foreach ( var pressable in trace.GameObject.Components.GetAll<IPressable>( 
-					FindMode.EnabledInSelf | 
-					FindMode.InDescendants | 
+				foreach ( var pressable in trace.GameObject.Components.GetAll<IPressable>(
+					FindMode.EnabledInSelf |
+					FindMode.InDescendants |
 					FindMode.InAncestors ) )
 				{
 					if ( pressable.CanPress( pressEvent ) )

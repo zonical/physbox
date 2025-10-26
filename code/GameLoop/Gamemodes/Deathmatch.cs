@@ -56,7 +56,7 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 			{
 				player.SpawnCancellationTokenSource.Cancel();
 			}
-			
+
 			player.Kills = 0;
 			player.Deaths = 0;
 			player.Spawn();

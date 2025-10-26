@@ -51,7 +51,7 @@ class PropDefinitionPreview : AssetPreview
 			PropGameObject.Parent = PrimaryObject;
 
 			var eyePos = new Vector3( 0, 0, 64 );
-			var targetPos = eyePos - new Vector3( 0, 0, 16 ) + ( PrimaryObject.WorldRotation.Forward * 64);
+			var targetPos = eyePos - new Vector3( 0, 0, 16 ) + (PrimaryObject.WorldRotation.Forward * 64);
 			PropGameObject.LocalPosition = targetPos + prop.HeldPositionOffset.RotateAround( Vector3.Zero, PrimaryObject.WorldRotation );
 			PropGameObject.LocalRotation = PrimaryObject.WorldRotation * prop.HeldRotationOffset.ToRotation();
 

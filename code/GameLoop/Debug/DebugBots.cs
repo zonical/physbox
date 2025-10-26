@@ -33,7 +33,7 @@ public static partial class PhysboxDebug
 	{
 		if ( !caller.IsHost ) return;
 
-		foreach ( var bot in Game.ActiveScene.GetAllComponents<PlayerComponent>().Where( x => x.IsBot ) ) 
+		foreach ( var bot in Game.ActiveScene.GetAllComponents<PlayerComponent>().Where( x => x.IsBot ) )
 		{
 			var damageinfo = new DamageInfo( 9999, bot.GameObject, null );
 			bot.OnDamage( damageinfo );
