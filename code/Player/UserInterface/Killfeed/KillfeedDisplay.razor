@@ -29,7 +29,7 @@
 			@if ( Prop is not null )
 			{
 				<div class="prop">
-					<img src=url(@Prop.KillfeedIcon) />
+					<img Texture=@Icon />
 				</div>
 			}
 			else
@@ -54,6 +54,7 @@
 	public Guid Attacker { get; set; }
 	public Guid Victim { get; set; }
 	public PropDefinitionResource Prop { get; set; }
+	public Texture Icon => Texture.Load(Prop.KillfeedIcon);
 	TimeSince TimeSinceCreation = 0;
 
 	public KillfeedDisplay()

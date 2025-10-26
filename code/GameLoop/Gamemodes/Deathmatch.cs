@@ -22,7 +22,9 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 		var attacker = info.Attacker;
 
 		// Add kills to attacking player.
-		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) && attackerPlayer != victimPlayer )
+		if ( attacker is not null && 
+			attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) && 
+			attackerPlayer != victimPlayer )
 		{
 			attackerPlayer.Kills++;
 			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( attacker, attackerPlayer.Kills ) );

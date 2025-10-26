@@ -5,31 +5,33 @@ using System.Text.Json.Serialization;
 
 public class ModelTransformOffset
 {
-	public Vector3 Position = Vector3.Zero;
-	public Rotation Rotation;
-	public Vector3 Scale = Vector3.One;
-
-	public override string ToString()
-	{
-		return $"Pos: {Position}, Rotation: {Rotation}, Scale: {Scale}";
-	}
+	[JsonInclude] public Vector3 Position = Vector3.Zero;
+	[JsonInclude] public Rotation Rotation;
+	[JsonInclude] public Vector3 Scale = Vector3.One;
 }
 
 [EditorForAssetType( "pdef" )]
 public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 {
-	Scene ScenePreview;
-	ModelRenderer PropPreview => ScenePreview.Get<ModelRenderer>();
-	ModelTransformOffset PreviewTransformOffset = new();
-
 	// Return false if you want the have a Widget created for each Asset opened,
 	// Return true if you want only one Widget to be made, calling AssetOpen on the open Widget
 	public bool CanOpenMultipleAssets => false;
 
+	// ====================== [ ICON PREVIEW ] ======================
+	Scene ScenePreview;
+	ModelRenderer PropPreview => ScenePreview.Get<ModelRenderer>();
+	ModelTransformOffset PreviewTransformOffset = new();
+
+	// ====================== [ RESOURCE ] ======================
 	Asset MyAsset;
 	PropDefinitionResource Resource;
+	Dictionary<string, ModelTransformOffset> Offsets;
 
+	// ====================== [ WIDGETS ] ======================
 	ScrollArea ResourceEditor;
+	SceneRenderingWidget SceneRenderer;
+	ScrollArea Properties;
+	ScrollArea ActionsArea;
 
 	public void AssetOpen( Asset asset )
 	{
@@ -37,8 +39,24 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		MyAsset = asset;
 		Resource = MyAsset.LoadResource<PropDefinitionResource>();
 
-		BuildUI();
+		// Get our saved offsets.
+		Offsets = new();
 
+		// Load our offsets file from disk (if we have it).
+		var filePath = GetPathToGeneratedIcons() + "saved_icon_offsets.json";
+		if ( System.IO.File.Exists( filePath ) )
+		{
+			var data = System.IO.File.ReadAllText( filePath );
+			Offsets = (Dictionary<string, ModelTransformOffset>) Json.Deserialize( data, Offsets.GetType() );
+			
+			if ( Offsets.ContainsKey( Resource.ResourceName ) )
+			{
+				Log.Info( $"Found existing PreviewTransformOffset for {Resource.ResourceName}" );
+				PreviewTransformOffset = Offsets[ Resource.ResourceName ];
+			}
+		}
+
+		BuildUI();
 		WindowTitle = $"Prop Definition Editor - {Resource.ResourcePath}";
 	}
 
@@ -56,11 +74,19 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		Focus();
 	}
 
+	public string GetPathToGeneratedIcons()
+	{
+		var assetIndex = MyAsset.AbsolutePath.IndexOf( "/assets/" );
+		var cutPath = MyAsset.AbsolutePath.Substring( 0, assetIndex + 8 );
+		return cutPath + $"materials/ui/props_generated/";
+	}
+
 	public void BuildUI()
 	{
 		// A list of all the files.
 		ResourceEditor = new ScrollArea( this );
 		ResourceEditor.WindowTitle = $"Resource - {Resource.ResourcePath}";
+		ResourceEditor.WindowFlags = WindowFlags.Widget;
 		var propSheet = new ControlSheet();
 		var seralizedResource = Resource.GetSerialized();
 		propSheet.AddObject( seralizedResource, PropertyFilter );
@@ -74,40 +100,37 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		DockManager.AddDock( null, ResourceEditor, DockArea.Left );
 
 		// The rendering preview for the prop.
-		var sceneView = new SceneRenderingWidget( this );
-		sceneView.WindowTitle = "Killfeed Icon Preview";
-		sceneView.MaximumSize = new Vector2( 256, 256 );
+		SceneRenderer = new SceneRenderingWidget( this );
+		SceneRenderer.WindowTitle = "Killfeed Icon Preview";
+		SceneRenderer.MaximumSize = new Vector2( 256, 256 );
+		SceneRenderer.WindowFlags = WindowFlags.Widget;
 		CreateScene();
-		sceneView.Scene = ScenePreview;
-		DockManager.AddDock( ResourceEditor, sceneView, DockArea.Right );
+		SceneRenderer.Scene = ScenePreview;
+		DockManager.AddDock( ResourceEditor, SceneRenderer, DockArea.Right );
 
 		// Properties, manipulating stuff.
-		var properties = new ScrollArea( this );
+		Properties = new ScrollArea( this );
 		var transformSheet = new ControlSheet();
-
-		PreviewTransformOffset.Position = Resource.KillfeedIconPosition;
-		PreviewTransformOffset.Rotation = Resource.KillfeedIconRotation;
-		PreviewTransformOffset.Scale = Resource.KillfeedIconScale;
-
 		var seralizedTransform = PreviewTransformOffset.GetSerialized();
 		transformSheet.AddObject( seralizedTransform, PropertyFilter );
 
-		properties.Canvas = new Widget();
-		properties.Canvas.Layout = Layout.Column();
-		properties.Canvas.VerticalSizeMode = SizeMode.CanGrow;
-		properties.Canvas.HorizontalSizeMode = SizeMode.Flexible;
-		properties.Canvas.Layout.Add( transformSheet );
-		properties.Canvas.Layout.AddStretchCell();
+		Properties.Canvas = new Widget();
+		Properties.Canvas.Layout = Layout.Column();
+		Properties.Canvas.VerticalSizeMode = SizeMode.CanGrow;
+		Properties.Canvas.HorizontalSizeMode = SizeMode.Flexible;
+		Properties.Canvas.Layout.Add( transformSheet );
+		Properties.Canvas.Layout.AddStretchCell();
 
-		properties.WindowTitle = "Edit Transform";
-		DockManager.AddDock( sceneView, properties, DockArea.Bottom );
+		Properties.WindowTitle = "Edit Transform";
+		Properties.WindowFlags = WindowFlags.Widget;
+		DockManager.AddDock( SceneRenderer, Properties, DockArea.Bottom );
 
-		var buttonDock = new ScrollArea( this );
-		buttonDock.Canvas = new Widget();
-		buttonDock.Canvas.Layout = Layout.Column();
+		ActionsArea = new ScrollArea( this );
+		ActionsArea.Canvas = new Widget();
+		ActionsArea.Canvas.Layout = Layout.Column();
 
-		var button = new Button();
-		button.Pressed += () =>
+		var generateButton = new Button();
+		generateButton.Pressed += () =>
 		{
 			using ( ScenePreview.Push() )
 			{
@@ -118,34 +141,45 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 				Log.Info( MyAsset.AbsolutePath );
 
 				// Create a new path based on AbsolutePath.
-				var assetIndex = MyAsset.AbsolutePath.IndexOf( "/assets/" );
-				var cutPath = MyAsset.AbsolutePath.Substring( 0, assetIndex + 8 );
-				var filePath = cutPath + $"materials/ui/props_generated/";
+				var filePath = GetPathToGeneratedIcons();
 
 				// Ensure the path exists.
 				System.IO.Directory.CreateDirectory( filePath );
 
 				// Write the file.
-				var stream = System.IO.File.OpenWrite( filePath + $"{PropPreview.Model.ResourceName}.png" );
+				var stream = System.IO.File.OpenWrite( filePath + $"{Resource.ResourceName}.png" );
 				stream.Write( data );
 				stream.Close();
 
-				Resource.KillfeedIcon = $"materials/ui/props_generated/{PropPreview.Model.ResourceName}.png";
+				Resource.KillfeedIcon = $"materials/ui/props_generated/{Resource.ResourceName}.png";
 			}
 
 			// Save the settings we just used.
-			Resource.KillfeedIconPosition = PreviewTransformOffset.Position;
-			Resource.KillfeedIconRotation = PreviewTransformOffset.Rotation;
-			Resource.KillfeedIconScale = PreviewTransformOffset.Scale;
+			Offsets[Resource.ResourceName] = PreviewTransformOffset;
 
 			Save();
 		};
-		button.Text = "Generate Killfeed Icon";
+		generateButton.Text = "Generate Killfeed Icon";
 
-		buttonDock.Canvas.Layout.Add( button );
-		buttonDock.Canvas.Layout.AddStretchCell();
-		buttonDock.WindowTitle = "Actions";
-		DockManager.AddDock( properties, buttonDock, DockArea.Bottom );
+		var showGeneratedIconsButton = new Button();
+		showGeneratedIconsButton.Pressed += () =>
+		{
+			// Create a new path based on AbsolutePath.
+			var filePath = GetPathToGeneratedIcons();
+		
+			// Ensure the path exists.
+			System.IO.Directory.CreateDirectory( filePath );
+
+			EditorUtility.OpenFileFolder( filePath + $"{Resource.ResourceName}.png" );
+		};
+		showGeneratedIconsButton.Text = "Open Generated Icons Folder";
+
+		ActionsArea.Canvas.Layout.Add( generateButton );
+		ActionsArea.Canvas.Layout.Add( showGeneratedIconsButton );
+		ActionsArea.Canvas.Layout.AddStretchCell();
+		ActionsArea.WindowTitle = "Actions";
+		ActionsArea.WindowFlags = WindowFlags.Widget;
+		DockManager.AddDock( Properties, ActionsArea, DockArea.Bottom );
 
 		// Menu bar.
 		var file = MenuBar.AddMenu( "File" );
@@ -189,21 +223,25 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 			camera.BackgroundColor = Color.Transparent;
 
 			PropPreview.Model = Resource.Model;
-
-			PreviewTransformOffset.Position = ScenePreview.WorldPosition;
-			PreviewTransformOffset.Rotation = ScenePreview.WorldRotation;
-			PreviewTransformOffset.Scale = ScenePreview.WorldScale;
 		}
 	}
 
 	[Shortcut( "editor.save", "CTRL+S" )]
 	public void Save()
 	{
+		// Save resource.
 		var json = Resource.Serialize().ToJsonString();
 		if ( string.IsNullOrWhiteSpace( json ) )
 			return;
 
 		System.IO.File.WriteAllText( MyAsset.AbsolutePath, json );
+
+		// Save offsets.
+		var offsetsJson = Json.Serialize( Offsets );
+		if ( string.IsNullOrWhiteSpace( offsetsJson ) )
+			return;
+
+		System.IO.File.WriteAllText( GetPathToGeneratedIcons() + "saved_icon_offsets.json", offsetsJson );
 	}
 
 	// Stolen from shadergraph.

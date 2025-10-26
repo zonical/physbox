@@ -11,8 +11,4 @@ public class PropDefinitionResource : GameResource
 	public Vector3 HeldPositionOffset { get; set; } = Vector3.Zero;
 	public Angles HeldRotationOffset { get; set; } = Angles.Zero;
 	[ImageAssetPath] public string KillfeedIcon { get; set; }
-
-	[Hide, JsonInclude] public Vector3 KillfeedIconPosition = Vector3.Zero;
-	[Hide, JsonInclude] public Rotation KillfeedIconRotation = new Rotation();
-	[Hide, JsonInclude] public Vector3 KillfeedIconScale = Vector3.One;
 }
