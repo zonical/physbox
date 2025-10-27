@@ -1,9 +1,6 @@
 ﻿using Editor.Assets;
-using Sandbox;
-using Sandbox.Citizen;
 using System;
 using System.Threading.Tasks;
-using static Sandbox.PhysicsContact;
 
 [AssetPreview( "pdef" )]
 class PropDefinitionPreview : AssetPreview

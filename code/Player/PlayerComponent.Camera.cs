@@ -1,5 +1,6 @@
 ﻿using Physbox;
 using System;
+using System.Diagnostics;
 using System.Threading.Channels;
 
 public partial class PlayerComponent :
@@ -17,14 +18,20 @@ public partial class PlayerComponent :
 		set
 		{
 			_freeCam = value;
+
+			if ( !IsPlayer ) return;
+
 			if ( _freeCam == true )
 			{
 				CreateFreeCam();
+				Viewmodel?.Destroy();
+				Viewmodel = null;
 				PlayerController.Enabled = false;
 			}
 			else
 			{
 				CreateNormalCam();
+				CreateViewmodel();
 				PlayerController.Enabled = true;
 			}
 
@@ -109,5 +116,30 @@ public partial class PlayerComponent :
 			var dir = Camera.WorldRotation.Backward;
 			Camera.WorldPosition += dir * 700 * Time.Delta;
 		}
+	}
+
+	public void HandleCulling()
+	{
+		var time = new Stopwatch();
+		time.Start();
+
+		foreach ( var go in Scene.GetAllObjects(true) )
+		{
+			if ( go.Tags.Has( "ignore_culling" ) ) continue;
+
+			// Disable all renderers if this object is not in the frustum.
+			var enabled = Camera.GetFrustum().IsInside( go.WorldPosition );
+			foreach ( var renderer in go.Components.GetAll<Renderer>(
+				FindMode.EverythingInSelf | 
+				FindMode.EverythingInChildren | 
+				FindMode.EverythingInAncestors ) )
+			{
+				//renderer.Enabled = enabled;
+			}
+		}
+
+		time.Stop();
+
+		Log.Info( $"Time taken to cull: {time.ElapsedMilliseconds}ms" );
 	}
 }

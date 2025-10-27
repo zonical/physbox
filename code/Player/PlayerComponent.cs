@@ -48,8 +48,9 @@ public partial class PlayerComponent :
 
 	// ==================== [ GAME OBJECTS ] ====================
 
-	[Property, ReadOnly] private GameObject Ragdoll;
+	[Property, ReadOnly] private GameObject Ragdoll { get; set; }
 	[Property, Sync, ReadOnly] private GameObject Hitbox { get; set; }
+	[Property, ReadOnly] private GameObject Viewmodel { get; set; }
 
 	// ==========================================================
 
@@ -190,6 +191,7 @@ public partial class PlayerComponent :
 		{
 			DrawCrosshair();
 			HandleUseInput();
+			UpdateViewmodel();
 
 			if ( CanPickupObjects )
 			{
@@ -210,6 +212,31 @@ public partial class PlayerComponent :
 				HandleThrowerInput();
 			}
 		}
+	}
+
+	private void CreateViewmodel()
+	{
+		Viewmodel = new GameObject( true, "Viewmodel" );
+		Viewmodel.NetworkMode = NetworkMode.Never;
+
+		var modelComp = Viewmodel.AddComponent<SkinnedModelRenderer>();
+		modelComp.Model = Cloud.Model( "facepunch.v_first_person_arms_human" );
+		modelComp.RenderOptions.Overlay = true;
+		modelComp.RenderOptions.Game = false;
+		modelComp.RenderType = ModelRenderer.ShadowRenderType.Off;
+		modelComp.UseAnimGraph = true;
+
+		Viewmodel.WorldRotation = new Angles( 45, 0, 5 );
+		
+		// Parent model to camera.
+		Viewmodel.Parent = Camera.GameObject;
+	}
+
+	private void UpdateViewmodel()
+	{
+		if ( Viewmodel is null ) return;
+
+		Viewmodel.WorldPosition = Camera.WorldPosition - new Vector3(0, 0, 2) + Camera.WorldRotation.Forward * 8;
 	}
 
 	private void OnBotUpdate()
