@@ -3,6 +3,7 @@ using Sandbox.Audio;
 using Sandbox.ModelEditor.Nodes;
 using System;
 using System.Threading.Tasks;
+using Physbox;
 
 [Group( "Physbox" )]
 [Title( "Prop Health" )]
@@ -23,40 +24,9 @@ public sealed class PropLifeComponent : BaseLifeComponent
 	public ModelCollider Collider => Components.Get<ModelCollider>();
 	public Rigidbody Rigidbody => Components.Get<Rigidbody>();
 
-	[Sync] private PropDefinitionResource _def { get; set; }
-
 	[Sync] public PlayerComponent LastOwnedBy { get; set; }
-	[Property]
-	public PropDefinitionResource Definition
-	{
-		get { return _def; }
-		set
-		{
-			if ( _def == value )
-			{
-				return;
-			}
-
-			// Refresh model.
-			_def = value;
-			if ( !GameObject.Flags.Contains( GameObjectFlags.Deserializing ) )
-			{
-				ApplyResourceToProp();
-			}
-		}
-	}
-
-	public void ApplyResourceToProp()
-	{
-		if ( IsProxy ) return;
-		if ( Definition is null || !Definition.IsValid ) return;
-
-		PropRenderer.Model = Definition.Model;
-		Collider.Model = Definition.Model;
-		Rigidbody.MassOverride = Definition.Mass;
-		MaxHealth = Definition.MaxHealth;
-		Health = MaxHealth;
-	}
+	
+	public PropDefinitionComponent DefinitionComponent => Components.Get<PropDefinitionComponent>();
 
 	protected override void OnStart()
 	{

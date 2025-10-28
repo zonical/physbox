@@ -878,7 +878,6 @@
           "__enabled": true,
           "DamageImmunity": false,
           "DeathDamageInfo": null,
-          "Definition": null,
           "Health": 0,
           "LastHitBy": null,
           "MaxHealth": 100,
@@ -888,6 +887,18 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null
+        },
+        {
+          "__type": "Physbox.PropDefinitionComponent",
+          "__guid": "e5b4e195-b268-4522-8d04-fd3841a7c681",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Path": null
         }
       ],
       "Children": []
@@ -930,7 +941,6 @@
           "__enabled": true,
           "DamageImmunity": false,
           "DeathDamageInfo": null,
-          "Definition": null,
           "Health": 0,
           "LastHitBy": null,
           "MaxHealth": 100,
@@ -940,6 +950,18 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null
+        },
+        {
+          "__type": "Physbox.PropDefinitionComponent",
+          "__guid": "f7ae17b5-3298-41fb-8601-0aa3314757dd",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Path": null
         }
       ],
       "Children": []
@@ -7851,7 +7873,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 4,
+                        "Id": 2,
                         "Value": " Button pressed!",
                         "DstId": 1,
                         "DstName": "format"
@@ -8650,7 +8672,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 3,
                         "Value": true,
                         "DstId": 2,
                         "DstName": "state"
@@ -9104,7 +9126,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 4,
+                        "Id": 2,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -9558,7 +9580,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 4,
+                        "Id": 2,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -10013,7 +10035,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 4,
+                        "Id": 2,
                         "Value": false,
                         "DstId": 1,
                         "DstName": "state"
@@ -10467,118 +10489,6 @@
               "OverrideTargets": false,
               "Targets": null,
               "Width": 2
-            }
-          ],
-          "Children": []
-        },
-        {
-          "__guid": "a3f31f42-472d-4fd4-8de4-b768644ac819",
-          "__version": 1,
-          "Flags": 0,
-          "Name": "Spectacular Crate",
-          "Position": "0,0,7.999451",
-          "Rotation": "0,0,0,1",
-          "Scale": "1,1,1",
-          "Tags": "breakable_prop",
-          "Enabled": true,
-          "NetworkMode": 1,
-          "NetworkInterpolation": true,
-          "NetworkOrphaned": 2,
-          "OwnerTransfer": 0,
-          "Components": [
-            {
-              "__type": "Sandbox.ModelRenderer",
-              "__guid": "b1edd39c-8441-4e61-aae9-01ea35654046",
-              "__enabled": true,
-              "BodyGroups": 18446744073709551615,
-              "CreateAttachments": false,
-              "LodOverride": null,
-              "MaterialGroup": null,
-              "MaterialOverride": null,
-              "Materials": null,
-              "Model": "models/citizen_props/crate01.vmdl",
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "RenderOptions": {
-                "GameLayer": true,
-                "OverlayLayer": false,
-                "BloomLayer": false,
-                "AfterUILayer": false
-              },
-              "RenderType": "On",
-              "Tint": "1,1,1,1"
-            },
-            {
-              "__type": "Sandbox.ModelCollider",
-              "__guid": "03258712-430b-415f-ba8b-9d493104bae2",
-              "__enabled": true,
-              "Elasticity": null,
-              "Friction": null,
-              "IsTrigger": false,
-              "Model": "models/citizen_props/crate01.vmdl",
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "OnObjectTriggerEnter": null,
-              "OnObjectTriggerExit": null,
-              "OnTriggerEnter": null,
-              "OnTriggerExit": null,
-              "RollingResistance": null,
-              "Static": false,
-              "Surface": null,
-              "SurfaceVelocity": "0,0,0"
-            },
-            {
-              "__type": "Sandbox.Rigidbody",
-              "__guid": "6c237ac0-080c-4887-8be5-a5a950e740c6",
-              "__enabled": true,
-              "AngularDamping": 0,
-              "Gravity": true,
-              "LinearDamping": 0,
-              "Locking": {
-                "X": false,
-                "Y": false,
-                "Z": false,
-                "Pitch": false,
-                "Yaw": false,
-                "Roll": false
-              },
-              "MassCenterOverride": "0,0,0",
-              "MassOverride": 30,
-              "MotionEnabled": true,
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null,
-              "OverrideMassCenter": false,
-              "RigidbodyFlags": 0,
-              "StartAsleep": false
-            },
-            {
-              "__type": "PropLifeComponent",
-              "__guid": "de0e542f-bd9e-4a3e-a24f-49fe26892a3c",
-              "__enabled": true,
-              "DamageImmunity": false,
-              "DeathDamageInfo": null,
-              "Definition": "props/crate.pdef",
-              "Health": 100,
-              "LastHitBy": null,
-              "MaxHealth": 100,
-              "OnComponentDestroy": null,
-              "OnComponentDisabled": null,
-              "OnComponentEnabled": null,
-              "OnComponentFixedUpdate": null,
-              "OnComponentStart": null,
-              "OnComponentUpdate": null
             }
           ],
           "Children": []
@@ -11136,6 +11046,153 @@
           "Static": true,
           "Surface": null,
           "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "0beb96aa-26a1-403f-aeec-89e61df40692",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Breakable Prop (Spectacular Crate)",
+      "Position": "527.9999,-283.9999,16.00055",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "breakable",
+      "Enabled": true,
+      "NetworkMode": 1,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "OwnerTransfer": 0,
+      "Components": [
+        {
+          "__type": "Sandbox.ModelRenderer",
+          "__guid": "4e058fe7-d63d-4dd0-9711-38b992c504a3",
+          "__enabled": true,
+          "BodyGroups": 18446744073709551615,
+          "CreateAttachments": false,
+          "LodOverride": null,
+          "MaterialGroup": null,
+          "MaterialOverride": null,
+          "Materials": null,
+          "Model": "models/citizen_props/crate01.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RenderOptions": {
+            "GameLayer": true,
+            "OverlayLayer": false,
+            "BloomLayer": false,
+            "AfterUILayer": false
+          },
+          "RenderType": "On",
+          "Tint": "1,1,1,1"
+        },
+        {
+          "__type": "Sandbox.ModelCollider",
+          "__guid": "d0a11fb7-399c-4031-80a0-207fb4f6b408",
+          "__enabled": true,
+          "Elasticity": null,
+          "Friction": null,
+          "IsTrigger": false,
+          "Model": "models/citizen_props/crate01.vmdl",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RollingResistance": null,
+          "Static": false,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        },
+        {
+          "__type": "Sandbox.Rigidbody",
+          "__guid": "97fd348f-66ea-4943-8d55-8c2007267e3c",
+          "__enabled": true,
+          "AngularDamping": 0,
+          "Gravity": true,
+          "LinearDamping": 0,
+          "Locking": {
+            "X": false,
+            "Y": false,
+            "Z": false,
+            "Pitch": false,
+            "Yaw": false,
+            "Roll": false
+          },
+          "MassCenterOverride": "0,0,0",
+          "MassOverride": 50,
+          "MotionEnabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OverrideMassCenter": false,
+          "RigidbodyFlags": 0,
+          "StartAsleep": false
+        },
+        {
+          "__type": "PropLifeComponent",
+          "__guid": "14f06c87-21c4-429f-bc74-5c37ad5c5fa9",
+          "__enabled": true,
+          "DamageImmunity": false,
+          "DeathDamageInfo": {
+            "Attacker": null,
+            "Weapon": null,
+            "Hitbox": null,
+            "Damage": 0,
+            "Origin": "0,0,0",
+            "Position": "0,0,0",
+            "Shape": null,
+            "Tags": "",
+            "IsExplosion": false
+          },
+          "Health": 0,
+          "LastHitBy": null,
+          "MaxHealth": 100,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        },
+        {
+          "__type": "ObjectCollisionListenerComponent",
+          "__guid": "70e84808-b8ff-4551-83dd-bf7653e6884d",
+          "__enabled": true,
+          "CollisionProxy": null,
+          "IgnoreTags": "held,debris,no_breakable",
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "RecentlyHitBy": []
+        },
+        {
+          "__type": "Physbox.PropDefinitionComponent",
+          "__guid": "f3118cb3-9c11-4663-9de5-dc40f20bd957",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Path": "props/crate.pdef"
         }
       ],
       "Children": []

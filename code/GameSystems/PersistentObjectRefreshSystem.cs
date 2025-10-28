@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using Physbox;
 
 // Any props that are manually placed within a map/scene will be respawned
 // after a round ends.
@@ -39,10 +40,10 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 		PersistantMeshes.Clear();
 
 		// Create a list of all props.
-		foreach ( var prop in scene.GetAllComponents<PropLifeComponent>() )
+		foreach ( var prop in scene.GetAllComponents<PropDefinitionComponent>() )
 		{
 			if ( prop.Definition is null || !prop.Definition.IsValid ) continue;
-			PersistantProps.Add( new() { PropDef = prop.Definition, Transform = prop.WorldTransform } );
+			PersistantProps.Add( new() { PropDef = prop.Definition as PropDefinitionResource, Transform = prop.WorldTransform } );
 
 			// Delete this prop.
 			prop.DestroyGameObject();
@@ -79,38 +80,16 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 
 	private void RespawnProps()
 	{
-		// Create a prop in front of us.
-		var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/breakable_prop.prefab" );
-		if ( prefab is null )
-		{
-			Log.Error( "Could not find prefab file." );
-			return;
-		}
-
 		var spawnedProps = 0;
+
 		// Respawn all props.
 		foreach ( var storedProp in PersistantProps )
 		{
-			var prefabScene = SceneUtility.GetPrefabScene( prefab );
-			var go = prefabScene.Clone();
-			go.BreakFromPrefab();
-
-			if ( go.Components.TryGet<PropLifeComponent>( out var prop ) )
-			{
-				prop.Definition = storedProp.PropDef;
-				prop.ApplyResourceToProp();
-
-				go.WorldPosition = storedProp.Transform.Position;
-				go.WorldRotation = storedProp.Transform.Rotation;
-				go.WorldScale = storedProp.Transform.Scale;
-				go.NetworkSpawn();
-				spawnedProps++;
-			}
-			else
-			{
-				Log.Error( "Failed to make prop, prefab does not contain PropLifeComponent." );
-				go.Destroy();
-			}
+			var go = PhysboxUtilites.CreatePropFromResource( storedProp.PropDef );
+			go.WorldPosition = storedProp.Transform.Position;
+			go.WorldRotation = storedProp.Transform.Rotation;
+			go.WorldScale = storedProp.Transform.Scale;
+			spawnedProps++;
 		}
 
 		Log.Info( $"PersistentObjectRefreshSystem - spawned {spawnedProps} persisted props." );

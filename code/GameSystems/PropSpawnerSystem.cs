@@ -1,4 +1,5 @@
-﻿using Sandbox;
+﻿using Physbox;
+using Sandbox;
 using Sandbox.Diagnostics;
 using System;
 
@@ -41,31 +42,9 @@ public class PropSpawnerSystem : GameObjectSystem
 		spawner.TimeSinceWentToSleep = 0;
 
 		// Create a prop in front of us.
-		var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/breakable_prop.prefab" );
-		if ( prefab is null )
-		{
-			Log.Error( "Could not find prefab file." );
-			return;
-		}
-
-		var prefabScene = SceneUtility.GetPrefabScene( prefab );
-		var go = prefabScene.Clone();
-		go.BreakFromPrefab();
-
-		if ( go.Components.TryGet<PropLifeComponent>( out var prop ) )
-		{
-			prop.Definition = spawner.Prop;
-			prop.ApplyResourceToProp();
-
-			go.WorldPosition = spawner.WorldPosition;
-			go.WorldRotation = spawner.WorldRotation;
-			go.NetworkSpawn();
-		}
-		else
-		{
-			Log.Error( "Failed to make prop, prefab does not contain PropLifeComponent." );
-			go.Destroy();
-		}
+		var go = PhysboxUtilites.CreatePropFromResource( spawner.Prop );
+		go.WorldPosition = spawner.WorldPosition;
+		go.WorldRotation = spawner.WorldRotation;
 
 		SpawnDelay = 0;
 	}

@@ -32,7 +32,7 @@
 
 	bool IsBreakableProp => CurrentlyLookingAtObject?.Components.Get<PropLifeComponent>() is not null;
 
-	PropDefinitionResource PropDef => CurrentlyLookingAtObject?.Components.Get<PropLifeComponent>().Definition;
+	PropDefinitionResource PropDef => CurrentlyLookingAtObject?.Components.Get<PropDefinitionComponent>().Definition as PropDefinitionResource;
 	WorldLifeComponent WorldLife => CurrentlyLookingAtObject?.Components.Get<WorldLifeComponent>();
 
 	/// <summary>

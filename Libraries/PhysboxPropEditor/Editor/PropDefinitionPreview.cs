@@ -1,4 +1,6 @@
-﻿using Editor.Assets;
+﻿using Sandbox;
+using Editor;
+using Editor.Assets;
 using System;
 using System.Threading.Tasks;
 
@@ -22,8 +24,8 @@ class PropDefinitionPreview : AssetPreview
 	{
 		await Task.Yield();
 
-		var prop = Asset.LoadResource<PropDefinitionResource>();
-		var model = prop.Model;
+		var resource = Asset.LoadResource<GameResource>();
+		var model = resource.GetSerialized().GetProperty( "Model" ).GetValue<Model>( Model.Error );
 		if ( model is null )
 			return;
 
@@ -38,7 +40,7 @@ class PropDefinitionPreview : AssetPreview
 			playerModel.Parameters.Set( "holdtype_pose", 3 );
 			playerModel.Tint = Color.White.WithAlpha( 0.5f );
 
-			AnimateRendererWithVelocity( Vector3.Forward * PlayerConvars.RunSpeed, playerModel );
+			AnimateRendererWithVelocity( Vector3.Forward * 180, playerModel );
 
 			// Create held model.
 			PropGameObject = new GameObject();
@@ -47,10 +49,13 @@ class PropDefinitionPreview : AssetPreview
 
 			PropGameObject.Parent = PrimaryObject;
 
+			var heldPositionOffset = resource.GetSerialized().GetProperty( "HeldPositionOffset" ).GetValue<Vector3>();
+			var heldRotationOffset = resource.GetSerialized().GetProperty( "HeldRotationOffset" ).GetValue<Angles>();
+
 			var eyePos = new Vector3( 0, 0, 64 );
 			var targetPos = eyePos - new Vector3( 0, 0, 16 ) + (PrimaryObject.WorldRotation.Forward * 64);
-			PropGameObject.LocalPosition = targetPos + prop.HeldPositionOffset.RotateAround( Vector3.Zero, PrimaryObject.WorldRotation );
-			PropGameObject.LocalRotation = PrimaryObject.WorldRotation * prop.HeldRotationOffset.ToRotation();
+			PropGameObject.LocalPosition = targetPos + heldPositionOffset.RotateAround( Vector3.Zero, PrimaryObject.WorldRotation );
+			PropGameObject.LocalRotation = PrimaryObject.WorldRotation * heldRotationOffset.ToRotation();
 
 			SceneSize = PrimaryObject.GetBounds().Size;
 			SceneCenter = PropGameObject.GetBounds().Center;

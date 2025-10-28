@@ -1,4 +1,5 @@
 using Sandbox;
+using Physbox;
 
 [Group( "Physbox" )]
 [Title( "Prop Spawner" )]
@@ -25,9 +26,10 @@ public sealed class PropSpawnerComponent : Component
 
 		foreach ( var trace in traces )
 		{
-			if ( trace.GameObject is not null && trace.GameObject.Components.TryGet<PropLifeComponent>( out var prop ) )
+			if ( trace.GameObject is not null && trace.GameObject.Components.TryGet<PropDefinitionComponent>( out var prop ) )
 			{
-				if ( prop.Definition.Name == Prop.Name )
+				var def = prop.Definition as PropDefinitionResource;
+				if ( def.Name == Prop.Name )
 				{
 					return false;
 				}

@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using Physbox;
 
 public static partial class PhysboxDebug
 {
@@ -15,16 +16,7 @@ public static partial class PhysboxDebug
 		}
 
 		// Create a prop in front of us.
-		var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/breakable_prop.prefab" );
-		if ( prefab is null )
-		{
-			Log.Error( "Could not find prefab file." );
-			return;
-		}
-
-		var prefabScene = SceneUtility.GetPrefabScene( prefab );
-		var go = prefabScene.Clone();
-		go.NetworkSpawn();
+		var go = PhysboxUtilites.CreatePropFromResource( ResourceLibrary.Get<PropDefinitionResource>( "props/crate.pdef" ) );
 
 		go.WorldPosition = player.Camera.WorldPosition + (player.Camera.WorldRotation.Forward * 100);
 		go.WorldRotation = player.Camera.WorldRotation;

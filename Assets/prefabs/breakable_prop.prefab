@@ -92,11 +92,33 @@
         "StartAsleep": false
       },
       {
+        "__type": "Physbox.PropDefinitionComponent",
+        "__guid": "9465f4a9-042a-4ad1-97f2-984416ac4fba",
+        "__enabled": true,
+        "Definition": null,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
         "__type": "PropLifeComponent",
         "__guid": "30a58665-3f78-427a-8a3a-105d3d64e4c5",
         "__enabled": true,
         "DamageImmunity": false,
-        "Definition": null,
+        "DeathDamageInfo": {
+          "Attacker": null,
+          "Weapon": null,
+          "Hitbox": null,
+          "Damage": 0,
+          "Origin": "0,0,0",
+          "Position": "0,0,0",
+          "Shape": null,
+          "Tags": "",
+          "IsExplosion": false
+        },
         "Health": 0,
         "LastHitBy": null,
         "MaxHealth": 100,
@@ -111,6 +133,7 @@
         "__type": "ObjectCollisionListenerComponent",
         "__guid": "e055598a-e49e-4044-853f-9b3876123f98",
         "__enabled": true,
+        "CollisionProxy": null,
         "IgnoreTags": "held,debris,ignore_breakable_props",
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,

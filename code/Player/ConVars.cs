@@ -28,6 +28,25 @@ public static class PlayerConvars
 		Title( "Talk while Dead" ), Group( "Player" )]
 	public static bool Deadtalk { get; set; } = true;
 
+	public static bool UseViewmodel { get; set; } = true;
+
+	[ConCmd( "pb_player_viewmodel" )]
+	public static void ViewmodelCommand( bool state )
+	{
+		UseViewmodel = state;
+		var player = PlayerComponent.LocalPlayer;
+
+		if ( player is null ) return;
+		if ( UseViewmodel )
+		{
+			player.Viewmodel.Tags.Remove( "viewer" );
+		}
+		else
+		{
+			player.Viewmodel.Tags.Add( "viewer" );
+		}
+	}
+
 	[ConVar( "pb_debug_draw_player_hitboxes", ConVarFlags.Server,
 		Help = "When set to true, draw all player hitboxes." )]
 	public static bool DrawPlayerHitboxes { get; set; } = false;

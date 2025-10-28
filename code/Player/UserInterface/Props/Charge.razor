@@ -45,7 +45,7 @@
 {
 	PlayerComponent Player => PlayerComponent.LocalPlayer;
 	PropLifeComponent PropLife => Player?.HeldGameObject?.GetComponent<PropLifeComponent>();
-	PropDefinitionResource PropDef => PropLife?.Definition;
+	PropDefinitionResource PropDef => Player?.HeldGameObject?.GetComponent<PropDefinitionComponent>().Definition as PropDefinitionResource;
 
 	public float PercentageCharged => Player.BuiltUpForce / Player.MaxForce;
 

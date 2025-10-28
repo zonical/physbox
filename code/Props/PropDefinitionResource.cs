@@ -1,7 +1,8 @@
 ﻿using Sandbox;
 using System.Text.Json.Serialization;
+namespace Physbox;
 
-[GameResource( "Prop Definition", "pdef", "Defines a prop for Physbox", Icon = "inventory_2" )]
+[AssetType( Name = "Prop Definition", Extension = "pdef", Category = "Physbox" )]
 public class PropDefinitionResource : GameResource
 {
 	public string Name { get; set; }
@@ -11,4 +12,9 @@ public class PropDefinitionResource : GameResource
 	public Vector3 HeldPositionOffset { get; set; } = Vector3.Zero;
 	public Angles HeldRotationOffset { get; set; } = Angles.Zero;
 	[ImageAssetPath] public string KillfeedIcon { get; set; }
+
+	protected override Bitmap CreateAssetTypeIcon( int width, int height )
+	{
+		return CreateSimpleAssetTypeIcon( "inventory_2", width, height, "#fdea60", "black" );
+	}
 }

@@ -47,10 +47,9 @@ public partial class PlayerComponent :
 	[Property, Sync( SyncFlags.FromHost ), ShowIf( "IsBot", true )] public string BotName { get; set; }
 
 	// ==================== [ GAME OBJECTS ] ====================
-
-	[Property, ReadOnly] private GameObject Ragdoll { get; set; }
-	[Property, Sync, ReadOnly] private GameObject Hitbox { get; set; }
-	[Property, ReadOnly] private GameObject Viewmodel { get; set; }
+	[Property, ReadOnly, Feature( "Game Objects" )] private GameObject Ragdoll { get; set; }
+	[Property, Sync, ReadOnly, Feature( "Game Objects" )] private GameObject Hitbox { get; set; }
+	[Property, ReadOnly, Feature( "Game Objects" )] public GameObject Viewmodel { get; set; }
 
 	// ==========================================================
 

@@ -16,7 +16,7 @@ public partial class PlayerComponent
 	[Property, Feature( "Thrower" )] public Gradient ForceColorGradient = new Gradient();
 
 	// ==================== [ VARIABLES ] ====================
-	private PropDefinitionResource HeldProp => HeldGameObject?.GetComponent<PropLifeComponent>().Definition;
+	private PropDefinitionResource HeldProp => HeldGameObject?.GetComponent<PropDefinitionComponent>().Definition as PropDefinitionResource;
 	private Angles AdditionalPropRotation = new Angles();
 	public int Throws = 0;
 	public float BuiltUpForce = 0;
@@ -79,6 +79,7 @@ public partial class PlayerComponent
 			var targetPos = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + (Camera.WorldRotation.Forward * 64);
 			HeldGameObject.WorldPosition = targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
 			HeldGameObject.WorldRotation = Camera.WorldRotation * HeldProp.HeldRotationOffset.ToRotation() * AdditionalPropRotation.ToRotation();
+			Log.Info( HeldProp );
 		}
 		else if ( IsBot )
 		{
@@ -144,7 +145,8 @@ public partial class PlayerComponent
 			// Alter our speed.
 			if ( PlayerConvars.SpeedAffectedByMass && IsPlayer )
 			{
-				var subtractAmount = float.Round( float.Sqrt( propLifeComponent.Definition.Mass ) * 10 );
+				var def = propLifeComponent.DefinitionComponent.Definition as PropDefinitionResource;
+				var subtractAmount = float.Round( float.Sqrt( def.Mass ) * 10 );
 
 				PlayerController.RunSpeed = float.Max( PlayerController.RunSpeed - subtractAmount, 50 );
 				PlayerController.WalkSpeed = float.Max( PlayerController.WalkSpeed - subtractAmount, 30 );

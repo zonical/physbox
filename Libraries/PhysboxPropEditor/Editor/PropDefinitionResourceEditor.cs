@@ -1,8 +1,10 @@
 ﻿using Editor;
-using Editor.TextureEditor;
 using Sandbox;
+using Sandbox.ModelEditor.Nodes;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
+// Easier to use than Transform, doesn't have any junk in it.
 public class ModelTransformOffset
 {
 	[JsonInclude] public Vector3 Position = Vector3.Zero;
@@ -24,20 +26,24 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 	// ====================== [ RESOURCE ] ======================
 	Asset MyAsset;
-	PropDefinitionResource Resource;
+	GameResource Resource;
 	Dictionary<string, ModelTransformOffset> Offsets;
+	Model PreviewModel => Resource.GetSerialized().GetProperty( "Model" ).GetValue<Model>( Model.Error );
+	string KillfeedIcon => Resource.GetSerialized().GetProperty( "KillfeedIcon" ).GetValue<string>();
 
 	// ====================== [ WIDGETS ] ======================
 	ScrollArea ResourceEditor;
 	SceneRenderingWidget SceneRenderer;
 	ScrollArea Properties;
-	ScrollArea ActionsArea;
+	WarningBox NoGibsWarning;
+	WarningBox NoIconWarning;
+	InformationBox NoWarningBox;
 
 	public void AssetOpen( Asset asset )
 	{
 		// Get the Resource from the Asset, from here you can get whatever info you want
 		MyAsset = asset;
-		Resource = MyAsset.LoadResource<PropDefinitionResource>();
+		Resource = MyAsset.LoadResource<GameResource>();
 
 		// Get our saved offsets.
 		Offsets = new();
@@ -68,7 +74,7 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		WindowTitle = "Hello";
 		WindowFlags = WindowFlags.Dialog | WindowFlags.Customized | WindowFlags.CloseButton | WindowFlags.WindowSystemMenuHint | WindowFlags.WindowTitle | WindowFlags.MaximizeButton;
 		SetWindowIcon( "inventory_2" );
-		Size = new Vector2( 720, 680 );
+		Size = new Vector2( 1024, 640 );
 
 		Show();
 		Focus();
@@ -83,23 +89,46 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 	public void BuildUI()
 	{
-		// A list of all the files.
+		// ====================== [ RESOURCE PROPERTIES ] ======================
+
 		ResourceEditor = new ScrollArea( this );
 		ResourceEditor.WindowTitle = $"Resource - {Resource.ResourcePath}";
 		ResourceEditor.WindowFlags = WindowFlags.Widget;
+		
 		var propSheet = new ControlSheet();
 		var seralizedResource = Resource.GetSerialized();
 		propSheet.AddObject( seralizedResource, PropertyFilter );
 
 		ResourceEditor.Canvas = new Widget();
 		ResourceEditor.Canvas.Layout = Layout.Column();
-		ResourceEditor.Canvas.VerticalSizeMode = SizeMode.CanGrow;
+		ResourceEditor.Canvas.VerticalSizeMode = SizeMode.Flexible;
 		ResourceEditor.Canvas.HorizontalSizeMode = SizeMode.Flexible;
 		ResourceEditor.Canvas.Layout.Add( propSheet );
 		ResourceEditor.Canvas.Layout.AddStretchCell();
 		DockManager.AddDock( null, ResourceEditor, DockArea.Left );
 
-		// The rendering preview for the prop.
+		// ====================== [ RESOURCE WARNINGS ] ======================
+
+		ResourceEditor.Canvas.Layout.AddSeparator();
+		ResourceEditor.Canvas.Layout.AddSpacingCell( 8 );
+
+		NoGibsWarning = new WarningBox( ResourceEditor );
+		NoGibsWarning.Label.Text = "No gibs are set for this model.";
+		ResourceEditor.Canvas.Layout.Add( NoGibsWarning );
+
+		NoIconWarning = new WarningBox( ResourceEditor );
+		NoIconWarning.Label.Text = "No killfeed icon is set for this prop. The killfeed will show a blank image when a player is killed with this prop.";
+		ResourceEditor.Canvas.Layout.Add( NoIconWarning );
+
+		NoWarningBox = new InformationBox( ResourceEditor );
+		NoWarningBox.Label.Text = "No warnings - prop is ready to go!";
+		NoWarningBox.BackgroundColor = Theme.Green;
+		NoWarningBox.Icon = "check";
+		NoWarningBox.Height = 128;
+		ResourceEditor.Canvas.Layout.Add( NoWarningBox );
+
+		// ====================== [ ICON PREVIEW ] ======================
+
 		SceneRenderer = new SceneRenderingWidget( this );
 		SceneRenderer.WindowTitle = "Killfeed Icon Preview";
 		SceneRenderer.MaximumSize = new Vector2( 256, 256 );
@@ -108,7 +137,8 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		SceneRenderer.Scene = ScenePreview;
 		DockManager.AddDock( ResourceEditor, SceneRenderer, DockArea.Right );
 
-		// Properties, manipulating stuff.
+		// ====================== [ ICON PROPERTIES ] ======================
+
 		Properties = new ScrollArea( this );
 		var transformSheet = new ControlSheet();
 		var seralizedTransform = PreviewTransformOffset.GetSerialized();
@@ -125,63 +155,8 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		Properties.WindowFlags = WindowFlags.Widget;
 		DockManager.AddDock( SceneRenderer, Properties, DockArea.Bottom );
 
-		ActionsArea = new ScrollArea( this );
-		ActionsArea.Canvas = new Widget();
-		ActionsArea.Canvas.Layout = Layout.Column();
+		// ====================== [ MENU ] ======================
 
-		var generateButton = new Button();
-		generateButton.Pressed += () =>
-		{
-			using ( ScenePreview.Push() )
-			{
-				var bitmap = new Bitmap( 256, 256 );
-				ScenePreview.Camera.RenderToBitmap( bitmap );
-				var data = bitmap.ToPng();
-
-				Log.Info( MyAsset.AbsolutePath );
-
-				// Create a new path based on AbsolutePath.
-				var filePath = GetPathToGeneratedIcons();
-
-				// Ensure the path exists.
-				System.IO.Directory.CreateDirectory( filePath );
-
-				// Write the file.
-				var stream = System.IO.File.OpenWrite( filePath + $"{Resource.ResourceName}.png" );
-				stream.Write( data );
-				stream.Close();
-
-				Resource.KillfeedIcon = $"materials/ui/props_generated/{Resource.ResourceName}.png";
-			}
-
-			// Save the settings we just used.
-			Offsets[Resource.ResourceName] = PreviewTransformOffset;
-
-			Save();
-		};
-		generateButton.Text = "Generate Killfeed Icon";
-
-		var showGeneratedIconsButton = new Button();
-		showGeneratedIconsButton.Pressed += () =>
-		{
-			// Create a new path based on AbsolutePath.
-			var filePath = GetPathToGeneratedIcons();
-		
-			// Ensure the path exists.
-			System.IO.Directory.CreateDirectory( filePath );
-
-			EditorUtility.OpenFileFolder( filePath + $"{Resource.ResourceName}.png" );
-		};
-		showGeneratedIconsButton.Text = "Open Generated Icons Folder";
-
-		ActionsArea.Canvas.Layout.Add( generateButton );
-		ActionsArea.Canvas.Layout.Add( showGeneratedIconsButton );
-		ActionsArea.Canvas.Layout.AddStretchCell();
-		ActionsArea.WindowTitle = "Actions";
-		ActionsArea.WindowFlags = WindowFlags.Widget;
-		DockManager.AddDock( Properties, ActionsArea, DockArea.Bottom );
-
-		// Menu bar.
 		var file = MenuBar.AddMenu( "File" );
 		var saveOption = file.AddOption( "Save", "common/save.png", Save, "editor.save" );
 		saveOption.StatusTip = "Save";
@@ -190,19 +165,38 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		file.AddOption( "Open Asset Location", "folder", () => EditorUtility.OpenFileFolder( MyAsset.AbsolutePath ) ).StatusTip = "Open Asset Location";
 		file.AddSeparator();
 		file.AddOption( "Quit", null, Quit, "editor.quit" ).StatusTip = "Quit";
+
+		var icon = MenuBar.AddMenu( "Killfeed Icon" );
+		var generateKillfeedIcon = icon.AddOption( "Generate Killfeed Icon", "common/save.png", GenerateKillfeedIcon );
+		generateKillfeedIcon.StatusTip = "Generate Killfeed Icon";
+		generateKillfeedIcon.Enabled = true;
+		icon.AddSeparator();
+		icon.AddOption( "Open Generated Icons Folder", "folder", OpenGeneratedFoldersIcon ).StatusTip = " Generated Icons Folder";
 	}
 
 	[EditorEvent.Frame]
-	public void UpdatePosition()
+	public void Tick()
 	{
+		// Update icon preview.
 		using ( ScenePreview.Push() )
 		{
+			PropPreview.Model = PreviewModel;
 			PropPreview.WorldPosition = PreviewTransformOffset.Position;
 			PropPreview.WorldRotation = PreviewTransformOffset.Rotation;
 			PropPreview.WorldScale = PreviewTransformOffset.Scale;
 
 			ScenePreview.EditorTick( Time.Now, Time.Delta );
 		}
+
+		// Show warning if no gibs are set for this model.
+		var breaklist = PreviewModel?.GetData<ModelBreakPiece[]>();
+		NoGibsWarning.Visible = breaklist is null || breaklist.Length == 0;
+
+		// Show warning if no icon is set.
+		NoIconWarning.Visible = KillfeedIcon is null || string.IsNullOrEmpty( KillfeedIcon );
+
+		// Show information box if there are no warnings.
+		NoWarningBox.Visible = !NoGibsWarning.Visible && !NoIconWarning.Visible;
 	}
 
 	[Shortcut( "editor.quit", "CTRL+Q" )]
@@ -221,8 +215,6 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 			ScenePreview.LoadFromFile( "scenes/preview.scene" );
 			var camera = ScenePreview.Camera;
 			camera.BackgroundColor = Color.Transparent;
-
-			PropPreview.Model = Resource.Model;
 		}
 	}
 
@@ -242,6 +234,47 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 			return;
 
 		System.IO.File.WriteAllText( GetPathToGeneratedIcons() + "saved_icon_offsets.json", offsetsJson );
+	}
+	public void GenerateKillfeedIcon()
+	{
+		using ( ScenePreview.Push() )
+		{
+			var bitmap = new Bitmap( 256, 256 );
+			ScenePreview.Camera.RenderToBitmap( bitmap );
+			var data = bitmap.ToPng();
+
+			Log.Info( MyAsset.AbsolutePath );
+
+			// Create a new path based on AbsolutePath.
+			var filePath = GetPathToGeneratedIcons();
+
+			// Ensure the path exists.
+			System.IO.Directory.CreateDirectory( filePath );
+
+			// Write the file.
+			var stream = System.IO.File.OpenWrite( filePath + $"{Resource.ResourceName}.png" );
+			stream.Write( data );
+			stream.Close();
+
+			var iconPath = $"materials/ui/props_generated/{Resource.ResourceName}.png";
+			Resource.GetSerialized().GetProperty( "KillfeedIcon" ).SetValue<string>( iconPath );
+		}
+
+		// Save the settings we just used.
+		Offsets[Resource.ResourceName] = PreviewTransformOffset;
+
+		Save();
+	}
+
+	public void OpenGeneratedFoldersIcon()
+	{
+		// Create a new path based on AbsolutePath.
+		var filePath = GetPathToGeneratedIcons();
+
+		// Ensure the path exists.
+		System.IO.Directory.CreateDirectory( filePath );
+
+		EditorUtility.OpenFileFolder( filePath + $"{Resource.ResourceName}.png" );
 	}
 
 	// Stolen from shadergraph.
