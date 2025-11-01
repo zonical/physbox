@@ -5,7 +5,7 @@ public static class PhysboxUtilites
 {
 	public static GameObject CreatePropFromResource( PropDefinitionResource resource )
 	{
-		Log.Info( $"Creating prop {resource.ResourcePath}" );
+		//Log.Info( $"Creating prop {resource.ResourcePath}" );
 		var GameObject = new GameObject( true, "Breakable Prop" );
 		GameObject.Tags.Add( PhysboxConstants.BreakablePropTag );
 
@@ -36,7 +36,7 @@ public static class PhysboxUtilites
 		// Update our name.
 		var name = resource.Name;
 		GameObject.Name = $"Breakable Prop ({name})";
-		GameObject.MakeNameUnique();
+		//GameObject.MakeNameUnique();
 
 		GameObject.NetworkMode = NetworkMode.Object;
 		GameObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );

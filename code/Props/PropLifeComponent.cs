@@ -1,15 +1,16 @@
+using Physbox;
 using Sandbox;
 using Sandbox.Audio;
 using Sandbox.ModelEditor.Nodes;
+using Sandbox.VR;
 using System;
 using System.Threading.Tasks;
-using Physbox;
 
 [Group( "Physbox" )]
 [Title( "Prop Health" )]
 [Icon( "favorite" )]
 [Tint( EditorTint.Yellow )]
-public sealed class PropLifeComponent : BaseLifeComponent
+public sealed class PropLifeComponent : BaseLifeComponent, IPropDefinitionSubscriber
 {
 	[ConVar( "pb_gib_creation_delay", ConVarFlags.Server,
 	Help = "The delay between gibs being created after taking lethal damage. " +
@@ -23,10 +24,33 @@ public sealed class PropLifeComponent : BaseLifeComponent
 	public ModelRenderer PropRenderer => Components.Get<ModelRenderer>();
 	public ModelCollider Collider => Components.Get<ModelCollider>();
 	public Rigidbody Rigidbody => Components.Get<Rigidbody>();
-
 	[Sync] public PlayerComponent LastOwnedBy { get; set; }
-	
 	public PropDefinitionComponent DefinitionComponent => Components.Get<PropDefinitionComponent>();
+
+	public void OnDefinitionChanged( GameResource oldValue, GameResource newValue ) 
+	{
+		// Update our prop.
+		var resource = newValue as PropDefinitionResource;
+		if ( resource is null ) return;
+
+		// Apply models.
+		var model = resource.Model;
+		PropRenderer.Model = model;
+		Collider.Model = model;
+
+		// Apply our mass.
+		var mass = resource.Mass;
+		Rigidbody.MassOverride = mass;
+
+		// Apply our health.
+		var maxHealth = resource.MaxHealth;
+		MaxHealth = maxHealth;
+
+		// Update our name.
+		var name = resource.Name;
+		GameObject.Name = $"Breakable Prop ({name})";
+		GameObject.MakeNameUnique();
+	}
 
 	protected override void OnStart()
 	{

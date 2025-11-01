@@ -1,4 +1,6 @@
 ﻿using Editor;
+using Editor.Assets;
+using Physbox;
 using Sandbox;
 using Sandbox.ModelEditor.Nodes;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ public class ModelTransformOffset
 }
 
 [EditorForAssetType( "pdef" )]
+[EditorApp( "Prop Definition Editor", "inventory_2", "Edit props for Physbox." )]
 public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 {
 	// Return false if you want the have a Widget created for each Asset opened,
@@ -20,8 +23,10 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 	public bool CanOpenMultipleAssets => false;
 
 	// ====================== [ ICON PREVIEW ] ======================
-	Scene ScenePreview;
-	ModelRenderer PropPreview => ScenePreview.Get<ModelRenderer>();
+	Scene KillfeedScenePreview;
+	Scene FirstPersonScenePreview;
+	ModelRenderer KillfeedPropPreview => KillfeedScenePreview.Get<ModelRenderer>();
+	ModelRenderer FirstPersonPropPreview;
 	ModelTransformOffset PreviewTransformOffset = new();
 
 	// ====================== [ RESOURCE ] ======================
@@ -30,14 +35,20 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 	Dictionary<string, ModelTransformOffset> Offsets;
 	Model PreviewModel => Resource.GetSerialized().GetProperty( "Model" ).GetValue<Model>( Model.Error );
 	string KillfeedIcon => Resource.GetSerialized().GetProperty( "KillfeedIcon" ).GetValue<string>();
+	Vector3 HeldPositionOffset => Resource.GetSerialized().GetProperty( "HeldPositionOffset" ).GetValue<Vector3>();
+	Angles HeldRotationOffset => Resource.GetSerialized().GetProperty( "HeldRotationOffset" ).GetValue<Angles>();
 
 	// ====================== [ WIDGETS ] ======================
 	ScrollArea ResourceEditor;
-	SceneRenderingWidget SceneRenderer;
+	SceneRenderingWidget KillfeedSceneRenderer;
+	SceneRenderingWidget FirstPersonSceneRenderer;
 	ScrollArea Properties;
 	WarningBox NoGibsWarning;
 	WarningBox NoIconWarning;
 	InformationBox NoWarningBox;
+	ControlSheet ResourceControlSheet;
+
+	bool NeedsSave = false;
 
 	public void AssetOpen( Asset asset )
 	{
@@ -62,8 +73,12 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 			}
 		}
 
-		BuildUI();
-		WindowTitle = $"Prop Definition Editor - {Resource.ResourcePath}";
+		WindowTitle = $"Prop Definition Editor - ({Resource.ResourcePath})";
+		ResourceEditor.WindowTitle = $"Resource - {Resource.ResourcePath}";
+
+		var seralizedResource = Resource.GetSerialized();
+		ResourceControlSheet.Clear(true);
+		ResourceControlSheet.AddObject( seralizedResource, PropertyFilter );
 	}
 
 	// From IAssetEditor
@@ -71,13 +86,28 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 	public PropDefinitionResourceEditor()
 	{
-		WindowTitle = "Hello";
+		Resource = CreatePlaceholderResource();
+
+		WindowTitle = $"Prop Definition Editor - (untitled)";
 		WindowFlags = WindowFlags.Dialog | WindowFlags.Customized | WindowFlags.CloseButton | WindowFlags.WindowSystemMenuHint | WindowFlags.WindowTitle | WindowFlags.MaximizeButton;
 		SetWindowIcon( "inventory_2" );
 		Size = new Vector2( 1024, 640 );
 
+		BuildUI();
 		Show();
 		Focus();
+	}
+
+	public PropDefinitionResource CreatePlaceholderResource()
+	{
+		var placeholder = new PropDefinitionResource();
+
+		placeholder.Name = "My Amazing Prop";
+		placeholder.Model = Model.Error;
+		placeholder.Mass = 100;
+		placeholder.MaxHealth = 100;
+
+		return placeholder;
 	}
 
 	public string GetPathToGeneratedIcons()
@@ -89,23 +119,38 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 	public void BuildUI()
 	{
+		DockManager.Clear();
+		MenuBar.Clear();
+
 		// ====================== [ RESOURCE PROPERTIES ] ======================
 
 		ResourceEditor = new ScrollArea( this );
 		ResourceEditor.WindowTitle = $"Resource - {Resource.ResourcePath}";
 		ResourceEditor.WindowFlags = WindowFlags.Widget;
-		
-		var propSheet = new ControlSheet();
+
+		ResourceControlSheet = new ControlSheet();
 		var seralizedResource = Resource.GetSerialized();
-		propSheet.AddObject( seralizedResource, PropertyFilter );
+		ResourceControlSheet.AddObject( seralizedResource, PropertyFilter );
 
 		ResourceEditor.Canvas = new Widget();
 		ResourceEditor.Canvas.Layout = Layout.Column();
-		ResourceEditor.Canvas.VerticalSizeMode = SizeMode.Flexible;
-		ResourceEditor.Canvas.HorizontalSizeMode = SizeMode.Flexible;
-		ResourceEditor.Canvas.Layout.Add( propSheet );
+		ResourceEditor.Canvas.VerticalSizeMode = SizeMode.CanShrink;
+		ResourceEditor.Canvas.HorizontalSizeMode = SizeMode.CanShrink;
+		ResourceEditor.Canvas.Layout.Add( ResourceControlSheet );
 		ResourceEditor.Canvas.Layout.AddStretchCell();
 		DockManager.AddDock( null, ResourceEditor, DockArea.Left );
+
+		// ====================== [ FIRST PERSON PREVIEW ] ======================
+
+		/*ResourceEditor.Canvas.Layout.AddSeparator();
+		ResourceEditor.Canvas.Layout.AddSpacingCell( 8 );
+
+		FirstPersonSceneRenderer = new SceneRenderingWidget( ResourceEditor );
+		FirstPersonSceneRenderer.VerticalSizeMode = SizeMode.Flexible;
+		FirstPersonSceneRenderer.HorizontalSizeMode = SizeMode.Flexible;
+		CreateFirstPersonPreviewScene();
+		FirstPersonSceneRenderer.Scene = FirstPersonScenePreview;
+		ResourceEditor.Canvas.Layout.Add( FirstPersonSceneRenderer );*/
 
 		// ====================== [ RESOURCE WARNINGS ] ======================
 
@@ -129,13 +174,13 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 		// ====================== [ ICON PREVIEW ] ======================
 
-		SceneRenderer = new SceneRenderingWidget( this );
-		SceneRenderer.WindowTitle = "Killfeed Icon Preview";
-		SceneRenderer.MaximumSize = new Vector2( 256, 256 );
-		SceneRenderer.WindowFlags = WindowFlags.Widget;
-		CreateScene();
-		SceneRenderer.Scene = ScenePreview;
-		DockManager.AddDock( ResourceEditor, SceneRenderer, DockArea.Right );
+		KillfeedSceneRenderer = new SceneRenderingWidget( this );
+		KillfeedSceneRenderer.WindowTitle = "Killfeed Icon Preview";
+		KillfeedSceneRenderer.MaximumSize = new Vector2( 256, 256 );
+		KillfeedSceneRenderer.WindowFlags = WindowFlags.Widget;
+		CreateKillfeedPreviewScene();
+		KillfeedSceneRenderer.Scene = KillfeedScenePreview;
+		DockManager.AddDock( ResourceEditor, KillfeedSceneRenderer, DockArea.Right );
 
 		// ====================== [ ICON PROPERTIES ] ======================
 
@@ -153,17 +198,36 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 		Properties.WindowTitle = "Edit Transform";
 		Properties.WindowFlags = WindowFlags.Widget;
-		DockManager.AddDock( SceneRenderer, Properties, DockArea.Bottom );
+		DockManager.AddDock( KillfeedSceneRenderer, Properties, DockArea.Bottom );
 
 		// ====================== [ MENU ] ======================
 
 		var file = MenuBar.AddMenu( "File" );
+		var openOption = file.AddOption( "Open", "common/open.png", Open );
+		openOption.StatusTip = "Open Sprite";
+
 		var saveOption = file.AddOption( "Save", "common/save.png", Save, "editor.save" );
 		saveOption.StatusTip = "Save";
 		saveOption.Enabled = true;
+
+		var saveAsOption = file.AddOption( "Save As", "common/save.png", Save );
+		saveAsOption.StatusTip = "Save As";
+		saveAsOption.Enabled = true;
+
 		file.AddSeparator();
-		file.AddOption( "Open Asset Location", "folder", () => EditorUtility.OpenFileFolder( MyAsset.AbsolutePath ) ).StatusTip = "Open Asset Location";
+
+		var assetLocationOption = file.AddOption( "Open Asset Location", "folder", () => EditorUtility.OpenFileFolder( MyAsset.AbsolutePath ) );
+		assetLocationOption.StatusTip = "Open Asset Location";
+		assetLocationOption.Enabled = true;
+
 		file.AddSeparator();
+
+		var restoreUI = file.AddOption( "Restore Dock Layout", "common/refresh.png", BuildUI );
+		restoreUI.StatusTip = "Save As";
+		restoreUI.Enabled = true;
+
+		file.AddSeparator();
+
 		file.AddOption( "Quit", null, Quit, "editor.quit" ).StatusTip = "Quit";
 
 		var icon = MenuBar.AddMenu( "Killfeed Icon" );
@@ -178,15 +242,27 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 	public void Tick()
 	{
 		// Update icon preview.
-		using ( ScenePreview.Push() )
+		using ( KillfeedScenePreview.Push() )
 		{
-			PropPreview.Model = PreviewModel;
-			PropPreview.WorldPosition = PreviewTransformOffset.Position;
-			PropPreview.WorldRotation = PreviewTransformOffset.Rotation;
-			PropPreview.WorldScale = PreviewTransformOffset.Scale;
+			KillfeedPropPreview.Model = PreviewModel;
+			KillfeedPropPreview.WorldPosition = PreviewTransformOffset.Position;
+			KillfeedPropPreview.WorldRotation = PreviewTransformOffset.Rotation;
+			KillfeedPropPreview.WorldScale = PreviewTransformOffset.Scale;
 
-			ScenePreview.EditorTick( Time.Now, Time.Delta );
+			KillfeedScenePreview.EditorTick( Time.Now, Time.Delta );
 		}
+
+		// Update first person preview.
+		/*using ( FirstPersonScenePreview.Push() )
+		{
+			FirstPersonPropPreview.Model = PreviewModel;
+
+			var camera = FirstPersonScenePreview.Camera;
+			var targetPos = camera.WorldPosition - new Vector3( 0, 0, 16 ) + (camera.WorldRotation.Forward * 64);
+
+			FirstPersonPropPreview.WorldPosition = targetPos + HeldPositionOffset;
+			FirstPersonPropPreview.WorldRotation = HeldRotationOffset;
+		}*/
 
 		// Show warning if no gibs are set for this model.
 		var breaklist = PreviewModel?.GetData<ModelBreakPiece[]>();
@@ -205,22 +281,76 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		Close();
 	}
 
-	public void CreateScene()
+	public void CreateKillfeedPreviewScene()
 	{
 		// Create a scene.
-		ScenePreview = Scene.CreateEditorScene();
+		KillfeedScenePreview = Scene.CreateEditorScene();
 
-		using ( ScenePreview.Push() )
+		using ( KillfeedScenePreview.Push() )
 		{
-			ScenePreview.LoadFromFile( "scenes/preview.scene" );
-			var camera = ScenePreview.Camera;
+			KillfeedScenePreview.LoadFromFile( "scenes/killfeed_preview.scene" );
+			var camera = KillfeedScenePreview.Camera;
 			camera.BackgroundColor = Color.Transparent;
 		}
+	}
+
+	public void CreateFirstPersonPreviewScene()
+	{
+		// Create a scene.
+		FirstPersonScenePreview = Scene.CreateEditorScene();
+
+		using ( FirstPersonScenePreview.Push() )
+		{
+			FirstPersonScenePreview.LoadFromFile( "scenes/firstperson_preview.scene" );
+			var camera = FirstPersonScenePreview.Camera;
+			camera.BackgroundColor = Color.Transparent;
+			camera.FieldOfView = 100;
+
+			// Create arms.
+			var viewModel = new GameObject( true, "Viewmodel" );
+
+			var modelComp = viewModel.AddComponent<SkinnedModelRenderer>();
+			modelComp.Model = Cloud.Model( "facepunch.v_first_person_arms_human" );
+			modelComp.RenderOptions.Overlay = true;
+			modelComp.RenderOptions.Game = false;
+			modelComp.RenderType = ModelRenderer.ShadowRenderType.Off;
+			modelComp.UseAnimGraph = true;
+
+			viewModel.WorldRotation = new Angles( 45, 0, 5 );
+			viewModel.WorldPosition = camera.WorldPosition - new Vector3( 0, 0, 2 ) + camera.WorldRotation.Forward * 8;
+
+			// Create first person model.
+			var firstPersonModel = new GameObject( true, "Object" );
+			FirstPersonPropPreview = firstPersonModel.AddComponent<ModelRenderer>();
+			FirstPersonPropPreview.Model = PreviewModel;
+
+		}
+	}
+
+	[Shortcut( "editor.open", "CTRL+O", ShortcutType.Window )]
+	public void Open()
+	{
+		var fileDialogue = new FileDialog( null )
+		{
+			Title = "Open Prop Definition",
+			DefaultSuffix = ".pdef"
+		};
+		fileDialogue.SetNameFilter( "Prop Definition (*.pdef)" );
+
+		if ( !fileDialogue.Execute() ) return;
+
+		AssetOpen( AssetSystem.FindByPath( fileDialogue.SelectedFile ) );
 	}
 
 	[Shortcut( "editor.save", "CTRL+S" )]
 	public void Save()
 	{
+		if ( MyAsset is null )
+		{
+			SaveAs();
+			return;
+		}
+
 		// Save resource.
 		var json = Resource.Serialize().ToJsonString();
 		if ( string.IsNullOrWhiteSpace( json ) )
@@ -234,13 +364,36 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 			return;
 
 		System.IO.File.WriteAllText( GetPathToGeneratedIcons() + "saved_icon_offsets.json", offsetsJson );
+
+		WindowTitle = $"Prop Definition Editor - ({Resource.ResourcePath})";
 	}
+
+	public void SaveAs()
+	{
+		var fileDialogue = new FileDialog( null )
+		{
+			Title = "Open Prop Definition",
+			DefaultSuffix = ".pdef",
+		
+		};
+		fileDialogue.SetNameFilter( "Prop Definition (*.pdef)" );
+		fileDialogue.SetModeSave();
+
+		if ( !fileDialogue.Execute() ) return;
+
+
+		MyAsset ??= AssetSystem.CreateResource( "pdef", fileDialogue.SelectedFile );
+		Save();
+
+		MainAssetBrowser.Instance?.Local?.UpdateAssetList();
+	}
+
 	public void GenerateKillfeedIcon()
 	{
-		using ( ScenePreview.Push() )
+		using ( KillfeedScenePreview.Push() )
 		{
 			var bitmap = new Bitmap( 256, 256 );
-			ScenePreview.Camera.RenderToBitmap( bitmap );
+			KillfeedScenePreview.Camera.RenderToBitmap( bitmap );
 			var data = bitmap.ToPng();
 
 			Log.Info( MyAsset.AbsolutePath );

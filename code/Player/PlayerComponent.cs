@@ -235,7 +235,7 @@ public partial class PlayerComponent :
 	{
 		if ( Viewmodel is null ) return;
 
-		Viewmodel.WorldPosition = Camera.WorldPosition - new Vector3(0, 0, 2) + Camera.WorldRotation.Forward * 8;
+		Viewmodel.WorldPosition = Camera.WorldPosition - new Vector3(0, 0, 0) + Camera.WorldRotation.Forward * 8;
 	}
 
 	private void OnBotUpdate()

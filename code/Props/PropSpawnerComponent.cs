@@ -8,6 +8,7 @@ using Physbox;
 public sealed class PropSpawnerComponent : Component
 {
 	[Property] public PropDefinitionResource Prop { get; set; }
+	[Property] public bool SpawnImmediately { get; set; }
 
 	[Property, Category( "Trace" )] public float TraceRadius { get; set; } = 128;
 	[Property, Category( "Trace" )] public float TraceDistance { get; set; } = 256;

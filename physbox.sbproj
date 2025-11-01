@@ -28,18 +28,6 @@
       "VR": false,
       "Gamepad": false
     },
-    "GameSettings": [
-      {
-        "Name": "pb_maxbots",
-        "Title": "Amount of Bots",
-        "Group": null,
-        "Default": 0,
-        "Options": null,
-        "Min": 0,
-        "Max": 63,
-        "Step": null
-      }
-    ],
     "LaunchMode": "Launcher",
     "Compiler": {
       "RootNamespace": "Sandbox",

@@ -3,7 +3,7 @@ using Sandbox;
 using Sandbox.Diagnostics;
 using System;
 
-public class PropSpawnerSystem : GameObjectSystem
+public class PropSpawnerSystem : GameObjectSystem, IGameEvents
 {
 	[ConVar( "pb_spawner_max_props", ConVarFlags.Replicated ),
 		Title( "Maximum Number of Props" ), Group( "Props" )]
@@ -25,6 +25,26 @@ public class PropSpawnerSystem : GameObjectSystem
 
 		SpawnDelay = 0;
 		CheckDelay = 0;
+	}
+
+	[Rpc.Host( NetFlags.HostOnly | NetFlags.SendImmediate )]
+	void IGameEvents.OnRoundStart()
+	{
+		if ( Scene.IsEditor ) return;
+
+		// If we have any spawenrs marked to spawn their props immediately, spawn them here.
+		foreach ( var spawner in Scene.GetAllComponents<PropSpawnerComponent>() )
+		{
+			if ( spawner.SpawnImmediately )
+			{
+				spawner.Sleeping = true;
+				spawner.TimeSinceWentToSleep = 0;
+
+				var go = PhysboxUtilites.CreatePropFromResource( spawner.Prop );
+				go.WorldPosition = spawner.WorldPosition;
+				go.WorldRotation = spawner.WorldRotation;
+			}
+		}
 	}
 
 	void SpawnProp()
