@@ -14,9 +14,9 @@
 
 <root>
 	<div class="container root">
-		@foreach ( var entry in Entries.TakeLast(5) )
+		@foreach ( var ( victim, info, _ ) in KillfeedManager.Deaths.TakeLast(5) )
 		{
-			<KillfeedDisplay Attacker="@(entry.Attacker)" Victim="@(entry.Victim)" Prop="@(entry.Prop)"></KillfeedDisplay>
+			<KillfeedDisplay Victim="@(victim)" DamageInfo="@(info)"></KillfeedDisplay>
 		}
 	</div>
 </root>
@@ -24,57 +24,10 @@
 @code
 {
 	PlayerComponent Player => PlayerComponent.LocalPlayer;
-	GameLogicComponent Game => GameLogicComponent.GetGameInstance();
-
-	struct Entry
-	{
-		public Guid Attacker;
-		public Guid Victim;
-		public PropDefinitionResource Prop;
-	}
-
-	List<Entry> Entries = new();
-
-	public void AddEntry(Guid attacker, Guid victim, PropDefinitionResource prop)
-	{
-		Entries.Add(new() { Attacker = attacker, Victim = victim, Prop = prop });
-	}
-
-	public void OnRoundStart()
-	{
-		Entries.Clear();
-	}
-
-	[Rpc.Broadcast]
-	public void OnPlayerDeath( GameObject victim, DamageInfo info )
-	{
-		var victimPlayer = victim.Components.Get<PlayerComponent>();
-		if (victimPlayer is null) return;
-
-		var attacker = info.Attacker;
-		if (attacker is null) return;
-
-		if ( attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) )
-		{
-			var victimID = victim.Id;
-			var attackerID = attacker.Id;
-
-			if (victimID != attackerID)
-			{
-				// Get the prop that killed us.
-				var prop = info.Weapon.GetComponent<PropDefinitionComponent>();
-				AddEntry(attackerID, victimID, prop.Definition as PropDefinitionResource);
-			}
-			// We killed ourselves.
-			else
-			{
-				AddEntry(victimID, victimID, null);
-			}
-		}
-	}
+	KillfeedManagerComponent KillfeedManager => Scene.Get<KillfeedManagerComponent>();
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>
-	protected override int BuildHash() => System.HashCode.Combine(Entries.Count());
+	protected override int BuildHash() => System.HashCode.Combine(KillfeedManager.Deaths.Count());
 }

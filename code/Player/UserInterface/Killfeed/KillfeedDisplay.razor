@@ -7,92 +7,45 @@
 
 <root>
 	<div class="background">
-		@if ( Attacker != Guid.Empty )
+		@if (AttackerPlayerComponent is not null )
 		{
 			<div class="attacker">
 				<div class="text">
-					@GetName(Attacker)
+					@GetPlayerName(AttackerPlayerComponent)
 				</div>
 			</div>
 		}
 
-		@if ( IsSuicide )
+		@if ( Prop is not null )
 		{
-			<div class="suicide">
-				<div class="text" style="padding-left: 8px">
-					bid farwell!
-				</div>
+			<div class="prop">
+				<img Texture=@Prop.KillfeedIcon />
 			</div>
 		}
 		else
 		{
-			@if ( Prop is not null )
-			{
-				<div class="prop">
-					<img Texture=@Prop.KillfeedIcon />
-				</div>
-			}
-			else
-			{
-				<div class="text">killed</div>
-			}
-
-
-			<div class="victim">
-				<div class="text">
-					@GetName(Victim)
-				</div>
-			</div>
-
+			<div class="text">killed</div>
 		}
 
+		<div class="victim">
+			<div class="text">
+				@GetPlayerName(VictimPlayerComponent)
+			</div>
+		</div>
 	</div>
 </root>
 
 @code
 {
-	public Guid Attacker { get; set; }
-	public Guid Victim { get; set; }
-	public PropDefinitionResource Prop { get; set; }
-	public Texture Icon => Texture.Load(Prop.KillfeedIcon);
-	TimeSince TimeSinceCreation = 0;
+	public GameObject Victim;
+	public DamageInfo DamageInfo;
 
-	public KillfeedDisplay()
+	PlayerComponent VictimPlayerComponent => Victim.GetComponent<PlayerComponent>();
+	PlayerComponent AttackerPlayerComponent => DamageInfo.Attacker?.GetComponent<PlayerComponent>();
+	PropDefinitionResource Prop => DamageInfo.Weapon?.GetComponent<PropDefinitionComponent>().Definition as PropDefinitionResource;
+
+	public string GetPlayerName( PlayerComponent player )
 	{
-		TimeSinceCreation = 0;
-		Style.Opacity = 1;
+		return player.IsPlayer ? player.Network.Owner.DisplayName : player.BotName;
 	}
-
-	public string GetName(Guid id)
-	{
-		var go = Scene.Directory.FindByGuid(id);
-		if (go is not null)
-		{
-			var player = go.Components.Get<PlayerComponent>(
-				FindMode.EverythingInSelf |
-				FindMode.EverythingInAncestors |
-				FindMode.EverythingInDescendants);
-
-			if (player is not null)
-			{
-				return player.IsPlayer ? player.Network.Owner.DisplayName : player.BotName;
-			}
-		}
-
-		return "[PLACEHOLDER]";
-	}
-
-	public override void Tick()
-	{
-		if ( TimeSinceCreation.Relative > 5 )
-		{
-			Style.Opacity -= 0.02f;
-			if ( Style.Opacity <= 0 )
-			{
-				Style.Display = DisplayMode.None;
-			}
-		}
-	}
-
-	public bool IsSuicide => Attacker == Victim;
 }

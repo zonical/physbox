@@ -17,7 +17,9 @@ public class InstallGameLogicSystem : GameObjectSystem, ISceneLoadingEvents
 			var go = new GameObject( "Game Manager" );
 			go.NetworkMode = NetworkMode.Object;
 
-			var game = go.AddComponent<GameLogicComponent>();
+			go.AddComponent<GameLogicComponent>();
+			go.AddComponent<KillfeedManagerComponent>();
+
 			go.NetworkSpawn();
 		}
 	}

@@ -53,7 +53,7 @@ public sealed class ObjectCollisionListenerComponent : Component, Component.ICol
 
 		// Don't register collisions with the thing we are touching for a while.
 		RecentlyHitBy.Add( other.Id );
-		Invoke( 3.0f, () => RecentlyHitBy.Remove( other.Id ) );
+		Invoke( 1.0f, () => RecentlyHitBy.Remove( other.Id ) );
 
 		var speed = float.Abs( collision.Contact.NormalSpeed );
 

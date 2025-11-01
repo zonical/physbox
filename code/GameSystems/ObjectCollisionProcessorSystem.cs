@@ -285,6 +285,13 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				}
 
 				playerLife.RequestDamage( new DamageInfo( damage, attacker, prop ) );
+
+				// Let the attacker know that we've hit the player by sending a hitsound.
+				var attackerPlayer = attacker.GetComponent<PlayerComponent>();
+				if ( attackerPlayer is not null )
+				{
+					attackerPlayer.PlayHitsound();
+				}
 			}
 		}
 	}

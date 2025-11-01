@@ -36,12 +36,6 @@ public partial class PlayerComponent
 		ShowPlayer();
 		Hitbox.Enabled = true;
 
-		if ( IsPlayer )
-		{
-			FreeCam = false;
-			DressPlayer();
-		}
-
 		// Teleport to spawnpoint.
 		var regularSpawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() );
 		if ( regularSpawnpoint is not null )
@@ -54,6 +48,14 @@ public partial class PlayerComponent
 			{
 				bot.Agent.SetAgentPosition( WorldPosition );
 			}
+		}
+
+		if ( IsPlayer )
+		{
+			FreeCam = false;
+			DressPlayer();
+		
+			PlayerController.Jump( Vector3.Up );
 		}
 
 		// Delete our ragdoll.

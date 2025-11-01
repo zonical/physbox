@@ -76,10 +76,11 @@ public partial class PlayerComponent
 
 		if ( IsPlayer )
 		{
-			var targetPos = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + (Camera.WorldRotation.Forward * 64);
-			HeldGameObject.WorldPosition = targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
+			var cameraOffset = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + (Camera.WorldRotation.Forward * 64);
+			var targetPos = cameraOffset + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
+
+			HeldGameObject.WorldPosition = targetPos;
 			HeldGameObject.WorldRotation = Camera.WorldRotation * HeldProp.HeldRotationOffset.ToRotation() * AdditionalPropRotation.ToRotation();
-			Log.Info( HeldProp );
 		}
 		else if ( IsBot )
 		{

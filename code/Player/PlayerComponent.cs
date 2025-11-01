@@ -383,6 +383,12 @@ public partial class PlayerComponent :
 		}
 	}
 
+	[Rpc.Owner]
+	public void PlayHitsound()
+	{
+		Sound.Play( "sounds/player/ding-hitsound.sound" );
+	}
+
 	[ActionGraphNode( "physbox.get_local_player" )]
 	[Title( "Get Local Player" ), Group( "Physbox" ), Icon( "home" )]
 	public static PlayerComponent GetGameInstance()
