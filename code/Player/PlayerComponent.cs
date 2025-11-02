@@ -1,6 +1,7 @@
 using Physbox;
 using System;
 using Sandbox.Network;
+using Sandbox.UI;
 
 [Group( "Physbox" )]
 [Title( "Physbox Player" )]
@@ -58,6 +59,9 @@ public partial class PlayerComponent :
 	[Rpc.Owner]
 	public void InitPlayer()
 	{
+		//var panel = new Panel();
+		//panel.Style.StartAnimation( "HudElementAnimation", 1, 1, 4 );
+
 		Nametag.Name = Network.Owner.DisplayName;
 		LocalPlayer = this;
 

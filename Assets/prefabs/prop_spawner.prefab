@@ -38,7 +38,7 @@
   "ResourceVersion": 2,
   "ShowInMenu": true,
   "MenuPath": "Physbox/Prop Spawner",
-  "MenuIcon": null,
+  "MenuIcon": "add_location",
   "DontBreakAsTemplate": false,
   "__references": [],
   "__version": 2

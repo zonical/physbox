@@ -91,6 +91,7 @@
         "__enabled": true,
         "AngularDamping": 1,
         "Gravity": true,
+        "GravityScale": 1,
         "LinearDamping": 0.1,
         "Locking": {
           "X": false,
@@ -213,6 +214,12 @@
           "component_type": "HudRoot"
         },
         "IsBot": false,
+        "Killfeed": {
+          "_type": "component",
+          "component_id": "a5fcd702-38b0-44ad-84c3-1c5003ebb90f",
+          "go": "139d943f-fe4c-44e2-b53b-92fe622ef708",
+          "component_type": "Killfeed"
+        },
         "Kills": 0,
         "LastHitBy": null,
         "MaxForce": 3,
@@ -236,6 +243,7 @@
           "component_type": "PlayerController"
         },
         "Ragdoll": null,
+        "Viewmodel": null,
         "Voice": {
           "_type": "component",
           "component_id": "b8ede4ef-8065-4816-a9bf-6dde0d338b82",
@@ -257,6 +265,17 @@
       {
         "__type": "Physbox.HudRoot",
         "__guid": "06fa852f-89ab-41f5-9648-7a4e834a9682",
+        "__enabled": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "Physbox.Chat",
+        "__guid": "2296e404-b096-452f-843d-9973075258ff",
         "__enabled": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,

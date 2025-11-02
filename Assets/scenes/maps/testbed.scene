@@ -924,18 +924,6 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null
-        },
-        {
-          "__type": "Physbox.PropDefinitionComponent",
-          "__guid": "f7ae17b5-3298-41fb-8601-0aa3314757dd",
-          "__enabled": true,
-          "Definition": null,
-          "OnComponentDestroy": null,
-          "OnComponentDisabled": null,
-          "OnComponentEnabled": null,
-          "OnComponentFixedUpdate": null,
-          "OnComponentStart": null,
-          "OnComponentUpdate": null
         }
       ],
       "Children": []
@@ -11053,7 +11041,7 @@
           "MaterialGroup": null,
           "MaterialOverride": null,
           "Materials": null,
-          "Model": "models/citizen_props/crate01.vmdl",
+          "Model": "models/sbox_props/wooden_crate/wooden_crate.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -11076,7 +11064,7 @@
           "Elasticity": null,
           "Friction": null,
           "IsTrigger": false,
-          "Model": "models/citizen_props/crate01.vmdl",
+          "Model": "models/sbox_props/wooden_crate/wooden_crate.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -11098,6 +11086,7 @@
           "__enabled": true,
           "AngularDamping": 0,
           "Gravity": true,
+          "GravityScale": 1,
           "LinearDamping": 0,
           "Locking": {
             "X": false,
@@ -11162,7 +11151,7 @@
         },
         {
           "__type": "Physbox.PropDefinitionComponent",
-          "__guid": "f3118cb3-9c11-4663-9de5-dc40f20bd957",
+          "__guid": "4938b075-be82-4b8a-a07f-4670f0b59bb8",
           "__enabled": true,
           "Definition": "props/crate.pdef",
           "OnComponentDestroy": null,
@@ -11200,6 +11189,8 @@
   "ResourceVersion": 3,
   "Title": "Testbed",
   "Description": null,
-  "__references": [],
+  "__references": [
+    "facepunch.wooden_crate#108393"
+  ],
   "__version": 3
 }

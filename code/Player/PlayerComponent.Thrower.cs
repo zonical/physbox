@@ -38,16 +38,28 @@ public partial class PlayerComponent
 			{
 				FindNewTarget();
 			}
-			else if ( HeldGameObject is not null && CanThrowObject )
-			{
-				ThrowHeldObject();
-				AdditionalPropRotation = new Angles();
-
-				Throws++;
-			}
 			else
 			{
-				Sound.Play( "sounds/player_use_fail.sound", Mixer.FindMixerByName( "UI" ) );
+				if ( CanThrowObject )
+				{
+					ThrowHeldObject();
+					AdditionalPropRotation = new Angles();
+
+					Throws++;
+				}
+				else
+				{
+					var chat = Scene.Get<ChatManagerComponent>();
+					if ( chat is not null )
+					{
+						using ( Rpc.FilterInclude( c => c.Id == Connection.Local.Id ) )
+						{
+							chat.SendMessage( MessageType.System, "Cannot throw prop. Too close to a wall or another object." );
+						}
+					}
+
+					Sound.Play( "sounds/player_use_fail.sound", Mixer.FindMixerByName( "UI" ) );
+				}
 			}
 		}
 

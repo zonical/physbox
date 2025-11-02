@@ -1,0 +1,98 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@attribute [Title("Player Chat Element")]
+@attribute [Icon("screen_share")]
+@attribute [Group("Physbox")]
+@attribute [Tint(EditorTint.Yellow)]
+@inherits PanelComponent
+@namespace Physbox
+
+@if (IsProxy) return;
+@if (Player is null) return;
+
+<root>
+	<div @ref="ScrollPanel" class="container scrollable" style="width: 100%; height: 100%;">
+		@foreach ( var ( type, sender, message ) in ChatManager.Messages )
+		{
+			<ChatDisplay MessageType="@(type)" Sender="@(sender)" Message="@(message)"></ChatDisplay>
+		}
+	</div>
+	<TextEntry class="background" @ref="InputBox" onsubmit="@ChatFinished"></TextEntry>
+</root>
+
+@code
+{
+	TextEntry InputBox;
+	Panel ScrollPanel;
+
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	ChatManagerComponent ChatManager => Scene.Get<ChatManagerComponent>();
+
+	string LoremIpsum => "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae magna mauris." +
+	"Aenean vel dolor vitae mi faucibus convallis. Ut dictum diam dolor, non malesuada enim faucibus eget." +
+	"Integer condimentum arcu sit amet odio lobortis, lacinia feugiat enim interdum. Cras ultrices euismod" +
+	"accumsan. Maecenas dui nunc, mattis vel sem in, iaculis dignissim odio. Maecenas vitae enim facilisis," +
+	"hendrerit lorem sit amet, consequat erat. Suspendisse porttitor dictum nisl quis blandit. Pellentesque" +
+	"bibendum fringilla neque eget cursus. Praesent sed hendrerit justo. Nullam ac sem sodales sem aliquet" +
+	"volutpat eget at velit. Donec vulputate urna nec lacus venenatis tincidunt tincidunt sed leo. Morbi in" +
+	"porta nibh, id ultricies arcu. Mauris et leo tellus. Nunc maximus aliquet venenatis. Sed facilisis augue" +
+	"ultrices lacinia vehicula.";
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash() => System.HashCode.Combine(ChatManager.Messages.Count());
+
+	bool Open = false;
+
+	protected override void OnFixedUpdate()
+	{
+		if (IsProxy) return;
+
+		if ( Input.Pressed("chat") )
+		{
+			Open = !Open;
+
+			if ( Open )
+			{
+				OpenChat();
+			}
+			else
+			{
+				CloseChat();
+			}
+		}
+	}
+
+	void OpenChat()
+	{
+		ScrollPanel.PreferScrollToBottom = true;
+
+		InputBox.Focus();
+		ScrollPanel.TryScrollToBottom();
+		Panel.Style.PointerEvents = PointerEvents.All;
+		InputBox.Style.Opacity = 1;
+	}
+
+	void CloseChat()
+	{
+		InputBox.Blur();
+		ScrollPanel.TryScrollToBottom();
+		Panel.Style.PointerEvents = PointerEvents.None;
+		InputBox.Style.Opacity = 0;
+	}
+
+	void ChatFinished()
+	{
+		CloseChat();
+
+		var text = InputBox.Text;
+		InputBox.Text = "";
+
+		if (string.IsNullOrWhiteSpace(text))
+			return;
+
+		ChatManager.SendMessage(MessageType.Player, text);
+	}
+}

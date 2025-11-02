@@ -263,8 +263,8 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				}
 			}
 
-			var playerLife = @event.GetLifeComponent( player );
-			if ( playerLife is not null )
+			var victim = @event.GetLifeComponent( player ) as PlayerComponent;
+			if ( victim is not null )
 			{
 				var result = Game.ActiveScene.Trace.Ray( new Ray( prop.WorldPosition, Vector3.Down ), 64 )
 						.WithoutTags(
@@ -284,13 +284,22 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 					damage += (int)float.Sqrt( rigidBody.MassOverride );
 				}
 
-				playerLife.RequestDamage( new DamageInfo( damage, attacker, prop ) );
+				victim.RequestDamage( new DamageInfo( damage, attacker, prop ) );
 
 				// Let the attacker know that we've hit the player by sending a hitsound.
 				var attackerPlayer = attacker.GetComponent<PlayerComponent>();
 				if ( attackerPlayer is not null )
 				{
 					attackerPlayer.PlayHitsound();
+
+					// Print information in attacker chat.
+					var chat = Game.ActiveScene.Get<ChatManagerComponent>();
+
+					using ( Rpc.FilterInclude( c => c.Id == attackerPlayer.Network.Owner.Id ) )
+					{
+						var name = victim.IsPlayer ? victim.Network.Owner.DisplayName : victim.BotName;
+						chat.SendMessage( MessageType.System, $"You dealt {damage} damage to {name}." );
+					}
 				}
 			}
 		}

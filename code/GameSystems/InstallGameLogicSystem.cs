@@ -19,6 +19,7 @@ public class InstallGameLogicSystem : GameObjectSystem, ISceneLoadingEvents
 
 			go.AddComponent<GameLogicComponent>();
 			go.AddComponent<KillfeedManagerComponent>();
+			go.AddComponent<ChatManagerComponent>();
 
 			go.NetworkSpawn();
 		}

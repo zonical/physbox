@@ -84,8 +84,8 @@ public partial class PlayerComponent :
 
 	private void HandleNoclipMovement()
 	{
-		float mouseX = -Input.MouseDelta.x * Time.Delta * (Preferences.Sensitivity * 3);
-		float mouseY = Input.MouseDelta.y * Time.Delta * (Preferences.Sensitivity * 3);
+		float mouseX = Input.AnalogLook.yaw;
+		float mouseY = Input.AnalogLook.pitch;
 
 		_yaw += mouseX;
 		_pitch += mouseY;

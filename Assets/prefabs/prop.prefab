@@ -168,7 +168,7 @@
   "ResourceVersion": 2,
   "ShowInMenu": true,
   "MenuPath": "Physbox/Breakable Prop",
-  "MenuIcon": "",
+  "MenuIcon": "inventory",
   "DontBreakAsTemplate": false,
   "__references": [],
   "__version": 2
