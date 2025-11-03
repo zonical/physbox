@@ -203,7 +203,10 @@ public partial class PlayerComponent
 			collider.Enabled = false;
 		}
 
-		Sandbox.Services.Stats.Increment( PhysboxConstants.PropsPickedUpStat, 1 );
+		if ( IsPlayer )
+		{
+			Sandbox.Services.Stats.Increment( PhysboxConstants.PropsPickedUpStat, 1 );
+		}
 	}
 
 	[Rpc.Broadcast]
