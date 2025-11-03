@@ -8,7 +8,7 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	[ConVar( "pb_deathmatch_kills_to_win",
 		ConVarFlags.Server | ConVarFlags.Replicated ),
 		Group( "Deathmatch" )]
-	public static int DeathmatchKillsToWin { get; set; } = 10;
+	public static int DeathmatchKillsToWin { get; set; } = 5;
 
 	[Rpc.Broadcast]
 	void IGameEvents.OnPlayerDeath( GameObject victim, DamageInfo info )
@@ -19,14 +19,18 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 		if ( victimPlayer is null ) return;
 
 		victimPlayer.Deaths++;
-		var attacker = info.Attacker;
+		PhysboxUtilites.IncrementStatForPlayer( victimPlayer, PhysboxConstants.DeathsStat, 1 );
 
-		// Add kills to attacking player.
+		var attacker = info.Attacker;
+		
 		if ( attacker is not null && 
 			attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) && 
 			attackerPlayer != victimPlayer )
 		{
+			// Add kills to attacking player.
 			attackerPlayer.Kills++;
+			PhysboxUtilites.IncrementStatForPlayer( attackerPlayer, PhysboxConstants.KillsStat, 1 );
+
 			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( attacker, attackerPlayer.Kills ) );
 		}
 
@@ -38,9 +42,17 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	{
 		if ( RoundOver ) return;
 
-		//Log.Info( "DeathmatchGameMode.OnPlayerScoreUpdate()" );
 		if ( score >= DeathmatchKillsToWin )
 		{
+			// We have a winner!
+			DeclareWinner( player );
+			var chat = ChatManagerComponent.GetChatManager();
+			var playerComp = player.GetComponent<PlayerComponent>();
+			var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
+
+			chat.SendMessage( MessageType.System, $"Round over! {name} wins with {score} kills!" );
+			PhysboxUtilites.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
+
 			// Hand control back to master logic component.
 			Scene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
 			RoundOver = true;

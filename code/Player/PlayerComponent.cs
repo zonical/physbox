@@ -239,7 +239,23 @@ public partial class PlayerComponent :
 	{
 		if ( Viewmodel is null ) return;
 
-		Viewmodel.WorldPosition = Camera.WorldPosition - new Vector3(0, 0, 0) + Camera.WorldRotation.Forward * 8;
+		Viewmodel.WorldPosition = Camera.WorldPosition - new Vector3( 0, 0, 0 ) + Camera.WorldRotation.Forward * 8;
+		Viewmodel.WorldRotation = Camera.WorldRotation * new Angles( 45, 0, 5 );
+
+		var model = Viewmodel.GetComponent<SkinnedModelRenderer>();
+
+		model.Parameters.Set( "move_x", PlayerController.Velocity.x );
+		model.Parameters.Set( "move_y", PlayerController.Velocity.y );
+		model.Parameters.Set( "move_z", PlayerController.Velocity.z );
+
+		var moving = Input.Down( "forward" ) || Input.Down( "left" ) || Input.Down( "right" ) || Input.Down( "backward" );
+		model.Parameters.Set( "move_bob", moving ? 1.0f : 0f );
+	
+		var left = model.Parameters.GetFloat( "FingerAdjustment_BlendNeutralPose_L" );
+		var right = model.Parameters.GetFloat( "FingerAdjustment_BlendNeutralPose_R" );
+
+		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_L", HeldGameObject is not null ? float.Lerp(left, 1.0f, 10 * Time.Delta ) : float.Lerp( left, 0f, 10 * Time.Delta ) );
+		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_R", HeldGameObject is not null ? float.Lerp( right, 1.0f, 10 * Time.Delta ) : float.Lerp( right, 0f, 10 * Time.Delta ) );
 	}
 
 	private void OnBotUpdate()
@@ -282,6 +298,15 @@ public partial class PlayerComponent :
 		if ( HeldGameObject is not null )
 		{
 			DropObject();
+		}
+	}
+
+	void PlayerController.IEvents.OnJumped()
+	{
+		var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
+		if ( viewmodel.Enabled )
+		{
+			viewmodel.Parameters.Set( "b_jump", true );
 		}
 	}
 
@@ -377,6 +402,10 @@ public partial class PlayerComponent :
 					if ( pressable.CanPress( pressEvent ) )
 					{
 						var success = pressable.Press( pressEvent );
+
+						var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
+						viewmodel.Parameters.Set( "b_attack", true );
+
 						if ( success )
 						{
 							pressable.Release( pressEvent );

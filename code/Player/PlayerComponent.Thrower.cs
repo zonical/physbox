@@ -1,12 +1,14 @@
 using Physbox;
 using Sandbox.Audio;
 using System;
+using System.Threading;
 
 public partial class PlayerComponent
 {
 	// ==================== [ PROPERTIES ] ====================
 	[Property, ReadOnly, Feature( "Thrower" ), Title( "Object Currently Held" )] public GameObject HeldGameObject;
 	[Property, ReadOnly, Feature( "Thrower" ), Title( "Object Under Crosshair" )] public GameObject CurrentlyLookingAtObject;
+	[Property, ReadOnly, Feature( "Thrower" ), Title( "Last Held Object" )] public GameObject LastHeldGameObject;
 	[Property, Feature( "Thrower" )] public bool CanPickupObjects { get; private set; } = true;
 	[Property, Feature( "Thrower" )] public bool CanThrowObject { get; private set; } = true;
 	[Property, Feature( "Thrower" )] public Vector3 HeldObjectOffset = new();
@@ -20,6 +22,9 @@ public partial class PlayerComponent
 	private Angles AdditionalPropRotation = new Angles();
 	public int Throws = 0;
 	public float BuiltUpForce = 0;
+
+	public CancellationTokenSource PropCancellationTokenSource;
+	public CancellationToken PropCancellationToken = CancellationToken.None;
 
 	private void DrawCrosshair()
 	{
@@ -151,6 +156,18 @@ public partial class PlayerComponent
 
 		BroadcastPickupAnimation();
 
+		// Cancel Invoke token if we're picking up this prop again.
+		if ( HeldGameObject.Id == LastHeldGameObject?.Id && 
+			PropCancellationToken != CancellationToken.None && 
+			PropCancellationToken.CanBeCanceled )
+		{
+			//Log.Info( "Cancelled." );
+			PropCancellationTokenSource.Cancel();
+
+			PropCancellationTokenSource?.Dispose();
+			PropCancellationToken = CancellationToken.None;
+		}
+
 		if ( HeldGameObject.Components.TryGet<PropLifeComponent>( out var propLifeComponent ) )
 		{
 			propLifeComponent.LastOwnedBy = this;
@@ -185,6 +202,8 @@ public partial class PlayerComponent
 		{
 			collider.Enabled = false;
 		}
+
+		Sandbox.Services.Stats.Increment( PhysboxConstants.PropsPickedUpStat, 1 );
 	}
 
 	[Rpc.Broadcast]
@@ -224,19 +243,26 @@ public partial class PlayerComponent
 
 		HeldGameObject.SetParent( null );
 		HeldGameObject.Tags.Remove( PhysboxConstants.HeldPropTag );
-		var go = HeldGameObject;
+		LastHeldGameObject = HeldGameObject;
 		HeldGameObject = null;
 
-		// After a few seconds, set ourselves to not own this object anymore.
-		Invoke( 5.0f, () =>
-		{
-			if ( go is not null && go.Components.TryGet<PropLifeComponent>( out var propLifeComponent ) )
-			{
-				propLifeComponent.LastOwnedBy = null;
-			}
-		} );
+		// Start a new cancellation token.
+		PropCancellationTokenSource = new CancellationTokenSource();
+		PropCancellationToken = PropCancellationTokenSource.Token;
 
-		return go;
+		// After a few seconds, set ourselves to not own this object anymore.
+		Invoke( 5.0f, () => RemovePreviousOwner( LastHeldGameObject ), PropCancellationToken );
+
+		return LastHeldGameObject;
+	}
+
+	private void RemovePreviousOwner( GameObject go )
+	{
+		if ( go is not null && go.Components.TryGet<PropLifeComponent>( out var propLifeComponent ) )
+		{
+			//Log.Info( $"No longer owned by {propLifeComponent.LastOwnedBy}" );
+			propLifeComponent.LastOwnedBy = null;
+		}
 	}
 
 	private void RestoreFormallyHeldObject( GameObject go )
@@ -283,6 +309,12 @@ public partial class PlayerComponent
 			rigidBody.Velocity = dir;
 
 			BuiltUpForce = 0;
+		}
+
+		var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
+		if ( viewmodel.Enabled )
+		{
+			viewmodel.Parameters.Set( "b_attack", true );
 		}
 
 		Sound.Play( "sounds/player/swoosh.sound" );

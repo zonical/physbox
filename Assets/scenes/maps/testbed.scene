@@ -7812,7 +7812,7 @@
                   "OnButtonPressed": {
                     "__version": 9,
                     "__guid": "46e45dc7-2149-4381-bb6c-32cf772a460b",
-                    "__changeId": 21,
+                    "__changeId": 124,
                     "UserData": {
                       "Title": "On Button Pressed",
                       "ReferencedComponentTypes": []
@@ -7824,10 +7824,22 @@
                         "Type": "input"
                       },
                       {
-                        "Id": 1,
-                        "Type": "log.info",
+                        "Id": 3,
+                        "Type": "physbox.get_chat_instance",
                         "UserData": {
-                          "Position": "324,0"
+                          "Position": "252,-0"
+                        }
+                      },
+                      {
+                        "Id": 4,
+                        "Type": "call",
+                        "Properties": {
+                          "_isStatic": false,
+                          "_name": "SendMessage",
+                          "_type": "ChatManagerComponent"
+                        },
+                        "UserData": {
+                          "Position": "504,0"
                         }
                       }
                     ],
@@ -7835,14 +7847,32 @@
                       {
                         "SrcId": 0,
                         "SrcName": "_signal",
-                        "DstId": 1,
+                        "DstId": 3,
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 2,
-                        "Value": " Button pressed!",
-                        "DstId": 1,
-                        "DstName": "format"
+                        "SrcId": 3,
+                        "SrcName": "_signal",
+                        "DstId": 4,
+                        "DstName": "_signal"
+                      },
+                      {
+                        "SrcId": 3,
+                        "SrcName": "_result",
+                        "DstId": 4,
+                        "DstName": "_target"
+                      },
+                      {
+                        "Id": 96,
+                        "Value": "This message came from a button!",
+                        "DstId": 4,
+                        "DstName": "text"
+                      },
+                      {
+                        "Id": 6,
+                        "Value": "System",
+                        "DstId": 4,
+                        "DstName": "type"
                       }
                     ]
                   },
@@ -7990,7 +8020,7 @@
               },
               "Scale": 0.15,
               "TextScope": {
-                "Text": "(This should log a message \nto the Console.)",
+                "Text": "(This should log a message \nto the chat.)",
                 "TextColor": "1,1,1,1",
                 "FontName": "Poppins",
                 "FontSize": 40,

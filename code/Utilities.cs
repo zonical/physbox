@@ -44,4 +44,28 @@ public static class PhysboxUtilites
 
 		return GameObject;
 	}
+
+	[Rpc.Broadcast]
+	public static void IncrementStatRPC( string stat, int value )
+	{
+		Sandbox.Services.Stats.Increment( stat, value );
+	}
+
+	/// <summary>
+	/// Increments a stat on the s&box backend. We use this as a convenient wrapper to ensure that
+	/// stats are going to the right connections. If I was a good networking programmer, I wouldn't
+	/// have to worry about this, but I want to be safe.
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="stat"></param>
+	/// <param name="value"></param>
+	public static void IncrementStatForPlayer( PlayerComponent player, string stat, int value )
+	{
+		if ( player.IsBot ) return;
+
+		using ( Rpc.FilterInclude( c => c.Id == player.Network.Owner.Id ) )
+		{
+			IncrementStatRPC( stat, value );
+		}
+	}
 }

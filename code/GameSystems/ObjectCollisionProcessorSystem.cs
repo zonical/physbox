@@ -213,7 +213,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				var probB_RB = @event.GetRigidbody( propB );
 
 				var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probB_RB?.MassOverride ?? 0 );
-				lifeA.OnDamage( new DamageInfo( damage, propB, null ) );
+				lifeA.OnDamage( new DamageInfo( damage, propB, propB ) );
 			}
 
 			var lifeB = @event.GetLifeComponent( propB );
@@ -222,7 +222,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				var probA_RB = @event.GetRigidbody( propA );
 
 				var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probA_RB?.MassOverride ?? 0 );
-				lifeB.OnDamage( new DamageInfo( damage, propA, null ) );
+				lifeB.OnDamage( new DamageInfo( damage, propA, propA ) );
 			}
 		}
 	}
@@ -247,7 +247,14 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 		{
 			var propLife = @event.GetLifeComponent( prop ) as PropLifeComponent;
 			var attacker = (GameObject)null;
-			attacker = propLife.LastOwnedBy?.GameObject ?? propLife.GameObject;
+			attacker = propLife.LastOwnedBy?.GameObject;
+
+			// Don't damage the player if we don't have someone who last owned us.
+			// Prevent us from taking damage from idle props.
+			if ( attacker is null )
+			{
+				return;
+			}
 
 			if ( propLife is not null )
 			{
@@ -266,17 +273,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			var victim = @event.GetLifeComponent( player ) as PlayerComponent;
 			if ( victim is not null )
 			{
-				var result = Game.ActiveScene.Trace.Ray( new Ray( prop.WorldPosition, Vector3.Down ), 64 )
-						.WithoutTags(
-							PhysboxConstants.PlayerTag,
-							PhysboxConstants.DebrisTag,
-							PhysboxConstants.RagdollTag )
-						.Run();
-
-				//Log.Info( $"{ result.GameObject}, {result.Distance}" );
-
-				// Apply bonus damage if we are reasonably above the ground.
-				var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) + (result.Distance > 32 ? 10 : 0);
+				var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) + 10;
 
 				var rigidBody = @event.GetRigidbody( prop );
 				if ( rigidBody is not null )

@@ -24,7 +24,7 @@ public sealed class PropLifeComponent : BaseLifeComponent, IPropDefinitionSubscr
 	public ModelRenderer PropRenderer => Components.Get<ModelRenderer>();
 	public ModelCollider Collider => Components.Get<ModelCollider>();
 	public Rigidbody Rigidbody => Components.Get<Rigidbody>();
-	[Sync] public PlayerComponent LastOwnedBy { get; set; }
+	[Property, Sync] public PlayerComponent LastOwnedBy { get; set; }
 	public PropDefinitionComponent DefinitionComponent => Components.Get<PropDefinitionComponent>();
 
 	public void OnDefinitionChanged( GameResource oldValue, GameResource newValue ) 

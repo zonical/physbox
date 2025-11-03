@@ -1,4 +1,4 @@
-@using Sandbox;
+﻿@using Sandbox;
 @using Sandbox.UI;
 @using Sandbox.Network;
 @using System;
@@ -7,30 +7,29 @@
 
 <root>
 	<div class="background">
-		@if (AttackerPlayerComponent is not null )
-		{
-			<div class="attacker">
-				<div class="text">
-					@GetPlayerName(AttackerPlayerComponent)
-				</div>
-			</div>
-		}
+		
+		<div class="text">
+			@if (AttackerPlayerComponent is not null)
+			{
+				@GetPlayerName(AttackerPlayerComponent)
+			}
+			else
+			{
+				@("🌎")
+			}
+		</div>
 
 		@if ( Prop is not null )
 		{
-			<div class="prop">
-				<img Texture=@Prop.KillfeedIcon />
-			</div>
+			<img Texture=@Prop.KillfeedIcon />
 		}
 		else
 		{
 			<div class="text">killed</div>
 		}
 
-		<div class="victim">
-			<div class="text">
-				@GetPlayerName(VictimPlayerComponent)
-			</div>
+		<div class="text">
+			@GetPlayerName(VictimPlayerComponent)
 		</div>
 	</div>
 </root>

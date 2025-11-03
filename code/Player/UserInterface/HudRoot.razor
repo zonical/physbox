@@ -20,6 +20,11 @@
 		<Scoreboard></Scoreboard>
 	}
 
+	@if ( Game.RoundOver && Game.GameModeComponent.Winner is not null )
+	{
+		<WinnerDisplay Winner="@(Game.GameModeComponent.Winner)"></WinnerDisplay>
+	}
+
 	@if (Player.IsAlive)
 	{
 		<Health></Health>
@@ -44,7 +49,7 @@
 
 @code
 {
-	[ConVar("physbox_player_drawhud", ConVarFlags.Cheat)]
+	[ConVar("pb_player_drawhud", ConVarFlags.Cheat)]
 	public static bool DrawHud { get; set; } = true;
 
 	PlayerComponent Player => PlayerComponent.LocalPlayer;

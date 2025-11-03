@@ -10,7 +10,7 @@ public enum MessageType : int
 [Hide]
 public class ChatManagerComponent : Component, IGameEvents, Component.INetworkListener
 {
-	[Property] public List<(MessageType, Guid, string)> Messages { get; set; } = new();
+	[Property, ActionGraphIgnore] public List<(MessageType, Guid, string)> Messages { get; set; } = new();
 
 	[Rpc.Broadcast]
 	public void SendMessage( MessageType type, string text )
@@ -25,15 +25,22 @@ public class ChatManagerComponent : Component, IGameEvents, Component.INetworkLi
 		manager.SendMessage( MessageType.System, "This is a test message!" );
 	}
 
+	[ActionGraphIgnore]
 	public void OnConnected( Connection channel )
 	{
 		SendMessage( MessageType.System, $"Player '{channel.DisplayName}' has joined the game." );
 	}
 
+	[ActionGraphIgnore]
 	public void OnDisconnected( Connection channel )
 	{
-
 		SendMessage( MessageType.System, $"Player '{channel.DisplayName}' has left the game." );
 	}
 
+	[ActionGraphNode( "physbox.get_chat_instance" )]
+	[Title( "Get Chat Manager" ), Group( "Physbox" ), Icon( "chat" )]
+	public static ChatManagerComponent GetChatManager()
+	{
+		return Game.ActiveScene.Get<ChatManagerComponent>();
+	}
 }

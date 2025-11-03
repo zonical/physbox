@@ -24,14 +24,25 @@ public partial class PlayerComponent :
 			if ( _freeCam == true )
 			{
 				CreateFreeCam();
-				Viewmodel?.Destroy();
-				Viewmodel = null;
+
+				if ( Viewmodel is not null )
+				{
+					Viewmodel.Enabled = false;
+				}
+				
 				PlayerController.Enabled = false;
 			}
 			else
 			{
 				CreateNormalCam();
-				CreateViewmodel();
+				if ( Viewmodel is null )
+				{
+					CreateViewmodel();
+				}
+				else
+				{
+					Viewmodel.Enabled = true;
+				}
 				PlayerController.Enabled = true;
 			}
 
