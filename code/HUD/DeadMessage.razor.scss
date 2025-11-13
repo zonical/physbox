@@ -1,20 +1,20 @@
-@import "HudStyle.razor.scss";
+@import "../UIStyles/HudStyle.razor.scss";
 
-Score {
+DeadMessage {
     position: absolute;
-    bottom: 20px;
-    left: 210px;
-    width: 90px;
-    height: 90px;
+    align-items: center;
     justify-content: center;
+    height: 150px;
+    width: 300px;
+    margin: auto;
     background-repeat: no-repeat;
-    background-image: url(materials/ui/hud_background_3.png);
-    background-size: 90px 90px;
+    background-image: url(materials/ui/hud_background_5.png);
+    background-size: 300px 150px;
     background-image-tint: #000000ab;
+
     animation-name: HudElementAnimation;
     animation-duration: 10s;
     animation-iteration-count: infinite;
-    animation-delay: -3s;
 }
 
 @keyframes HudElementAnimation {

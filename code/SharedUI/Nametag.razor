@@ -7,7 +7,10 @@
 @inherits PanelComponent
 @namespace Sandbox
 
-@if (!IsProxy && !IsBot()) return;
+@if ( !PhysboxUtilites.IsMainMenuScene() )
+{
+	if ( !IsProxy && !IsBot() ) return;
+}
 
 <root>
 	<div class="background big_label" style="font-size: 40px">@Name</div>
@@ -16,7 +19,7 @@
 @code
 {
 
-	[Sync] public string Name { get; set; } = "Placeholder";
+	[Sync] public string Name { get; set; } = !PhysboxUtilites.IsMainMenuScene() ? "Placeholder" : Sandbox.Utility.Steam.PersonaName;
 
 	public bool IsBot()
 	{
