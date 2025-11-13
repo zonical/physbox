@@ -5,6 +5,8 @@
 @inherits Panel
 @namespace Physbox
 
+@if (PauseMenu.Paused) return;
+
 <root>
 	<div>
 		<img src="@(GetImageSource())" />

@@ -45,7 +45,7 @@
       {
         "__type": "Sandbox.Highlight",
         "__guid": "e1adeddb-2ed2-4426-afc0-22a1cee05dc3",
-        "__enabled": true,
+        "__enabled": false,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,

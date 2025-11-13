@@ -44,7 +44,34 @@ public static class PhysboxUtilites
 
 		return GameObject;
 	}
+	
+	public static bool IsMainMenuScene()
+	{
+		var scene = Game.ActiveScene;
+		var info = scene.Get<SceneInformation>();
 
+		if ( info is null ) return false;
+		return info.SceneTags.Contains( "main_menu" );
+	}
+
+	public static string GetCurrentMapName()
+	{
+		// The proper map name and author should be stored in a SceneInformation component.
+		var sceneInformation = Game.ActiveScene.Get<SceneInformation>();
+		if ( sceneInformation is not null )
+		{
+			return $"{sceneInformation.Title} (by {sceneInformation.Author})";
+		}
+
+		// Last ditch effort.
+		return Networking.MapName;
+	}
+
+	public static string GetGameModeIcon( PhysboxConstants.GameModes gameMode )
+	{
+		return gameMode.GetAttributeOfType<IconAttribute>()?.Value ?? "❓";
+	}
+	
 	[Rpc.Broadcast]
 	public static void IncrementStatRPC( string stat, int value )
 	{

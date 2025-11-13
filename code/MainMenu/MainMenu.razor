@@ -1,0 +1,28 @@
+@using System
+@using Sandbox;
+@using Sandbox.UI;
+@attribute [Title("Player Main Menu Element")]
+@attribute [Icon("screen_share")]
+@attribute [Group("Physbox")]
+@attribute [Tint(EditorTint.Yellow)]
+@inherits PanelComponent
+@namespace Physbox
+
+<root>
+	<MainMenuLanding></MainMenuLanding>
+	<div class="text_container">
+		<div class="game_text" style="font-size: 64px">Physbox (alpha)</div>
+		<div class="game_text" style="font-size: 32px">Made by ZoNiCaL</div>
+	</div>
+</root>
+
+@code
+{
+	protected override void OnUpdate()
+	{
+		if ( Input.EscapePressed )
+		{
+			Input.EscapePressed = false;
+		}
+	}
+}

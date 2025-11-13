@@ -1,0 +1,37 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@inherits Panel
+@namespace Physbox
+<root>
+	<div class="window">
+		<div class="top_bar">
+			<div class="title_text">@Title</div>
+			<div class="exit_button" onclick="@( () => { Delete(); } )">
+				<i>close</i>
+			</div>
+		</div>
+		<div ElementName="separator" style="height: 4px; background-color: grey"></div>
+		<div ElementName="content">
+			@ChildContent
+		</div>
+	</div>
+</root>
+
+@code
+{
+	public string Title { get; set; } = "Window";
+
+	public Action OnClose { get; set; }
+
+	public override void OnDeleted()
+	{
+		base.OnDeleted();
+		OnClose?.Invoke();
+	}
+
+	protected override void OnEscape( PanelEvent e )
+	{
+		Delete();
+	}
+}

@@ -1,0 +1,1 @@
+{"Name":"Surpisingly Heavy Bike","Model":"models/props/bike/bike.vmdl","Mass":200,"MaxHealth":100,"HeldPositionOffset":"0,0,0","HeldRotationOffset":"0,0,0","KillfeedIcon":"materials/ui/props_generated/bike.png","__references":["facepunch.mountainbike#41787"],"__version":0}

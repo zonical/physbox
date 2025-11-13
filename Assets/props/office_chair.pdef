@@ -1,0 +1,1 @@
+{"Name":"Ordinary Office Chair","Model":"models/sbox_props/office_chair/office_chair.vmdl","Mass":50,"MaxHealth":150,"HeldPositionOffset":"-16,0,-8","HeldRotationOffset":"0,90,0","KillfeedIcon":"materials/ui/props_generated/office_chair.png","__references":["facepunch.office_chair#108399"],"__version":0}

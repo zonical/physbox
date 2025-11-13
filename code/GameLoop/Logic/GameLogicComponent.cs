@@ -32,6 +32,7 @@ public partial class GameLogicComponent :
 			LoadingScreen.Title = "Creating Lobby";
 			var config = new LobbyConfig();
 			Networking.CreateLobby( config );
+			Networking.SetData( "gamemode", GameMode.GetAttributeOfType<IconAttribute>().Value ?? "❓" );
 		}
 
 		// If there are any default spawnpoints, convert them to ours.

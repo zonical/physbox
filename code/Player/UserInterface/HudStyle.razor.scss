@@ -7,7 +7,7 @@
         font-size: 28px;
         font-family: Luckiest Guy;
         color: #fff;
-        text-shadow: 1px 1px 2px black;
+        filter: drop-shadow(2px 2px #000000ab);
     }
 
     .small_label {
@@ -15,14 +15,14 @@
         font-family: Luckiest Guy;
         color: #fff;
         align-self: center;
-        text-shadow: 1px 1px 2px black;
+        filter: drop-shadow(2px 2px #000000ab);
     }
 
     .info_text {
         font-size: 20px;
         font-family: Luckiest Guy;
         color: #fff;
-        text-shadow: 1px 1px 2px black;
+        filter: drop-shadow(2px 2px #000000ab);
     }
 
     .background {

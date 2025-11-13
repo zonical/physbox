@@ -21,7 +21,7 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 {
 	public List<PersistantProp> PersistantProps = new();
 	public List<PersistantMesh> PersistantMeshes = new();
-
+	
 	public PersistentObjectRefreshSystem( Scene scene ) : base( scene )
 	{
 
@@ -30,12 +30,9 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 	public void AfterLoad( Scene scene )
 	{
 		if ( Scene.IsEditor ) return;
+		if ( PhysboxUtilites.IsMainMenuScene() ) return;
 		if ( Connection.Local != Connection.Host ) return;
 
-		var sceneInfo = Scene.Get<SceneInformation>();
-		var sceneName = sceneInfo is not null ? sceneInfo.Title : scene.Name;
-
-		Log.Info( $"PersistentObjectRefreshSystem - loaded scene: {sceneName}." );
 		PersistantProps.Clear();
 		PersistantMeshes.Clear();
 
@@ -43,9 +40,13 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 		foreach ( var prop in scene.GetAllComponents<PropDefinitionComponent>() )
 		{
 			if ( prop.Definition is null || !prop.Definition.IsValid ) continue;
-			PersistantProps.Add( new() { PropDef = prop.Definition as PropDefinitionResource, Transform = prop.WorldTransform } );
+			PersistantProps.Add( new() 
+			{ 
+				PropDef = prop.Definition as PropDefinitionResource, 
+				Transform = prop.WorldTransform 
+			} );
 
-			// Delete this prop.
+			// Delete this prop. We'll spawn it in later.
 			prop.DestroyGameObject();
 		}
 
@@ -62,7 +63,7 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 					MaxHealth = life.MaxHealth
 				} );
 
-				// Delete this mesh.
+				// Delete this mesh. We'll spawn it in later.
 				mesh.DestroyGameObject();
 			}
 		}
@@ -70,6 +71,7 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 		Log.Info( $"PersistentObjectRefreshSystem - stored {PersistantProps.Count} props." );
 		Log.Info( $"PersistentObjectRefreshSystem - stored {PersistantMeshes.Count} meshes." );
 	}
+	
 
 	[Rpc.Host( NetFlags.HostOnly | NetFlags.SendImmediate )]
 	void IGameEvents.OnRoundStart()

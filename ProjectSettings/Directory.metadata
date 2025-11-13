@@ -1,0 +1,16 @@
+[
+  {
+    "Key": "Assets\\map_configs",
+    "Value": {
+      "Color": "0.90196,0.85882,0.4549,1",
+      "Icon": "maps_home_work"
+    }
+  },
+  {
+    "Key": "Assets\\props",
+    "Value": {
+      "Color": "0.90196,0.85882,0.4549,1",
+      "Icon": "inventory"
+    }
+  }
+]

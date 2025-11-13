@@ -1,0 +1,64 @@
+@using Sandbox;
+@using Sandbox.Network
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+<root>
+	<div class="top_bar">
+		<div class="title_text">Active Lobbies</div>
+		<div class="refresh_button" onclick="@( () =>  { FetchLobbies(); } )">
+			<i>refresh</i>
+		</div>
+	</div>
+	<div ElementName="separator" style="height: 4px; background-color: grey"></div>
+	<div ElementName="content" style="flex-direction: column; gap: 4px;">
+		@if ( IsSearching )
+		{
+			<div class="searching">
+				Searching for Lobbies...
+			</div>
+		}
+		else
+		{
+			if ( Lobbies.Count == 0 )
+			{
+				<div class="searching">
+					No Lobbies found :(
+				</div>
+			}
+			else
+			{
+				@foreach ( var info in Lobbies )
+				{
+					<LobbyDisplay Info="@( info )"/>
+				}
+			}
+
+		}
+	</div>
+</root>
+
+@code
+{
+	List<LobbyInformation> Lobbies = new();
+	bool IsSearching = true;
+	
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( firstTime )
+		{
+			FetchLobbies();
+		}
+	}
+	
+	async void FetchLobbies()
+	{
+		IsSearching = true;
+		Lobbies = new();
+		
+		Lobbies = await Networking.QueryLobbies( Game.Ident);
+
+		IsSearching = false;
+		StateHasChanged();
+	}
+}

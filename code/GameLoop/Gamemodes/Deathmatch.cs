@@ -6,8 +6,9 @@ using static PlayerComponent;
 public class DeathmatchGameMode : BaseGameMode, IGameEvents
 {
 	[ConVar( "pb_deathmatch_kills_to_win",
-		ConVarFlags.Server | ConVarFlags.Replicated ),
-		Group( "Deathmatch" )]
+		ConVarFlags.GameSetting ),
+		Group( "Deathmatch" ),
+		Title( "Kills to Win" )]
 	public static int DeathmatchKillsToWin { get; set; } = 5;
 
 	[Rpc.Broadcast]

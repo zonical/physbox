@@ -1,0 +1,32 @@
+@using Sandbox;
+@using Sandbox.Network
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+<root>
+	<div class="name">
+		<div class="text">@LobbyName</div>
+	</div>
+	<div class="map">
+		<div class="text">@LobbyGameMode @LobbyMap</div>
+	</div>
+	<div class="players_in_lobby">
+		<div class="text">@Info.Members/@Info.MaxMembers</div>
+	</div>
+	<div class="join_lobby" onclick="@( () => { Connect(); } )">
+		<div class="text">Join</div>
+	</div>
+</root>
+
+@code
+{
+	public LobbyInformation Info { get; set; }
+	public string LobbyName => Info.Name.Length < 16 ? Info.Name : Info.Name.Truncate( 16, "..." );
+	public string LobbyMap => Info.Map.Length < 16 ? Info.Map : Info.Map.Truncate( 16, "..." );
+	public string LobbyGameMode => Info.Data.ContainsKey( "gamemode" ) ? Info.Data["gamemode"] : "❓";
+
+	void Connect()
+	{
+		Networking.Connect( Info.LobbyId );
+	}
+}

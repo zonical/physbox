@@ -1,0 +1,1 @@
+{"Name":"Television","Model":"models/sbox_props/tv/tv.vmdl","Mass":30,"MaxHealth":100,"HeldPositionOffset":"-20,0,0","HeldRotationOffset":"0,180,0","KillfeedIcon":"materials/ui/props_generated/television.png","__references":["facepunch.tv#33694"],"__version":0}

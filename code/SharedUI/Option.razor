@@ -1,0 +1,23 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@inherits Panel
+@namespace Physbox
+<root>
+	<i>@Icon</i>
+	<div class="text">
+		@Text
+	</div>
+</root>
+
+@code
+{
+	public string Text { get; set; }
+	public Action Pressed { get; set; }
+	public string Icon { get; set; }
+
+	protected override void OnClick( MousePanelEvent e )
+	{
+		Pressed?.Invoke();
+	}
+}

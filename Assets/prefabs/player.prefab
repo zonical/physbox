@@ -221,6 +221,7 @@
           "component_type": "Killfeed"
         },
         "Kills": 0,
+        "LastHeldGameObject": null,
         "LastHitBy": null,
         "MaxForce": 3,
         "MaxHealth": 100,
@@ -276,6 +277,17 @@
       {
         "__type": "Physbox.Chat",
         "__guid": "2296e404-b096-452f-843d-9973075258ff",
+        "__enabled": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      },
+      {
+        "__type": "Physbox.PauseMenu",
+        "__guid": "6b611620-23df-49e5-9a0d-5ce6e80f69dc",
         "__enabled": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
@@ -421,6 +433,7 @@
             "__type": "Sandbox.CapsuleCollider",
             "__guid": "053f9573-4985-4a1d-b0b5-130b9ca74c8e",
             "__enabled": true,
+            "ColliderFlags": 0,
             "Elasticity": null,
             "End": "0,0,45.05097",
             "Friction": 0,
@@ -447,6 +460,7 @@
             "__guid": "bcb84d60-2faf-4b49-85d8-f8e158bca998",
             "__enabled": true,
             "Center": "0,0,18",
+            "ColliderFlags": 0,
             "Elasticity": null,
             "Friction": 0,
             "IsTrigger": false,

@@ -20,6 +20,8 @@ public class PropSpawnerSystem : GameObjectSystem, IGameEvents
 
 	public PropSpawnerSystem( Scene scene ) : base( scene )
 	{
+		if ( PhysboxUtilites.IsMainMenuScene() ) return;
+		
 		Listen( Stage.StartUpdate, 10, LoopThroughSleepingSpawners, "LoopThroughSleepingSpawners" );
 		Listen( Stage.StartUpdate, 11, SpawnProp, "SpawnProp" );
 

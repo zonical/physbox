@@ -10,6 +10,7 @@ public class InstallGameLogicSystem : GameObjectSystem, ISceneLoadingEvents
 	public void AfterLoad( Scene scene )
 	{
 		if ( Scene.IsEditor ) return;
+		if ( PhysboxUtilites.IsMainMenuScene() ) return;
 
 		if ( scene.Get<GameLogicComponent>() is null )
 		{

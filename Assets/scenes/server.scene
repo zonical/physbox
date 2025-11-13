@@ -1,34 +1,38 @@
 {
-  "__guid": "1d69ae3e-6512-4826-b03d-18b4b5cb274a",
+  "__guid": "47820e15-40e9-4e14-9b04-f2eb2f5b78be",
   "GameObjects": [
     {
-      "__guid": "340eee4e-1b71-48f1-8b78-926607dbb69a",
+      "__guid": "91f37923-0c40-48ce-b372-5deb84cc444a",
       "__version": 1,
       "Flags": 0,
-      "Name": "Game",
-      "Position": "-390.8662,-422.8664,771.7904",
+      "Name": "Scene Information",
+      "Position": "0,0,0",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
       "Tags": "",
       "Enabled": true,
-      "NetworkMode": 1,
+      "NetworkMode": 2,
       "NetworkInterpolation": true,
-      "NetworkOrphaned": 2,
+      "NetworkOrphaned": 0,
       "OwnerTransfer": 1,
       "Components": [
         {
-          "__type": "GameLogicComponent",
-          "__guid": "ad76b279-6ead-4d49-b5a9-4cd1035805a6",
+          "__type": "Sandbox.SceneInformation",
+          "__guid": "297104a8-3483-46c4-bfaa-2d8cc68bad8d",
           "__enabled": true,
+          "Author": null,
+          "Changes": null,
+          "Description": null,
+          "Group": null,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "TimeLeft": -15046,
-          "TimeShouldEnd": -1,
-          "UseTimer": false
+          "SceneTags": "main_menu",
+          "Title": null,
+          "Version": null
         }
       ],
       "Children": []
@@ -38,7 +42,9 @@
     "NetworkInterpolation": true,
     "TimeScale": 1,
     "WantsSystemScene": true,
-    "Metadata": {},
+    "Metadata": {
+      "Tags": "main_menu"
+    },
     "NavMesh": {
       "Enabled": false,
       "IncludeStaticBodies": true,

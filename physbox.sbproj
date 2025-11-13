@@ -28,7 +28,7 @@
       "VR": false,
       "Gamepad": false
     },
-    "LaunchMode": "Launcher",
+    "LaunchMode": "Normal",
     "Compiler": {
       "RootNamespace": "Sandbox",
       "DefineConstants": "SANDBOX;ADDON;DEBUG",
@@ -39,11 +39,11 @@
       "ReleaseMode": "Debug",
       "AssemblyReferences": [],
       "IgnoreFolders": [
-        "editor",
         "unittest"
       ],
       "DistinctAssemblyReferences": []
     },
-    "StartupScene": "scenes/init.scene"
+    "StartupScene": "scenes/main_menu.scene",
+    "DedicatedServerStartupScene": "scenes/server.scene"
   }
 }

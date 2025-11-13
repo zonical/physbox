@@ -312,11 +312,14 @@ public partial class PlayerComponent :
 
 	private void DressPlayer()
 	{
-		var dresser = Components.Get<Dresser>();
+		var dresser = Components.GetOrCreate<Dresser>();
 		if ( dresser is null ) return;
 
-		dresser.Clear();
-		dresser.Apply();
+		dresser.BodyTarget = PlayerController.Renderer;
+		dresser.Source = Dresser.ClothingSource.LocalUser;
+
+		dresser.ApplyHeightScale = false;
+		_ = dresser.Apply();
 
 		foreach ( var modelRen in Components.GetAll<ModelRenderer>( FindMode.InDescendants )
 			.Where( x => x.Tags.Contains( "clothing" ) ) )
@@ -337,7 +340,7 @@ public partial class PlayerComponent :
 	/// <summary>
 	/// The reason why a separate hitbox object is created is due to the way
 	/// s&box handles tags on parented objects. When we parent a GameObject
-	/// to another GameObject, the child inherits the tags of it's parent.
+	/// to another GameObject, the child inherits the tags of its parent.
 	/// This makes sense for most purposes, but when trying to create a custom
 	/// hitbox for props to hit, having both tags "breakable_only" and "player"
 	/// means that collisions don't work properly. This workaround creates a
@@ -419,6 +422,7 @@ public partial class PlayerComponent :
 	[Rpc.Owner]
 	public void PlayHitsound()
 	{
+		if ( IsBot ) return;
 		Sound.Play( "sounds/player/ding-hitsound.sound" );
 	}
 

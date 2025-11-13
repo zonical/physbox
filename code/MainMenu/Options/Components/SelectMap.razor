@@ -1,0 +1,35 @@
+@using System;
+@using System.Threading.Tasks
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PopupWindow
+@namespace Physbox
+<root>
+	<PopupWindow Title="Select Map">
+		<ChildContent class="content" style="overflow: scroll; overflow-x: hidden;">
+			@foreach ( var map in Maps )
+			{
+				<MapDisplay Map="@(map)" onclick="@( () => { OnMapSelected( map ); } )"/>
+			}
+		</ChildContent>
+	</PopupWindow>
+</root>
+
+@code
+{
+	SceneFile SelectedMap { get; set; }
+	Panel SelectedOption { get; set; }
+
+	public Action<SceneFile> OnSelected;
+
+	void OnMapSelected( SceneFile map )
+	{
+		SelectedMap = map;
+		OnSelected?.Invoke( map );
+	}
+
+	IEnumerable<SceneFile> Maps => ResourceLibrary.GetAll<SceneFile>()
+		.Where( x => x.ResourcePath.Contains( "scenes/maps" ) )
+		.Where( x => !string.IsNullOrEmpty( x.GetMetadata( "Title" ) ) )
+		.Where( x => x.GetMetadata( "IsVisibleInMenu"  ).ToBool() is true );
+}

@@ -1,0 +1,25 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+<root>
+	<LobbyList/>
+	
+	<Option class="play" Icon="play_arrow" Text="Create New Lobby" Pressed="@( CreateNewLobbyPopup )"/>
+	<Option class="controls" Icon="sports_esports" Text="Controls" Pressed="@( () => { Game.Overlay.ShowBinds(); } )"/>
+	<Option class="sboxsettings" Icon="settings" Text="s&box Settings" Pressed="@( () => { Game.Overlay.ShowSettingsModal(); } )"/>
+	<Option class="physboxsettings" Icon="settings_applications" Text="Physbox Settings"/>
+	<Option class="leave" Icon="exit_to_app" Text="Leave Game" Pressed="@( () => { Game.Disconnect(); } )"/>
+</root>
+
+@code
+{
+	void CreateNewLobbyPopup()
+	{
+		var panel = new CreateNewLobby();
+		FindRootPanel().AddChild( panel );
+		
+		panel.AcceptsFocus = true;
+		panel.Focus();
+	}
+}

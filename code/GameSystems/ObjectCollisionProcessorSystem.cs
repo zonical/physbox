@@ -125,6 +125,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 	public ObjectCollisionProcessorSystem( Scene scene ) : base( scene )
 	{
+		if ( PhysboxUtilites.IsMainMenuScene() ) return;
 		Listen( Stage.StartUpdate, 10, ProcessCollisions, "ProcessCollisions" );
 	}
 	public void RegisterCollisionEvent( GameObject a, GameObject b, float speed )
@@ -285,7 +286,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 				// Let the attacker know that we've hit the player by sending a hitsound.
 				var attackerPlayer = attacker.GetComponent<PlayerComponent>();
-				if ( attackerPlayer is not null )
+				if ( attackerPlayer is not null && attackerPlayer.IsPlayer )
 				{
 					attackerPlayer.PlayHitsound();
 

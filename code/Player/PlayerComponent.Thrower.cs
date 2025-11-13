@@ -314,13 +314,17 @@ public partial class PlayerComponent
 			BuiltUpForce = 0;
 		}
 
-		var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
-		if ( viewmodel.Enabled )
+		if ( IsPlayer )
 		{
-			viewmodel.Parameters.Set( "b_attack", true );
+			var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
+			if ( viewmodel.Enabled )
+			{
+				viewmodel.Parameters.Set( "b_attack", true );
+			}
+			
+			Sound.Play( "sounds/player/swoosh.sound" );
 		}
-
-		Sound.Play( "sounds/player/swoosh.sound" );
+		
 		ResetSpeed();
 	}
 
@@ -342,7 +346,7 @@ public partial class PlayerComponent
 		// pos is where we WOULD end up. But we need to account for gravity.
 		// distance = velocity / time
 		// time = distance / velocity
-		// distanceDropped = 0.5 * gravity * time²
+		// distanceDropped = 0.5 * gravity * timeï¿½
 
 		var velocity = CalculateThrowVelocity( HeldProp.Mass );
 		var time = distance / velocity.Length;

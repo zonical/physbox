@@ -1,0 +1,47 @@
+@using System.Threading.Tasks
+@using Sandbox;
+@using Sandbox.Network
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+<root>
+	<div class="option option_background" @ref="Background">
+		<div class="option_title" style="bottom: 24px;">
+			@( $"{Map.GetMetadata( "Title" )}" )
+		</div>
+		<div class="option_title" style="bottom: 4px;">
+			@( $"by {@Map.GetMetadata( "Author" )}" )
+		</div>
+	</div>
+</root>
+
+@code
+{
+	public SceneFile Map { get; set; }
+	public string MapThumbnail;
+
+	Panel Background { get; set; }
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( firstTime )
+		{
+			SetMapThumbnail( Map );
+			Background.Style.SetBackgroundImageAsync( MapThumbnail );
+		}
+	}
+
+
+	async Task SetMapThumbnail( SceneFile map )
+	{
+		var ident = map.GetMetadata( "PackageIdent" );
+		if ( string.IsNullOrWhiteSpace( ident ) )
+		{
+			MapThumbnail = "";
+			return;
+		}
+
+		var package = await Package.FetchAsync( ident, false );
+		MapThumbnail = package.Thumb;
+	}
+}

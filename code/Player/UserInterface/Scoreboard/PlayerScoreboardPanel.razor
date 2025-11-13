@@ -8,7 +8,7 @@
 <root>
 	<div class="background">
 		<img src="avatar:@( Player.IsPlayer ? Player.Network.Owner.SteamId : (SteamId)0 )" />
-		<div class="name big_label">
+		<div class="name big_label" style="filter: drop-shadow(0px 0px);">
 			@( Player.IsPlayer ? Player.Network.Owner.DisplayName : Player.BotName )
 		</div>
 		<div class="playerStats">

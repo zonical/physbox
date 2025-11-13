@@ -1,0 +1,1 @@
+{"Name":"Heavy Table","Model":"models/sbox_props/office_desk/office_desk.vmdl","Mass":300,"MaxHealth":200,"HeldPositionOffset":"0,0,-12","HeldRotationOffset":"0,0,0","KillfeedIcon":"materials/ui/props_generated/table.png","__references":["facepunch.office_desk#29073"],"__version":0}

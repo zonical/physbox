@@ -1,9 +1,9 @@
 {
   "Name": "Spectacular Crate",
   "Model": "models/sbox_props/wooden_crate/wooden_crate.vmdl",
-  "Mass": 50,
+  "Mass": 30,
   "MaxHealth": 100,
-  "HeldPositionOffset": "0,0,-2",
+  "HeldPositionOffset": "0,0,0",
   "HeldRotationOffset": "0,0,0",
   "KillfeedIcon": "materials/ui/props_generated/crate.png",
   "__references": [

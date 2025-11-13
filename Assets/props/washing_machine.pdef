@@ -1,0 +1,13 @@
+{
+  "Name": "Quirky Washing Machine",
+  "Model": "models/props/washing_machine/washing_machine.vmdl",
+  "Mass": 250,
+  "MaxHealth": 150,
+  "HeldPositionOffset": "0,0,-4",
+  "HeldRotationOffset": "0,180,0",
+  "KillfeedIcon": "materials/ui/props_generated/washing_machine.png",
+  "__references": [
+    "facepunch.washingmachine#80294"
+  ],
+  "__version": 0
+}

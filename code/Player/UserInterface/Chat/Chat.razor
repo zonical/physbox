@@ -10,6 +10,7 @@
 
 @if (IsProxy) return;
 @if (Player is null) return;
+@if (PauseMenu.Paused) return;
 
 <root>
 	<div @ref="ScrollPanel" class="container scrollable" style="width: 100%; height: 100%;">
@@ -49,7 +50,11 @@
 	protected override void OnFixedUpdate()
 	{
 		if (IsProxy) return;
-
+		if ( PauseMenu.Paused )
+		{
+			return;
+		}
+		
 		if ( Input.Pressed("chat") )
 		{
 			Open = !Open;

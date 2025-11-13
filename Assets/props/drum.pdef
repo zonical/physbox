@@ -1,0 +1,13 @@
+{
+  "Name": "Dirty Oil Drum",
+  "Model": "models/sbox_props/oil_drum/oil_drum_a.vmdl",
+  "Mass": 50,
+  "MaxHealth": 100,
+  "HeldPositionOffset": "-12,0,-4",
+  "HeldRotationOffset": "0,0,0",
+  "KillfeedIcon": "materials/ui/props_generated/drum.png",
+  "__references": [
+    "facepunch.oil_drum#126235"
+  ],
+  "__version": 0
+}
