@@ -1,51 +1,41 @@
-﻿using Physbox;
-using System;
-using System.Diagnostics;
-using System.Threading.Channels;
-
-public partial class PlayerComponent :
+﻿public partial class PlayerComponent :
 	BaseLifeComponent,
 	IGameEvents,
 	PlayerController.IEvents,
 	Component.INetworkListener
 {
-	private bool _freeCam = false;
-	private float _yaw = 0;
-	private float _pitch = 0;
+	private bool _freeCam;
+	private float _pitch;
+	private float _yaw;
+
+	[Sync] public Frustum CameraFrustum { get; set; }
+
 	public bool FreeCam
 	{
-		get { return _freeCam; }
+		get => _freeCam;
 		set
 		{
 			_freeCam = value;
 
-			if ( !IsPlayer ) return;
+			if ( !IsPlayer )
+			{
+				return;
+			}
 
-			if ( _freeCam == true )
+			if ( _freeCam )
 			{
 				CreateFreeCam();
+				Viewmodel?.Enabled = false;
 
-				if ( Viewmodel is not null )
-				{
-					Viewmodel.Enabled = false;
-				}
-				
 				PlayerController.Enabled = false;
 			}
 			else
 			{
 				CreateNormalCam();
-				if ( Viewmodel is null )
-				{
-					CreateViewmodel();
-				}
-				else
-				{
-					Viewmodel.Enabled = true;
-				}
+				Viewmodel?.Enabled = true;
+
 				PlayerController.Enabled = true;
 			}
-
 		}
 	}
 
@@ -61,7 +51,7 @@ public partial class PlayerComponent :
 			}
 
 			var prefabScene = SceneUtility.GetPrefabScene( prefab );
-			var go = prefabScene.Clone( new(), name: "Camera" );
+			var go = prefabScene.Clone( new Transform(), name: "Camera" );
 			go.BreakFromPrefab();
 			go.NetworkMode = NetworkMode.Never;
 
@@ -73,11 +63,19 @@ public partial class PlayerComponent :
 		Camera.IsMainCamera = true;
 		Camera.FieldOfView = Preferences.FieldOfView;
 		Camera.BackgroundColor = Color.Black;
+
+		// Create viewmodel.
+		CreateViewmodel();
+
+		FreeCam = false;
 	}
 
 	private void CreateFreeCam()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		// Detach our camera from ourselves.
 		Camera.GameObject.SetParent( null );
@@ -85,22 +83,27 @@ public partial class PlayerComponent :
 
 	private void CreateNormalCam()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		// Reset our camera position.
-		Camera.GameObject.WorldPosition = GameObject.WorldPosition;
+		// 20/11/25 - Added + new Vector3( 0, 0, 64 ) after latest s&box update. Probably something
+		// to do with the new play-mode and external game instance bullshit.
+		Camera.GameObject.WorldPosition = GameObject.WorldPosition + new Vector3( 0, 0, 64 );
 		Camera.GameObject.WorldRotation = GameObject.WorldRotation;
 		Camera.GameObject.SetParent( GameObject );
 	}
 
 	private void HandleNoclipMovement()
 	{
-		float mouseX = Input.AnalogLook.yaw;
-		float mouseY = Input.AnalogLook.pitch;
+		var mouseX = Input.AnalogLook.yaw;
+		var mouseY = Input.AnalogLook.pitch;
 
 		_yaw += mouseX;
 		_pitch += mouseY;
-		_pitch = MathX.Clamp( _pitch, -90f, 90f );
+		_pitch = _pitch.Clamp( -90f, 90f );
 
 		Camera.LocalRotation = Rotation.From( new Angles( _pitch, _yaw, 0 ) );
 
@@ -127,30 +130,5 @@ public partial class PlayerComponent :
 			var dir = Camera.WorldRotation.Backward;
 			Camera.WorldPosition += dir * 700 * Time.Delta;
 		}
-	}
-
-	public void HandleCulling()
-	{
-		var time = new Stopwatch();
-		time.Start();
-
-		foreach ( var go in Scene.GetAllObjects(true) )
-		{
-			if ( go.Tags.Has( "ignore_culling" ) ) continue;
-
-			// Disable all renderers if this object is not in the frustum.
-			var enabled = Camera.GetFrustum().IsInside( go.WorldPosition );
-			foreach ( var renderer in go.Components.GetAll<Renderer>(
-				FindMode.EverythingInSelf | 
-				FindMode.EverythingInChildren | 
-				FindMode.EverythingInAncestors ) )
-			{
-				//renderer.Enabled = enabled;
-			}
-		}
-
-		time.Stop();
-
-		Log.Info( $"Time taken to cull: {time.ElapsedMilliseconds}ms" );
 	}
 }

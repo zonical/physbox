@@ -39,13 +39,13 @@
         "RenderTexture": null,
         "TargetEye": "None",
         "Viewport": "0,0,1,1",
-        "ZFar": 10000,
+        "ZFar": 20000,
         "ZNear": 1
       },
       {
         "__type": "Sandbox.Highlight",
         "__guid": "e1adeddb-2ed2-4426-afc0-22a1cee05dc3",
-        "__enabled": false,
+        "__enabled": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
         "OnComponentEnabled": null,

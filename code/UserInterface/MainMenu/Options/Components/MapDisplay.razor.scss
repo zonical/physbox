@@ -1,0 +1,22 @@
+MapDisplay {
+  flex-direction: column;
+
+  .option_title {
+    font-size: 18px;
+    filter: drop-shadow(2px 2px #000000ab);
+
+    position: absolute;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .option_background {
+    position: relative;
+    padding: 0px;
+    width: 100%;
+    height: 100%;
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}

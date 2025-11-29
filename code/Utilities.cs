@@ -1,5 +1,6 @@
-﻿using Sandbox;
-using Physbox;
+﻿using Physbox;
+using Sandbox.Network;
+using Sandbox.Services;
 
 public static class PhysboxUtilites
 {
@@ -32,26 +33,30 @@ public static class PhysboxUtilites
 		// Apply our health.
 		var maxHealth = resource.MaxHealth;
 		life.MaxHealth = maxHealth;
+		life.Health = maxHealth;
 
 		// Update our name.
-		var name = resource.Name;
-		GameObject.Name = $"Breakable Prop ({name})";
-		//GameObject.MakeNameUnique();
+		GameObject.Name = $"Prop ({resource.ResourcePath})";
 
-		GameObject.NetworkMode = NetworkMode.Object;
-		GameObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
-		GameObject.NetworkSpawn();
+		if ( !IsMainMenuScene() )
+		{
+			GameObject.NetworkMode = NetworkMode.Object;
+			GameObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
+			GameObject.NetworkSpawn();
+		}
 
 		return GameObject;
 	}
-	
+
 	public static bool IsMainMenuScene()
 	{
 		var scene = Game.ActiveScene;
-		var info = scene.Get<SceneInformation>();
+		return scene.Get<MainMenu>() is not null;
+	}
 
-		if ( info is null ) return false;
-		return info.SceneTags.Contains( "main_menu" );
+	public static bool IsMainMenuScene( Scene scene )
+	{
+		return scene.Get<MainMenu>() is not null;
 	}
 
 	public static string GetCurrentMapName()
@@ -71,24 +76,63 @@ public static class PhysboxUtilites
 	{
 		return gameMode.GetAttributeOfType<IconAttribute>()?.Value ?? "❓";
 	}
-	
+
+	public static bool MapOverridesDefaultSpawnpoints()
+	{
+		var mapInfo = Game.ActiveScene.Get<MapInformationComponent>();
+		return mapInfo?.OverrideDefaultSpawnpoints ?? false;
+	}
+
+	public static void CreateNewLobby(
+		int maxPlayers = 64,
+		string lobbyName = "Physbox Deathmatch Lobby",
+		PhysboxConstants.GameModes gameMode = PhysboxConstants.GameModes.Deathmatch,
+		LobbyPrivacy privacy = LobbyPrivacy.Private,
+		bool force = false )
+	{
+		// Disconnect from a lobby if one already exists in this game instance.
+		if ( Networking.IsActive )
+		{
+			if ( force )
+			{
+				Log.Warning( "Lobby already exists. Disconnecting!" );
+				Networking.Disconnect();
+			}
+			else
+			{
+				return;
+			}
+		}
+
+		// Create new lobby.
+		LoadingScreen.Title = "Creating Lobby";
+		var config = new LobbyConfig { MaxPlayers = maxPlayers, Name = lobbyName, Privacy = privacy };
+		Networking.CreateLobby( config );
+		Networking.SetData( "gamemode", gameMode.GetAttributeOfType<IconAttribute>().Value ?? "❓" );
+
+		GameLogicComponent.GameMode = gameMode;
+	}
+
 	[Rpc.Broadcast]
 	public static void IncrementStatRPC( string stat, int value )
 	{
-		Sandbox.Services.Stats.Increment( stat, value );
+		Stats.Increment( stat, value );
 	}
 
 	/// <summary>
-	/// Increments a stat on the s&box backend. We use this as a convenient wrapper to ensure that
-	/// stats are going to the right connections. If I was a good networking programmer, I wouldn't
-	/// have to worry about this, but I want to be safe.
+	///     Increments a stat on the s&box backend. We use this as a convenient wrapper to ensure that
+	///     stats are going to the right connections. If I was a good networking programmer, I wouldn't
+	///     have to worry about this, but I want to be safe.
 	/// </summary>
 	/// <param name="player"></param>
 	/// <param name="stat"></param>
 	/// <param name="value"></param>
 	public static void IncrementStatForPlayer( PlayerComponent player, string stat, int value )
 	{
-		if ( player.IsBot ) return;
+		if ( player.IsBot )
+		{
+			return;
+		}
 
 		using ( Rpc.FilterInclude( c => c.Id == player.Network.Owner.Id ) )
 		{

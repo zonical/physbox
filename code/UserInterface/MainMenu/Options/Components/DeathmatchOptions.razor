@@ -1,0 +1,48 @@
+@using System;
+@using Sandbox;
+@using Sandbox.UI;
+@inherits PopupWindow
+@namespace Physbox
+<root>
+	<PopupWindow Title="Deathmatch Settings">
+		<ChildContent class="content">
+			<div class="option">
+				<i class="option_icon">inventory</i>
+				<div class="text option_title">Kills to Win</div>
+				<div class="option_background" style="width: 100%;">
+					<SliderControl @ref="KillsSlider" Min="@( 1 )" Max="@( 100 )"
+					               ShowValueTooltip="@( false )" ShowTextEntry="@( false )" ShowRange="@( false )"/>
+					<NumberEntry class="text option_text" style="width: 64px;" Value:bind="@KillsSlider.Value"/>
+				</div>
+			</div>
+
+			<div class="option">
+				<i class="option_icon">accessibility</i>
+				<div class="text option_title" style="width: 15%">Deal Fall Damage</div>
+				<div class="option_background" style="width: 85%">
+					<DropDown class="text option_text" style="width: 100%"
+					          Value:bind="@GameLogicComponent.UseFallDamage"/>
+				</div>
+			</div>
+		</ChildContent>
+	</PopupWindow>
+</root>
+
+@code
+{
+	SliderControl KillsSlider;
+
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( firstTime )
+		{
+			KillsSlider.Value = DeathmatchGameMode.DeathmatchKillsToWin;
+		}
+	}
+
+	public override void OnDeleted()
+	{
+		DeathmatchGameMode.DeathmatchKillsToWin = (int)KillsSlider.Value;
+	}
+}

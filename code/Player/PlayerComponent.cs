@@ -1,7 +1,6 @@
 using Physbox;
-using System;
-using Sandbox.Network;
-using Sandbox.UI;
+using Sandbox.Movement;
+using Networking = Sandbox.Debug.Networking;
 
 [Group( "Physbox" )]
 [Title( "Physbox Player" )]
@@ -16,45 +15,182 @@ public partial class PlayerComponent :
 	public static PlayerComponent LocalPlayer { get; private set; }
 
 	// ==================== [ COMPONENTS ] ====================
-	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
-	public PlayerController PlayerController => Components.GetOrCreate<PlayerController>();
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
+	public PlayerController PlayerController => Components.Get<PlayerController>( true );
 
-	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
-	public Voice Voice => Components.Get<Voice>();
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
+	public Voice Voice => Components.Get<Voice>( true );
 
-	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
 	public CameraComponent Camera { get; set; } // This is manually set in InitaliseCamera().
 
-	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", true )]
-	public NavMeshAgent BotAgent => Components.Get<NavMeshAgent>();
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", true )]
+	public NavMeshAgent BotAgent => Components.Get<NavMeshAgent>( true );
 
-	[Property, ReadOnly, Feature( "Components" )]
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
 	private Nametag Nametag => Components.GetInChildren<Nametag>( true );
 
-	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
 	private HudRoot Hud => Components.Get<HudRoot>( true );
 
-	[Property, ReadOnly, Feature( "Components" ), ShowIf( "IsBot", false )]
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
 	private Killfeed Killfeed => Components.Get<Killfeed>( true );
 
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
+	public Chat Chat => Components.Get<Chat>( true );
+
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
+	public PauseMenu PauseMenu => Components.Get<PauseMenu>( true );
+
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
+	public Dresser Dresser => Components.Get<Dresser>( true );
+
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	[ShowIf( "IsBot", false )]
+	public ScreenPanel ScreenPanel => Components.Get<ScreenPanel>( true );
+
+	[Property]
+	[ReadOnly]
+	[Feature( "Components" )]
+	public Rigidbody Rigidbody => Components.Get<Rigidbody>( true );
+
 	// ==================== [ PROPERTIES ] ====================
-	[Sync, Property, ReadOnly] public int Kills { get; set; } = 0;
-	[Sync, Property, ReadOnly] public int Deaths { get; set; } = 0;
+	[Sync] [Property] [ReadOnly] public int Kills { get; set; } = 0;
+	[Sync] [Property] [ReadOnly] public int Deaths { get; set; } = 0;
 	[Sync] public bool GodMode { get; set; } = false;
 	[Sync] private bool HasDied { get; set; } = false;
 	[Property] public Vector3 HitboxSize { get; set; } = new();
 	[Property] public Vector3 HitboxOffset { get; set; } = new();
-	[Property, Sync( SyncFlags.FromHost )] public bool IsBot { get; set; }
-	[Property, Sync( SyncFlags.FromHost ), ShowIf( "IsBot", true )] public string BotName { get; set; }
+
+	[Property]
+	[Sync( SyncFlags.FromHost )]
+	public bool IsBot { get; set; }
+
+	[Property]
+	[Sync( SyncFlags.FromHost )]
+	[ShowIf( "IsBot", true )]
+	public string BotName { get; set; }
 
 	// ==================== [ GAME OBJECTS ] ====================
-	[Property, ReadOnly, Feature( "Game Objects" )] private GameObject Ragdoll { get; set; }
-	[Property, Sync, ReadOnly, Feature( "Game Objects" )] private GameObject Hitbox { get; set; }
-	[Property, ReadOnly, Feature( "Game Objects" )] public GameObject Viewmodel { get; set; }
+	[Property]
+	[ReadOnly]
+	[Feature( "Game Objects" )]
+	private GameObject Ragdoll { get; set; }
+
+	[Property]
+	[Sync]
+	[ReadOnly]
+	[Feature( "Game Objects" )]
+	private GameObject Hitbox { get; set; }
+
+	[Property]
+	[ReadOnly]
+	[Feature( "Game Objects" )]
+	public GameObject Viewmodel { get; set; }
 
 	// ==========================================================
 
 	public bool IsPlayer => !IsBot;
+
+	void PlayerController.IEvents.OnJumped()
+	{
+		var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
+		if ( viewmodel.Enabled )
+		{
+			viewmodel.Parameters.Set( "b_jump", true );
+		}
+	}
+
+	// Couldn't put this in ObjectCollisionListenerComponent, so it's here instead :(
+	void PlayerController.IEvents.OnLanded( float distance, Vector3 impactVelocity )
+	{
+		if ( distance < 200 )
+		{
+			return;
+		}
+
+		if ( impactVelocity.Length >= ObjectCollisionProcessorSystem.FallSpeedThreshold )
+		{
+			var player = GameObject.GetComponent<PlayerController>();
+			if ( player is not null )
+			{
+				var other = player.GroundObject;
+				var listener = GetComponent<ObjectCollisionListenerComponent>();
+				if ( listener is not null )
+				{
+					if ( listener.RecentlyHitBy.Contains( other.Id ) )
+					{
+						return;
+					}
+
+					// Don't register collisions with the thing we are touching for a while.
+					listener.RecentlyHitBy.Add( other.Id );
+					Invoke( 1.0f, () => listener.RecentlyHitBy.Remove( other.Id ) );
+				}
+
+				var collisionProcessor = Scene.GetSystem<ObjectCollisionProcessorSystem>();
+				collisionProcessor.RegisterCollisionEvent( GameObject, other, impactVelocity.Length );
+			}
+		}
+	}
+
+	void IGameEvents.OnRoundStart()
+	{
+		if ( IsProxy )
+		{
+			return;
+		}
+
+		CanPickupObjects = true;
+		HeldGameObject = null;
+		CurrentlyLookingAtObject = null;
+		BuiltUpForce = 0;
+	}
+
+	void IGameEvents.OnRoundEnd()
+	{
+		if ( IsProxy )
+		{
+			return;
+		}
+
+		CanPickupObjects = false;
+		if ( HeldGameObject is not null )
+		{
+			DropObject();
+		}
+	}
 
 	[Rpc.Owner]
 	public void InitPlayer()
@@ -78,10 +214,28 @@ public partial class PlayerComponent :
 		// Start in our spectator state.
 		FreeCam = true;
 
+		// We don't need to network the following components at all.
+		Hud.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		Killfeed.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		Chat.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		PauseMenu.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		Dresser.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+
+		// Hide, but still network (just in case).
+		Voice.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		ScreenPanel.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		PlayerController.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		Rigidbody.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+
+		foreach ( var moveMode in Components.GetAll<MoveMode>() )
+		{
+			moveMode.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		}
+
 		var spectatorSpawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpectatorSpawnpoint>().ToList() );
 		if ( spectatorSpawnpoint is not null )
 		{
-			Camera.WorldPosition = spectatorSpawnpoint.WorldPosition + new Vector3( 0, 0, 64 ); // Add 64 units so we don't start in the ground.
+			Camera.WorldPosition = spectatorSpawnpoint.WorldPosition;
 			Camera.WorldRotation = spectatorSpawnpoint.WorldRotation;
 		}
 		else
@@ -96,7 +250,7 @@ public partial class PlayerComponent :
 		}
 
 		var game = GameLogicComponent.GetGameInstance();
-		if ( !game.RoundOver )
+		if ( game is not null && !game.RoundOver )
 		{
 			RequestSpawn();
 		}
@@ -105,7 +259,7 @@ public partial class PlayerComponent :
 	[Rpc.Owner]
 	public void InitBot()
 	{
-		var names = new List<string>()
+		var names = new List<string>
 		{
 			"Adam",
 			"Rhys",
@@ -128,7 +282,7 @@ public partial class PlayerComponent :
 		GameObject.Name = BotName;
 
 		// Create a fake connection.
-		Sandbox.Debug.Networking.AddEmptyConnection();
+		Networking.AddEmptyConnection();
 
 		// If we have the PlayerController component for what ever reason,
 		// disable it. We only have one that we locally control.
@@ -139,9 +293,9 @@ public partial class PlayerComponent :
 
 			// Delete all of our existing colliders.
 			foreach ( var collider in Components.GetAll<Collider>(
-				FindMode.EverythingInSelf |
-				FindMode.EverythingInAncestors |
-				FindMode.EverythingInDescendants ) )
+				         FindMode.EverythingInSelf |
+				         FindMode.EverythingInAncestors |
+				         FindMode.EverythingInDescendants ) )
 			{
 				collider.Destroy();
 			}
@@ -163,7 +317,10 @@ public partial class PlayerComponent :
 
 	protected override void OnUpdate()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		// Debug hitbox drawing.
 		if ( Hitbox is not null )
@@ -175,12 +332,22 @@ public partial class PlayerComponent :
 			}
 		}
 
-		if ( IsPlayer ) OnPlayerUpdate();
-		if ( IsBot ) OnBotUpdate();
+		if ( IsPlayer )
+		{
+			OnPlayerUpdate();
+		}
+
+		if ( IsBot )
+		{
+			OnBotUpdate();
+		}
 	}
 
 	private void OnPlayerUpdate()
 	{
+		// There's probably a better way to implement this, but this will do for now.
+		CameraFrustum = Camera.GetFrustum();
+
 		if ( FreeCam )
 		{
 			HandleNoclipMovement();
@@ -219,8 +386,12 @@ public partial class PlayerComponent :
 
 	private void CreateViewmodel()
 	{
+		// Destory viewmodel if it currently exists.
+		Viewmodel?.Destroy();
+
 		Viewmodel = new GameObject( true, "Viewmodel" );
 		Viewmodel.NetworkMode = NetworkMode.Never;
+		Viewmodel.Tags.Add( "viewmodel" );
 
 		var modelComp = Viewmodel.AddComponent<SkinnedModelRenderer>();
 		modelComp.Model = Cloud.Model( "facepunch.v_first_person_arms_human" );
@@ -230,14 +401,17 @@ public partial class PlayerComponent :
 		modelComp.UseAnimGraph = true;
 
 		Viewmodel.WorldRotation = new Angles( 45, 0, 5 );
-		
+
 		// Parent model to camera.
 		Viewmodel.Parent = Camera.GameObject;
 	}
 
 	private void UpdateViewmodel()
 	{
-		if ( Viewmodel is null ) return;
+		if ( Viewmodel is null )
+		{
+			return;
+		}
 
 		Viewmodel.WorldPosition = Camera.WorldPosition - new Vector3( 0, 0, 0 ) + Camera.WorldRotation.Forward * 8;
 		Viewmodel.WorldRotation = Camera.WorldRotation * new Angles( 45, 0, 5 );
@@ -248,19 +422,29 @@ public partial class PlayerComponent :
 		model.Parameters.Set( "move_y", PlayerController.Velocity.y );
 		model.Parameters.Set( "move_z", PlayerController.Velocity.z );
 
-		var moving = Input.Down( "forward" ) || Input.Down( "left" ) || Input.Down( "right" ) || Input.Down( "backward" );
+		var moving = Input.Down( "forward" ) || Input.Down( "left" ) || Input.Down( "right" ) ||
+		             Input.Down( "backward" );
 		model.Parameters.Set( "move_bob", moving ? 1.0f : 0f );
-	
+
 		var left = model.Parameters.GetFloat( "FingerAdjustment_BlendNeutralPose_L" );
 		var right = model.Parameters.GetFloat( "FingerAdjustment_BlendNeutralPose_R" );
 
-		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_L", HeldGameObject is not null ? float.Lerp(left, 1.0f, 10 * Time.Delta ) : float.Lerp( left, 0f, 10 * Time.Delta ) );
-		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_R", HeldGameObject is not null ? float.Lerp( right, 1.0f, 10 * Time.Delta ) : float.Lerp( right, 0f, 10 * Time.Delta ) );
+		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_L",
+			HeldGameObject is not null
+				? float.Lerp( left, 1.0f, 10 * Time.Delta )
+				: float.Lerp( left, 0f, 10 * Time.Delta ) );
+		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_R",
+			HeldGameObject is not null
+				? float.Lerp( right, 1.0f, 10 * Time.Delta )
+				: float.Lerp( right, 0f, 10 * Time.Delta ) );
 	}
 
 	private void OnBotUpdate()
 	{
-		if ( !IsAlive ) return;
+		if ( !IsAlive )
+		{
+			return;
+		}
 
 		if ( HeldGameObject is not null )
 		{
@@ -271,7 +455,10 @@ public partial class PlayerComponent :
 	protected override void OnFixedUpdate()
 	{
 		// Contrary to OnUpdate() above, we can let bots build up force.
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		// If we are holding down the attack button, charge up the force.
 		if ( HeldGameObject is not null )
@@ -280,49 +467,16 @@ public partial class PlayerComponent :
 		}
 	}
 
-	void IGameEvents.OnRoundStart()
-	{
-		if ( IsProxy ) return;
-
-		CanPickupObjects = true;
-		HeldGameObject = null;
-		CurrentlyLookingAtObject = null;
-		BuiltUpForce = 0;
-	}
-
-	void IGameEvents.OnRoundEnd()
-	{
-		if ( IsProxy ) return;
-
-		CanPickupObjects = false;
-		if ( HeldGameObject is not null )
-		{
-			DropObject();
-		}
-	}
-
-	void PlayerController.IEvents.OnJumped()
-	{
-		var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
-		if ( viewmodel.Enabled )
-		{
-			viewmodel.Parameters.Set( "b_jump", true );
-		}
-	}
-
 	private void DressPlayer()
 	{
-		var dresser = Components.GetOrCreate<Dresser>();
-		if ( dresser is null ) return;
+		Dresser.BodyTarget = PlayerController.Renderer;
+		Dresser.Source = Dresser.ClothingSource.LocalUser;
 
-		dresser.BodyTarget = PlayerController.Renderer;
-		dresser.Source = Dresser.ClothingSource.LocalUser;
-
-		dresser.ApplyHeightScale = false;
-		_ = dresser.Apply();
+		Dresser.ApplyHeightScale = false;
+		_ = Dresser.Apply();
 
 		foreach ( var modelRen in Components.GetAll<ModelRenderer>( FindMode.InDescendants )
-			.Where( x => x.Tags.Contains( "clothing" ) ) )
+			         .Where( x => x.Tags.Contains( "clothing" ) ) )
 		{
 			modelRen.GameObject.NetworkSpawn();
 		}
@@ -330,7 +484,10 @@ public partial class PlayerComponent :
 
 	private void CreateRagdoll()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		Ragdoll = PlayerController.CreateRagdoll();
 		Ragdoll.Tags.Add( PhysboxConstants.RagdollTag );
@@ -338,14 +495,14 @@ public partial class PlayerComponent :
 	}
 
 	/// <summary>
-	/// The reason why a separate hitbox object is created is due to the way
-	/// s&box handles tags on parented objects. When we parent a GameObject
-	/// to another GameObject, the child inherits the tags of its parent.
-	/// This makes sense for most purposes, but when trying to create a custom
-	/// hitbox for props to hit, having both tags "breakable_only" and "player"
-	/// means that collisions don't work properly. This workaround creates a
-	/// separate GameObject that is associated with the player, but not actually
-	/// parented to it.
+	///     The reason why a separate hitbox object is created is due to the way
+	///     s&box handles tags on parented objects. When we parent a GameObject
+	///     to another GameObject, the child inherits the tags of its parent.
+	///     This makes sense for most purposes, but when trying to create a custom
+	///     hitbox for props to hit, having both tags "breakable_only" and "player"
+	///     means that collisions don't work properly. This workaround creates a
+	///     separate GameObject that is associated with the player, but not actually
+	///     parented to it.
 	/// </summary>
 	private void CreateHitbox()
 	{
@@ -357,6 +514,7 @@ public partial class PlayerComponent :
 		box.Scale = HitboxSize;
 		box.Center = HitboxOffset;
 		box.Elasticity = 0.25f;
+		box.ColliderFlags = ColliderFlags.IgnoreTraces;
 
 		var collision = Hitbox.AddComponent<ObjectCollisionListenerComponent>();
 		collision.CollisionProxy = GameObject;
@@ -370,7 +528,7 @@ public partial class PlayerComponent :
 	{
 		if ( Gizmo.IsSelected || Gizmo.IsHovered )
 		{
-			BBox box = BBox.FromPositionAndSize( HitboxOffset, HitboxSize );
+			var box = BBox.FromPositionAndSize( HitboxOffset, HitboxSize );
 			Gizmo.Draw.LineThickness = 1f;
 			Gizmo.Draw.Color = Gizmo.Colors.Red.WithAlpha( Gizmo.IsSelected ? 1f : 0.2f );
 			Gizmo.Draw.LineBBox( in box );
@@ -398,9 +556,9 @@ public partial class PlayerComponent :
 
 				// Find all pressables and... use them!
 				foreach ( var pressable in trace.GameObject.Components.GetAll<IPressable>(
-					FindMode.EnabledInSelf |
-					FindMode.InDescendants |
-					FindMode.InAncestors ) )
+					         FindMode.EnabledInSelf |
+					         FindMode.InDescendants |
+					         FindMode.InAncestors ) )
 				{
 					if ( pressable.CanPress( pressEvent ) )
 					{
@@ -419,15 +577,51 @@ public partial class PlayerComponent :
 		}
 	}
 
+	[Icon( "star" )]
+	[Button]
+	[Feature( "Components" )]
+	[Title( "Fine. Show me all Components." )]
+	private void ShowAllComponents()
+	{
+		Hud.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Killfeed.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Chat.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		PauseMenu.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Dresser.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+
+		Voice.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		ScreenPanel.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		PlayerController.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Rigidbody.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+
+		foreach ( var moveMode in Components.GetAll<MoveMode>() )
+		{
+			moveMode.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		}
+	}
+
 	[Rpc.Owner]
 	public void PlayHitsound()
 	{
-		if ( IsBot ) return;
+		if ( IsBot )
+		{
+			return;
+		}
+
 		Sound.Play( "sounds/player/ding-hitsound.sound" );
 	}
 
+	[Rpc.Broadcast]
+	public void PlayFallDamageSound( Vector3 position )
+	{
+		Sound.Play( "sounds/player/bone-break.sound", position );
+	}
+
+
 	[ActionGraphNode( "physbox.get_local_player" )]
-	[Title( "Get Local Player" ), Group( "Physbox" ), Icon( "home" )]
+	[Title( "Get Local Player" )]
+	[Group( "Physbox" )]
+	[Icon( "home" )]
 	public static PlayerComponent GetGameInstance()
 	{
 		return LocalPlayer;

@@ -1,0 +1,35 @@
+﻿@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@inherits Panel
+@namespace Physbox
+
+@if ( Player is null || Player.HeldGameObject is null || !Player.CanPickupObjects ) return;
+
+<root>
+	<div style="flex-direction:column; justify-content: center;">
+		<div class="text title" style="font-style: italic;">@PropDef.Name</div>
+		<div class="text health">
+			<div>❤ @PropLife.Health / @PropLife.MaxHealth</div>
+		</div>
+	</div>
+
+</root>
+
+@code
+{
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	PropLifeComponent PropLife => Player.HeldGameObject?.GetComponent<PropLifeComponent>();
+	PropDefinitionResource PropDef => Player.HeldGameObject?.GetComponent<PropDefinitionComponent>().Definition as PropDefinitionResource;
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( Player?.HeldGameObject,
+			Player?.CanPickupObjects,
+			Player?.CanPickupObjects,
+			PropLife?.Health ?? 0 );
+	}
+}

@@ -1,0 +1,148 @@
+{
+  "Name": "Explosive Oil Drum",
+  "Model": "models/sbox_props/oil_drum/oil_drum_explosive.vmdl",
+  "Mass": 50,
+  "MaxHealth": 100,
+  "HeldPositionOffset": "-12,0,-4",
+  "HeldRotationOffset": "0,0,0",
+  "KillfeedIcon": "materials/ui/props_generated/exploding_barrel.png",
+  "OnPropBroken": {
+    "__version": 9,
+    "__guid": "8291ea87-52b1-43cf-a97e-192b7267ad70",
+    "__changeId": 30,
+    "UserData": {
+      "Title": "Explode",
+      "ReferencedComponentTypes": [],
+      "Icon": "warning",
+      "Description": ""
+    },
+    "Variables": [],
+    "Nodes": [
+      {
+        "Id": 0,
+        "Type": "input",
+        "UserData": {
+          "Position": "12,0"
+        }
+      },
+      {
+        "Id": 1,
+        "Type": "physbox.create_explosion",
+        "UserData": {
+          "Position": "552,-0"
+        }
+      },
+      {
+        "Id": 2,
+        "Type": "property",
+        "Properties": {
+          "_name": "WorldPosition",
+          "_type": "Sandbox.GameObject"
+        },
+        "UserData": {
+          "Position": "216,24"
+        }
+      },
+      {
+        "Id": 4,
+        "Type": "comment",
+        "UserData": {
+          "Position": "-12,-84",
+          "Size": "780,324",
+          "Title": "Exploding Barrel Prop",
+          "Layer": 1,
+          "Description": "Creates an explosion GameObject at the prop position, then triggers the explosion."
+        }
+      },
+      {
+        "Id": 5,
+        "Type": "call",
+        "Properties": {
+          "_isStatic": false,
+          "_name": "Get",
+          "_type": "Sandbox.IComponentLister",
+          "T": "PropLifeComponent"
+        },
+        "UserData": {
+          "Position": "216,120"
+        }
+      },
+      {
+        "Id": 6,
+        "Type": "property",
+        "Properties": {
+          "_name": "LastOwnedBy",
+          "_type": "PropLifeComponent"
+        },
+        "UserData": {
+          "Position": "444,168"
+        }
+      },
+      {
+        "Id": 7,
+        "Type": "property",
+        "Properties": {
+          "_name": "GameObject",
+          "_type": "Sandbox.Component"
+        },
+        "UserData": {
+          "Position": "456,120"
+        }
+      }
+    ],
+    "Links": [
+      {
+        "SrcId": 0,
+        "SrcName": "_signal",
+        "DstId": 1,
+        "DstName": "_signal"
+      },
+      {
+        "SrcId": 0,
+        "SrcName": "prop",
+        "DstId": 1,
+        "DstName": "origin"
+      },
+      {
+        "SrcId": 7,
+        "SrcName": "_result",
+        "DstId": 1,
+        "DstName": "owner"
+      },
+      {
+        "SrcId": 2,
+        "SrcName": "_result",
+        "DstId": 1,
+        "DstName": "position"
+      },
+      {
+        "SrcId": 0,
+        "SrcName": "prop",
+        "DstId": 2,
+        "DstName": "_target"
+      },
+      {
+        "SrcId": 0,
+        "SrcName": "prop",
+        "DstId": 5,
+        "DstName": "_target"
+      },
+      {
+        "SrcId": 5,
+        "SrcName": "_result",
+        "DstId": 6,
+        "DstName": "_target"
+      },
+      {
+        "SrcId": 6,
+        "SrcName": "_result",
+        "DstId": 7,
+        "DstName": "_target"
+      }
+    ]
+  },
+  "__references": [
+    "facepunch.oildrumexplosive#126236"
+  ],
+  "__version": 0
+}

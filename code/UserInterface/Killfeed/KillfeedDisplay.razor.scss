@@ -1,0 +1,35 @@
+@import "../UIStyles/HudStyle.razor.scss";
+
+KillfeedDisplay {
+  width: 100%;
+  height: 50px;
+  opacity: 1;
+
+  .background {
+      width: 100%;
+      height: 100%;
+      padding: 0px;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+  }
+
+  .text {
+      overflow: hidden;
+      font-size: 20px;
+      font-family: Poppins;
+      color: #fff;
+      text-shadow: 1px 1px 2px black;
+  }
+
+  .suicide {
+      align-content: center;
+      justify-content: center;
+      height: 100%;
+  }
+
+  img {
+      width: 50px;
+      height: 50px;
+  }
+}

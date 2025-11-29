@@ -64,12 +64,12 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		if ( System.IO.File.Exists( filePath ) )
 		{
 			var data = System.IO.File.ReadAllText( filePath );
-			Offsets = (Dictionary<string, ModelTransformOffset>) Json.Deserialize( data, Offsets.GetType() );
-			
+			Offsets = (Dictionary<string, ModelTransformOffset>)Json.Deserialize( data, Offsets.GetType() );
+
 			if ( Offsets.ContainsKey( Resource.ResourceName ) )
 			{
 				Log.Info( $"Found existing PreviewTransformOffset for {Resource.ResourceName}" );
-				PreviewTransformOffset = Offsets[ Resource.ResourceName ];
+				PreviewTransformOffset = Offsets[Resource.ResourceName];
 			}
 		}
 
@@ -77,7 +77,7 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		ResourceEditor.WindowTitle = $"Resource - {Resource.ResourcePath}";
 
 		var seralizedResource = Resource.GetSerialized();
-		ResourceControlSheet.Clear(true);
+		ResourceControlSheet.Clear( true );
 		ResourceControlSheet.AddObject( seralizedResource, PropertyFilter );
 	}
 
@@ -374,7 +374,7 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		{
 			Title = "Open Prop Definition",
 			DefaultSuffix = ".pdef",
-		
+
 		};
 		fileDialogue.SetNameFilter( "Prop Definition (*.pdef)" );
 		fileDialogue.SetModeSave();

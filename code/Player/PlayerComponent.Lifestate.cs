@@ -21,7 +21,7 @@ public partial class PlayerComponent
 	{
 		// Cancel anything that is trying to call Spawn() again,
 		// e.g. getting respawned early due to the round restarting.
-		if ( !SpawnCancellationTokenSource.IsCancellationRequested )
+		if ( SpawnCancellationTokenSource is not null && !SpawnCancellationTokenSource.IsCancellationRequested )
 		{
 			SpawnCancellationTokenSource.Cancel();
 		}
@@ -36,12 +36,21 @@ public partial class PlayerComponent
 		ShowPlayer();
 		Hitbox.Enabled = true;
 
-		// Teleport to spawnpoint.
-		var regularSpawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() );
-		if ( regularSpawnpoint is not null )
+		var spawnpoint = (GameObject)null;
+
+		// Prioritise Physbox spawnpoints first.
+		spawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() )?.GameObject;
+		if ( spawnpoint is null )
 		{
-			WorldPosition = regularSpawnpoint.WorldPosition;
-			PlayerController.EyeAngles = regularSpawnpoint.WorldRotation;
+			// Then find a normal Sandbox one.
+			spawnpoint = Game.Random.FromList( Scene.GetAllComponents<SpawnPoint>().ToList() )?.GameObject;
+		}
+
+		// Teleport to spawnpoint.
+		if ( spawnpoint is not null )
+		{
+			WorldPosition = spawnpoint.WorldPosition;
+			PlayerController.EyeAngles = spawnpoint.WorldRotation;
 
 			// If we are a bot, force set our destination.
 			if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
@@ -54,7 +63,7 @@ public partial class PlayerComponent
 		{
 			FreeCam = false;
 			DressPlayer();
-		
+
 			PlayerController.Jump( Vector3.Up );
 		}
 
@@ -106,6 +115,18 @@ public partial class PlayerComponent
 		PlayerController.Renderer.Enabled = false;
 		PlayerController.ColliderObject.Enabled = false;
 		Nametag.Enabled = false;
+
+		// Hide all clothes (or things attached to us)
+		foreach ( var ren in Components.GetAll<ModelRenderer>(
+			         FindMode.Enabled | FindMode.InChildren | FindMode.InDescendants ) )
+		{
+			if ( ren.Tags.Contains( "viewmodel" ) )
+			{
+				continue;
+			}
+
+			ren.Enabled = false;
+		}
 	}
 
 	[Rpc.Broadcast]
@@ -118,8 +139,15 @@ public partial class PlayerComponent
 
 	public override void OnDamage( in DamageInfo damage )
 	{
-		if ( IsProxy ) return;
-		if ( GodMode ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
+
+		if ( GodMode )
+		{
+			return;
+		}
 
 		base.OnDamage( damage );
 	}

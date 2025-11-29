@@ -1,0 +1,38 @@
+@import "../UIStyles/HudStyle.razor.scss";
+
+ChatDisplay {
+  width: 100%;
+  gap: 20px;
+  justify-content: flex-start;
+  align-content: flex-start;
+  flex-shrink: 0;
+
+  .text {
+      overflow: hidden;
+      font-size: 14px;
+      font-family: Poppins;
+      color: #fff;
+      text-shadow: 1px 1px 2px black;
+  }
+
+  img {
+      width: 0;
+      height: 48px;
+      padding-right: 48px;
+  }
+
+  opacity: 1;
+  transition: all 0.1s ease;
+
+  &.hidden {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  
+  &::intro {
+    transform: translateX(10px);
+  }
+  
+  transform: none;
+  
+}

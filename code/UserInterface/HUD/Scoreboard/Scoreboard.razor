@@ -1,0 +1,30 @@
+@using Sandbox;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+
+@if ( Player is null ) return;
+
+<root>
+	<div class="background container">
+		<div class="text server_info" style="font-size: 22px">@ServerDetails</div>
+		<div class="statsHeader">
+			<div class="text stats_header_text" style="position:absolute; right: 283px">Kills</div>
+			<div class="text stats_header_text" style="position:absolute; right: 205px">Deaths</div>
+			<div class="text stats_header_text" style="position:absolute; right: 150px">Ping</div>
+		</div>
+		<div class="container playerContainer">
+			@foreach ( var player in Scene.GetAllComponents<PlayerComponent>().OrderByDescending( x => x.Kills ) )
+			{
+				<PlayerScoreboardPanel Player="@player"></PlayerScoreboardPanel>
+			}
+		</div>
+
+	</div>
+</root>
+
+@code
+{
+	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	public string ServerDetails => $"\"{Networking.ServerName}\" ({Connection.All.Count} / {@Networking.MaxPlayers}) - {GameLogicComponent.GameMode} on {Networking.MapName}";
+}

@@ -1,0 +1,33 @@
+@using Sandbox;
+@using Sandbox.UI;
+@using System;
+@inherits Panel
+@namespace Physbox
+
+<root>
+	<div style="flex-direction:column; margin: auto;">
+		<div class="text title">
+			WINNER
+		</div>
+		<img src="avatar:@( Player.IsPlayer ? Player.Network.Owner.SteamId : (SteamId)0 )"/>
+		<div class="text player">
+			@( Player.IsPlayer ? Player.Network.Owner.DisplayName : Player.BotName )
+		</div>
+	</div>
+
+</root>
+
+@code
+{
+	public GameObject Winner;
+	PlayerComponent Player => Winner.GetComponent<PlayerComponent>();
+
+
+	/// <summary>
+	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
+	/// </summary>
+	protected override int BuildHash()
+	{
+		return HashCode.Combine(  Winner  );
+	}
+}

@@ -44,6 +44,8 @@
       "DistinctAssemblyReferences": []
     },
     "StartupScene": "scenes/main_menu.scene",
-    "DedicatedServerStartupScene": "scenes/server.scene"
+    "DedicatedServerStartupScene": "scenes/server.scene",
+    "SystemScene": "scenes/system.scene",
+    "MapStartupScene": "scenes/main_menu.scene"
   }
 }

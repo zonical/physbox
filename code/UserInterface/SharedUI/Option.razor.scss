@@ -1,0 +1,54 @@
+Option {
+  justify-content: center;
+  align-items: center;
+
+  background-repeat: no-repeat;
+  background-image-tint: #000000ab;
+  animation-name: HudElementAnimation;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+
+  gap: 10px;
+
+  .text {
+    font-weight: bold;
+    font-family: Luckiest Guy;
+    font-size: 24px;
+    color: #fff;
+    filter: drop-shadow(2px 2px #000000ab);
+  }
+
+  i {
+    font-weight: bold;
+    font-size: 24px;
+    color: #fff;
+    filter: drop-shadow(2px 2px #000000ab);
+  }
+
+  :hover {
+    filter: brightness(1.2);
+    background-image-tint: #000000C8;
+  }
+}
+
+@keyframes HudElementAnimation {
+  0% {
+    transform: translate(0px, 2px) rotate(0.5deg);
+  }
+
+  25% {
+    transform: translate(2px, 0px) rotate(-0.5deg);
+  }
+
+  50% {
+    transform: translate(0px, -2px) rotate(0.5deg);
+  }
+
+  75% {
+    transform: translate(-2px, 0px) rotate(-0.5deg);
+  }
+
+  100% {
+    transform: translate(0px, 2px) rotate(0.5deg);
+  }
+}

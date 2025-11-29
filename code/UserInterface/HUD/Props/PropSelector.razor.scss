@@ -1,0 +1,13 @@
+PropSelector {
+  height: 100px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  margin: auto;
+
+  .text {
+    font-size: 16px;
+    justify-content: center;
+    filter: drop-shadow(2px 2px #000000ab);
+  }
+}

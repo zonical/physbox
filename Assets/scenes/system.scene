@@ -1,0 +1,85 @@
+{
+  "__guid": "1a723798-ed19-4742-a92b-0b49bdb26fab",
+  "GameObjects": [
+    {
+      "__guid": "6e1c68cb-92f5-4077-acdf-aca432a5c72d",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Physbox Game Logic",
+      "Position": "0,0,0",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 1,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "GameLogicComponent",
+          "__guid": "01f8f5c2-1036-4afc-ab9a-3a7ddfd50a2a",
+          "__enabled": true,
+          "GameModeComponent": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "TimeLeft": -17179,
+          "TimeShouldEnd": -1
+        },
+        {
+          "__type": "KillfeedManagerComponent",
+          "__guid": "13bd93e8-de06-4bae-a861-83c8ec08a643",
+          "__enabled": true,
+          "Deaths": [],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        },
+        {
+          "__type": "ChatManagerComponent",
+          "__guid": "c4b780b4-c201-4472-be07-e40b6ebf5a60",
+          "__enabled": true,
+          "Messages": [],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        }
+      ],
+      "Children": []
+    }
+  ],
+  "SceneProperties": {
+    "NetworkInterpolation": true,
+    "TimeScale": 1,
+    "WantsSystemScene": true,
+    "Metadata": {},
+    "NavMesh": {
+      "Enabled": false,
+      "IncludeStaticBodies": true,
+      "IncludeKeyframedBodies": true,
+      "EditorAutoUpdate": true,
+      "AgentHeight": 64,
+      "AgentRadius": 16,
+      "AgentStepSize": 18,
+      "AgentMaxSlope": 40,
+      "ExcludedBodies": "",
+      "IncludedBodies": ""
+    }
+  },
+  "ResourceVersion": 3,
+  "Title": null,
+  "Description": null,
+  "__references": [],
+  "__version": 3
+}

@@ -1,0 +1,108 @@
+@using System
+@using Sandbox;
+@using Sandbox.UI;
+@attribute [Title( "Player Pause Menu Element" )]
+@attribute [Icon( "screen_share" )]
+@attribute [Group( "Physbox" )]
+@attribute [Tint( EditorTint.Yellow )]
+@inherits PanelComponent
+@namespace Physbox
+
+@if ( IsProxy ) return;
+
+<root>
+	<PauseMenuLanding></PauseMenuLanding>
+	<div class="text_container">
+		<div class="game_text" style="font-size: 32px">Physbox (alpha)</div>
+		<div class="game_text">Made by ZoNiCaL</div>
+	</div>
+
+	<div class="text_container_bottom">
+		<div class="game_text">Server: "@Networking.ServerName" on map "@PhysboxUtilites.GetCurrentMapName()"</div>
+		<div class="game_text">Current Game
+			Mode: @( PhysboxUtilites.GetGameModeIcon( GameLogicComponent.GameMode ) ) @( GameLogicComponent.GameMode )</div>
+		<div class="game_text">Props Spawned: @Props</div>
+		<div class="game_text">Host FPS: @FPS</div>
+	</div>
+
+</root>
+
+@code
+{
+	public static bool Paused = false;
+	int Props => Scene?.GetAllComponents<PropLifeComponent>().Count() ?? 0;
+	ushort FPS = 0;
+	static TimeSince FPSUpdate;
+
+	public static void Open()
+	{
+		var panel = Game.ActiveScene.GetAllComponents<PauseMenu>().Where( x => x.Network.OwnerId == Connection.Local.Id ).FirstOrDefault();
+		if ( panel is null ) return;
+
+		panel.Panel.Style.Display = DisplayMode.Flex;
+		panel.Panel.Style.Opacity = 0;
+		panel.Panel.Style.PointerEvents = PointerEvents.All;
+
+		Paused = true;
+		FPSUpdate = 0;
+	}
+
+	public static void Close()
+	{
+		var panel = Game.ActiveScene.GetAllComponents<PauseMenu>().Where( x => x.Network.OwnerId == Connection.Local.Id ).FirstOrDefault();
+		if ( panel is null ) return;
+
+		panel.Panel.Style.Display = DisplayMode.None;
+		panel.Panel.Style.PointerEvents = PointerEvents.None;
+
+		Paused = false;
+	}
+
+	protected override void OnStart()
+	{
+		Paused = false;
+		Flags = Flags | ComponentFlags.NotNetworked;
+	}
+
+	protected override void OnEnabled()
+	{
+		Panel.Style.Opacity = 0;
+		Panel.Style.Display = DisplayMode.None;
+		Panel.Style.PointerEvents = PointerEvents.None;
+	}
+
+
+	protected override void OnUpdate()
+	{
+		if ( IsProxy ) return;
+
+		if ( FPSUpdate.Relative > 0.5f )
+		{
+			FPS = Networking.IsHost ? (ushort)(1 / Time.Delta) : @Networking.HostStats.Fps;
+			FPSUpdate = 0;
+		}
+
+		// I could do this with transitions, intros/outros in CSS, but I really can't be fucked to
+		// learn how to wrangle that bullshit. It's easier to do this with code.
+		Panel.Style.Opacity = float.Lerp( Panel.Style.Opacity!.Value, Paused ? 1 : 0, Time.Delta * 15 );
+
+		if ( Input.EscapePressed )
+		{
+			Input.EscapePressed = false;
+
+			if ( !Paused )
+			{
+				Open();
+			}
+			else
+			{
+				Close();
+			}
+		}
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( Props, Paused, FPS );
+	}
+}

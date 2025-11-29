@@ -7,24 +7,16 @@ using Editor;
 [DropObject( "propdefinition", "pdef", "pdef_c" )]
 partial class PropDefinitionDropObject : BaseDropObject
 {
-	GameResource Resource;
+	PropDefinitionResource Resource;
 
 	protected override Task Initialize( string dragData, CancellationToken token )
 	{
-		Resource = InstallAsset( dragData, token ).Result.LoadResource<GameResource>();
+		Resource = InstallAsset( dragData, token ).Result.LoadResource<PropDefinitionResource>();
 		return Task.CompletedTask;
 	}
 
 	public override Task OnDrop()
 	{
-		// Create a prop in front of us.
-		var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/breakable_prop.prefab" );
-		if ( prefab is null )
-		{
-			Log.Error( "Could not find prefab file." );
-			return Task.CompletedTask;
-		}
-
 		using var scene = SceneEditorSession.Scope();
 
 		using ( SceneEditorSession.Active.UndoScope( "Drop Prop" ).WithGameObjectCreations().Push() )
@@ -39,7 +31,7 @@ partial class PropDefinitionDropObject : BaseDropObject
 			var rigidBody = GameObject.AddComponent<Rigidbody>();
 			var life = GameObject.AddComponent<PropLifeComponent>();
 			GameObject.AddComponent<ObjectCollisionListenerComponent>();
-			
+
 			// Set our resource (this gets converted to PropDefinitionResource on the game side).
 			var defComp = GameObject.AddComponent<PropDefinitionComponent>();
 			defComp.Definition = Resource;

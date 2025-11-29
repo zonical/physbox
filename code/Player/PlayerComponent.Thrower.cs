@@ -1,41 +1,70 @@
-using Physbox;
-using Sandbox.Audio;
 using System;
 using System.Threading;
+using Physbox;
+using Sandbox.Audio;
+using Sandbox.Services;
 
 public partial class PlayerComponent
 {
-	// ==================== [ PROPERTIES ] ====================
-	[Property, ReadOnly, Feature( "Thrower" ), Title( "Object Currently Held" )] public GameObject HeldGameObject;
-	[Property, ReadOnly, Feature( "Thrower" ), Title( "Object Under Crosshair" )] public GameObject CurrentlyLookingAtObject;
-	[Property, ReadOnly, Feature( "Thrower" ), Title( "Last Held Object" )] public GameObject LastHeldGameObject;
-	[Property, Feature( "Thrower" )] public bool CanPickupObjects { get; private set; } = true;
-	[Property, Feature( "Thrower" )] public bool CanThrowObject { get; private set; } = true;
-	[Property, Feature( "Thrower" )] public Vector3 HeldObjectOffset = new();
+	private Angles AdditionalPropRotation;
+	public float BuiltUpForce;
+	[Property] [Feature( "Thrower" )] public Gradient ForceColorGradient = new();
 
-	[Property, Feature( "Thrower" )] public float ForcePerFrame = 0.01f;
-	[Property, Feature( "Thrower" )] public float MaxForce = 2.75f;
-	[Property, Feature( "Thrower" )] public Gradient ForceColorGradient = new Gradient();
-
-	// ==================== [ VARIABLES ] ====================
-	private PropDefinitionResource HeldProp => HeldGameObject?.GetComponent<PropDefinitionComponent>().Definition as PropDefinitionResource;
-	private Angles AdditionalPropRotation = new Angles();
-	public int Throws = 0;
-	public float BuiltUpForce = 0;
+	[Property] [Feature( "Thrower" )] public float ForcePerFrame = 0.01f;
+	[Property] [Feature( "Thrower" )] public Vector3 HeldObjectOffset = new();
+	[Property] [Feature( "Thrower" )] public float MaxForce = 2.75f;
+	public CancellationToken PropCancellationToken = CancellationToken.None;
 
 	public CancellationTokenSource PropCancellationTokenSource;
-	public CancellationToken PropCancellationToken = CancellationToken.None;
+
+	public int Throws;
+
+	// ==================== [ PROPERTIES ] ====================
+	[Property]
+	[Feature( "Thrower" )]
+	[Title( "Object Currently Held" )]
+	[Sync]
+	public GameObject HeldGameObject { get; set; }
+
+	[Property]
+	[Feature( "Thrower" )]
+	[Title( "Object Under Crosshair" )]
+	[Sync]
+	public GameObject CurrentlyLookingAtObject { get; set; }
+
+	[Property]
+	[Feature( "Thrower" )]
+	[Title( "Last Held Object" )]
+	[Sync]
+	public GameObject LastHeldGameObject { get; set; }
+
+	[Property] [Feature( "Thrower" )] public bool CanPickupObjects { get; private set; } = true;
+	[Property] [Feature( "Thrower" )] public bool CanThrowObject { get; private set; } = true;
+
+	// ==================== [ VARIABLES ] ====================
+	private PropDefinitionResource HeldProp => HeldGameObject?.GetComponent<PropDefinitionComponent>().Definition;
 
 	private void DrawCrosshair()
 	{
-		if ( Hud is null || !Hud.Enabled || !HudRoot.DrawHud ) return;
-		Camera?.Hud.DrawCircle( Screen.Size / 2, 4, (CurrentlyLookingAtObject is null) ? Color.White : Color.Yellow );
+		if ( Hud is null || !Hud.Enabled || !HudRoot.DrawHud )
+		{
+			return;
+		}
+
+		Camera?.Hud.DrawCircle( Screen.Size / 2, 4, CurrentlyLookingAtObject is null ? Color.White : Color.Yellow );
 	}
 
 	private void HandleThrowerInput()
 	{
-		if ( IsProxy ) return;
-		if ( !IsAlive ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
+
+		if ( !IsAlive )
+		{
+			return;
+		}
 
 		if ( Input.Pressed( "attack1" ) )
 		{
@@ -59,7 +88,8 @@ public partial class PlayerComponent
 					{
 						using ( Rpc.FilterInclude( c => c.Id == Connection.Local.Id ) )
 						{
-							chat.SendMessage( MessageType.System, "Cannot throw prop. Too close to a wall or another object." );
+							chat.SendMessage( MessageType.System,
+								"Cannot throw prop. Too close to a wall or another object." );
 						}
 					}
 
@@ -89,27 +119,36 @@ public partial class PlayerComponent
 
 	private void PositionHeldObject()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		if ( IsPlayer )
 		{
-			var cameraOffset = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + (Camera.WorldRotation.Forward * 64);
-			var targetPos = cameraOffset + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
+			var cameraOffset = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + Camera.WorldRotation.Forward * 64;
+			var targetPos = cameraOffset +
+			                HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
 
 			HeldGameObject.WorldPosition = targetPos;
-			HeldGameObject.WorldRotation = Camera.WorldRotation * HeldProp.HeldRotationOffset.ToRotation() * AdditionalPropRotation.ToRotation();
+			HeldGameObject.WorldRotation = Camera.WorldRotation * HeldProp.HeldRotationOffset.ToRotation() *
+			                               AdditionalPropRotation.ToRotation();
 		}
 		else if ( IsBot )
 		{
 			var zOffset = 56; // 72 (eye height) - 16
-			var targetPos = WorldPosition + new Vector3( 0, 0, zOffset ) + (WorldRotation.Forward * 64);
-			HeldGameObject.WorldPosition = targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, WorldRotation );
+			var targetPos = WorldPosition + new Vector3( 0, 0, zOffset ) + WorldRotation.Forward * 64;
+			HeldGameObject.WorldPosition =
+				targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, WorldRotation );
 		}
 	}
 
 	private void FindPotentialTarget()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		var trace = GenerateTrace();
 
@@ -121,8 +160,8 @@ public partial class PlayerComponent
 
 		// We've found something valid, put a highlight on it.
 		if ( trace.GameObject is not null && (
-			trace.GameObject.Tags.Contains( PhysboxConstants.BreakablePropTag ) ||
-			trace.GameObject.GetComponent<WorldLifeComponent>() is not null) )
+			    trace.GameObject.Tags.Contains( PhysboxConstants.BreakablePropTag ) ||
+			    trace.GameObject.GetComponent<WorldLifeComponent>() is not null) )
 		{
 			CurrentlyLookingAtObject = trace.GameObject;
 			var outline = CurrentlyLookingAtObject.AddComponent<HighlightOutline>();
@@ -134,7 +173,10 @@ public partial class PlayerComponent
 
 	private void FindNewTarget()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		var trace = GenerateTrace();
 
@@ -157,9 +199,9 @@ public partial class PlayerComponent
 		BroadcastPickupAnimation();
 
 		// Cancel Invoke token if we're picking up this prop again.
-		if ( HeldGameObject.Id == LastHeldGameObject?.Id && 
-			PropCancellationToken != CancellationToken.None && 
-			PropCancellationToken.CanBeCanceled )
+		if ( HeldGameObject.Id == LastHeldGameObject?.Id &&
+		     PropCancellationToken != CancellationToken.None &&
+		     PropCancellationToken.CanBeCanceled )
 		{
 			//Log.Info( "Cancelled." );
 			PropCancellationTokenSource.Cancel();
@@ -175,7 +217,7 @@ public partial class PlayerComponent
 			// Alter our speed.
 			if ( PlayerConvars.SpeedAffectedByMass && IsPlayer )
 			{
-				var def = propLifeComponent.DefinitionComponent.Definition as PropDefinitionResource;
+				var def = propLifeComponent.DefinitionComponent.Definition;
 				var subtractAmount = float.Round( float.Sqrt( def.Mass ) * 10 );
 
 				PlayerController.RunSpeed = float.Max( PlayerController.RunSpeed - subtractAmount, 50 );
@@ -201,11 +243,12 @@ public partial class PlayerComponent
 		foreach ( var collider in HeldGameObject.GetComponents<Collider>() )
 		{
 			collider.Enabled = false;
+			collider.ColliderFlags = ColliderFlags.IgnoreTraces;
 		}
 
 		if ( IsPlayer )
 		{
-			Sandbox.Services.Stats.Increment( PhysboxConstants.PropsPickedUpStat, 1 );
+			Stats.Increment( PhysboxConstants.PropsPickedUpStat, 1 );
 		}
 	}
 
@@ -240,7 +283,10 @@ public partial class PlayerComponent
 
 	private GameObject FreeAndReturnHeldObject()
 	{
-		if ( HeldGameObject is null ) return null;
+		if ( HeldGameObject is null )
+		{
+			return null;
+		}
 
 		BroadcastPutDownAnimation();
 
@@ -278,6 +324,7 @@ public partial class PlayerComponent
 		foreach ( var collider in go.GetComponents<Collider>( true ) )
 		{
 			collider.Enabled = true;
+			collider.ColliderFlags = 0;
 		}
 
 		if ( go.Components.TryGet<Rigidbody>( out var rigidBody ) )
@@ -294,7 +341,10 @@ public partial class PlayerComponent
 
 	public void ThrowHeldObject()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		var go = FreeAndReturnHeldObject();
 		RestoreFormallyHeldObject( go );
@@ -321,17 +371,24 @@ public partial class PlayerComponent
 			{
 				viewmodel.Parameters.Set( "b_attack", true );
 			}
-			
+
 			Sound.Play( "sounds/player/swoosh.sound" );
 		}
-		
+
 		ResetSpeed();
 	}
 
 	public void DropObject()
 	{
-		if ( IsProxy ) return;
-		if ( HeldGameObject is null ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
+
+		if ( HeldGameObject is null )
+		{
+			return;
+		}
 
 		var go = FreeAndReturnHeldObject();
 		RestoreFormallyHeldObject( go );
@@ -355,10 +412,11 @@ public partial class PlayerComponent
 		if ( PhysboxDebug.DebugThrowerPreview )
 		{
 			Camera.Hud.DrawText( $"Thrower Preview Debug\n" +
-				$"Distance: {distance}\n" +
-				$"Velocity: {velocity} (len: {velocity.Length})\n" +
-				$"Time: {time}\n" +
-				$"Eq: 0.5 * {Scene.PhysicsWorld.Gravity.z} * {time * time}", 16, Color.White, Screen.Size * 0.05 );
+			                     $"Distance: {distance}\n" +
+			                     $"Velocity: {velocity} (len: {velocity.Length})\n" +
+			                     $"Time: {time}\n" +
+			                     $"Eq: 0.5 * {Scene.PhysicsWorld.Gravity.z} * {time * time}", 16, Color.White,
+				Screen.Size * 0.05 );
 		}
 
 		// I swear to god if we EVER need to account for any other gravity
@@ -374,7 +432,7 @@ public partial class PlayerComponent
 		if ( IsProxy ) return;
 		if ( Preview is null || !Preview.IsValid() ) return;
 		//if ( PreviewLine is null || !PreviewLine.IsValid() ) return;
-		
+
 		var trace = GeneratePreviewTrace(); // Should probably make this a box trace.
 		var pos = trace.Hit ? trace.HitPosition : trace.EndPosition;
 		var distanceDropped = CalculateDistanceDroppedForPreview( trace.Distance );
@@ -390,7 +448,10 @@ public partial class PlayerComponent
 
 	private void ThrowCheck()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		var model = HeldGameObject.GetComponent<ModelRenderer>().Model ?? Model.Cube;
 		var trace = GenerateValidThrowTrace( model );
@@ -409,13 +470,15 @@ public partial class PlayerComponent
 			CanThrowObject = true;
 			highlight.Color = Color.Green;
 			highlight.ObscuredColor = Color.White.WithAlpha( 0.1f );
-
 		}
 	}
 
 	private void ResetSpeed()
 	{
-		if ( IsProxy ) return;
+		if ( IsProxy )
+		{
+			return;
+		}
 
 		PlayerController.RunSpeed = PlayerConvars.RunSpeed;
 		PlayerController.WalkSpeed = PlayerConvars.WalkSpeed;
@@ -424,7 +487,7 @@ public partial class PlayerComponent
 
 	private SceneTraceResult GenerateTrace()
 	{
-		var vector = (Camera is not null) ? Camera.WorldPosition : Vector3.Zero;
+		var vector = Camera is not null ? Camera.WorldPosition : Vector3.Zero;
 		var ray = new Ray( vector, Camera?.WorldRotation.Forward ?? Vector3.Zero );
 
 		var trace = Scene.Trace.Ray( ray, 64 * 3 )
@@ -433,14 +496,14 @@ public partial class PlayerComponent
 				PhysboxConstants.DebrisTag,
 				PhysboxConstants.HeldPropTag,
 				PhysboxConstants.RagdollTag )
-			.IgnoreGameObject( Hitbox )
 			.Run();
 
 		return trace;
 	}
+
 	private SceneTraceResult GeneratePreviewTrace()
 	{
-		var vector = (Camera is not null) ? Camera.WorldPosition : Vector3.Zero;
+		var vector = Camera is not null ? Camera.WorldPosition : Vector3.Zero;
 		var ray = new Ray( vector, Camera?.WorldRotation.Forward ?? Vector3.Zero );
 
 		var trace = Scene.Trace.Ray( ray, 4096 )
@@ -449,7 +512,6 @@ public partial class PlayerComponent
 				PhysboxConstants.HeldPropTag )
 			.IgnoreGameObject( HeldGameObject )
 			.IgnoreGameObject( GameObject )
-			.IgnoreGameObject( Hitbox )
 			.Run();
 
 		return trace;
@@ -457,7 +519,7 @@ public partial class PlayerComponent
 
 	private SceneTraceResult GenerateValidThrowTrace( Model model )
 	{
-		var ray = new Ray( Camera.WorldPosition + (Camera.WorldRotation.Forward * 8), Camera.WorldRotation.Forward );
+		var ray = new Ray( Camera.WorldPosition + Camera.WorldRotation.Forward * 8, Camera.WorldRotation.Forward );
 
 		var trace = Scene.Trace.Box(
 				model.Bounds,
@@ -469,7 +531,6 @@ public partial class PlayerComponent
 				PhysboxConstants.PlayerTag )
 			.IgnoreGameObject( HeldGameObject )
 			.IgnoreGameObject( GameObject )
-			.IgnoreGameObject( Hitbox )
 			.Run();
 
 		return trace;

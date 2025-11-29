@@ -1,0 +1,17 @@
+﻿.text {
+  font-family: Luckiest Guy;
+  color: #fff;
+}
+
+.background {
+  .with_padding {
+    padding: 20px;
+  }
+
+  .blur {
+    backdrop-filter: blur(5px);
+  }
+
+  background-color: #000000ab;
+  border-radius: 10px;
+}

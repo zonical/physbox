@@ -1,0 +1,40 @@
+@using Sandbox.UI
+@using System
+@inherits Sandbox.UI.Panel
+@namespace Physbox
+<root>
+	<div class="window">
+		<div class="top_bar">
+			<div class="text title_text">@Title</div>
+		</div>
+		<div ElementName="separator" style="height: 4px; background-color: grey"></div>
+		<div ElementName="content">
+			@ChildContent
+		</div>
+	</div>
+	<div class="bottom">
+		<div class="text">
+			Press
+			<Image Texture=@( Texture.Load( "/ui/glyphs/default/escape.svg?w=32&h=32" ) )/>
+			to close.
+		</div>
+	</div>
+</root>
+
+@code
+{
+	public string Title { get; set; } = "Window";
+
+	public Action OnClose { get; set; }
+
+	public void Close()
+	{
+		Delete();
+		OnClose?.Invoke();
+	}
+
+	protected override void OnEscape( PanelEvent e )
+	{
+		Close();
+	}
+}

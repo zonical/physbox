@@ -5240,7 +5240,8 @@
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "PackageIdent": ""
         }
       ],
       "Children": []
@@ -7895,13 +7896,13 @@
                         "DstName": "_target"
                       },
                       {
-                        "Id": 23,
+                        "Id": 11,
                         "Value": "This message came from a button!",
                         "DstId": 4,
                         "DstName": "text"
                       },
                       {
-                        "Id": 24,
+                        "Id": 12,
                         "Value": "System",
                         "DstId": 4,
                         "DstName": "type"
@@ -8703,7 +8704,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 12,
+                        "Id": 6,
                         "Value": true,
                         "DstId": 2,
                         "DstName": "state"
@@ -9159,7 +9160,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 11,
+                        "Id": 5,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -9615,7 +9616,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 11,
+                        "Id": 5,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -10072,7 +10073,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 11,
+                        "Id": 5,
                         "Value": false,
                         "DstId": 1,
                         "DstName": "state"
@@ -11095,7 +11096,7 @@
       "__guid": "0beb96aa-26a1-403f-aeec-89e61df40692",
       "__version": 1,
       "Flags": 0,
-      "Name": "Breakable Prop (Spectacular Crate)",
+      "Name": "Breakable Prop (Explosive Oil Drum)",
       "Position": "527.9999,-283.9999,16.00055",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
@@ -11116,7 +11117,7 @@
           "MaterialGroup": null,
           "MaterialOverride": null,
           "Materials": null,
-          "Model": "models/sbox_props/wooden_crate/wooden_crate.vmdl",
+          "Model": "models/sbox_props/oil_drum/oil_drum_explosive.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -11140,7 +11141,7 @@
           "Elasticity": null,
           "Friction": null,
           "IsTrigger": false,
-          "Model": "models/sbox_props/wooden_crate/wooden_crate.vmdl",
+          "Model": "models/sbox_props/oil_drum/oil_drum_explosive.vmdl",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -11230,7 +11231,7 @@
           "__type": "Physbox.PropDefinitionComponent",
           "__guid": "4938b075-be82-4b8a-a07f-4670f0b59bb8",
           "__enabled": true,
-          "Definition": "props/crate.pdef",
+          "Definition": "props/exploding_barrel.pdef",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -11251,7 +11252,8 @@
       "Author": "ZoNiCaL",
       "Image": null,
       "IsVisibleInMenu": "True",
-      "GameModes": ""
+      "GameModes": "",
+      "PackageIdent": ""
     },
     "NavMesh": {
       "Enabled": true,
@@ -11270,7 +11272,7 @@
   "Title": "Testbed",
   "Description": null,
   "__references": [
-    "facepunch.wooden_crate#108393"
+    "facepunch.oildrumexplosive#126236"
   ],
   "__version": 3
 }

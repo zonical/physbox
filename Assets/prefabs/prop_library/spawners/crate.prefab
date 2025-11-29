@@ -1,0 +1,45 @@
+{
+  "RootObject": {
+    "__guid": "bd82d88f-9f24-4803-853c-6db5335375d5",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "crate",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "PropSpawnerComponent",
+        "__guid": "10740e66-661d-48ac-8bfa-52b3d3d8593d",
+        "__enabled": true,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Prop": "props/crate.pdef",
+        "Sleeping": false,
+        "SpawnImmediately": true,
+        "TraceDirection": "0,0,1",
+        "TraceDistance": 64,
+        "TraceOffset": "0,0,0",
+        "TraceRadius": 32
+      }
+    ],
+    "Children": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": true,
+  "MenuPath": "Physbox/Prop Library/Spawners/Crate",
+  "MenuIcon": "inventory",
+  "DontBreakAsTemplate": false,
+  "__references": [],
+  "__version": 2
+}

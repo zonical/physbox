@@ -1,0 +1,60 @@
+{
+  "RootObject": {
+    "__guid": "ef1d13e3-6ca8-46d0-a791-60cf27709a2f",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "spawnpoint",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "",
+    "Enabled": true,
+    "NetworkMode": 2,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "NetworkTransmit": true,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "PhysboxSpawnpoint",
+        "__guid": "e63e1206-0d37-4a7d-97e7-293a91a431db",
+        "__enabled": true,
+        "AnyGameMode": false,
+        "GameModes": [],
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null
+      }
+    ],
+    "Children": [],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    },
+    "__variables": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": true,
+  "MenuPath": "Physbox/Spawnpoint",
+  "MenuIcon": "person_add",
+  "DontBreakAsTemplate": false,
+  "__references": [],
+  "__version": 2
+}

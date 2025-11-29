@@ -1,1 +1,1 @@
-{"Name":"Sturdy Pallet","Model":"models/sbox_props/pallet/pallet.vmdl","Mass":75,"MaxHealth":100,"HeldPositionOffset":"8,0,16","HeldRotationOffset":"90,180,0","KillfeedIcon":"materials/ui/props_generated/pallet.png","__references":["facepunch.pallet#108387"],"__version":0}
+{"Name":"Sturdy Pallet","Model":"models/sbox_props/pallet/pallet.vmdl","Mass":75,"MaxHealth":100,"HeldPositionOffset":"8,0,16","HeldRotationOffset":"90,180,0","KillfeedIcon":"materials/ui/props_generated/pallet.png","OnPropBroken":null,"__references":["facepunch.pallet#108387"],"__version":0}

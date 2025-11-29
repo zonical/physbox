@@ -1,0 +1,50 @@
+HeldProp {
+  position: absolute;
+  bottom: 20px;
+  right: 40px;
+  width: 250px;
+  height: 150px;
+  justify-content: center;
+  background-repeat: no-repeat;
+  background-image: url(materials/ui/hud_background_4.png);
+  background-size: 250px 150px;
+  background-image-tint: #000000ab;
+  animation-name: HudElementAnimation;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-delay: -6s;
+
+  .title {
+    font-size: 16px;
+    justify-content: center;
+    filter: drop-shadow(2px 2px #000000ab);
+  }
+
+  .health {
+    font-size: 28px;
+    justify-content: center;
+    filter: drop-shadow(2px 2px #000000ab);
+  }
+}
+
+@keyframes HudElementAnimation {
+  0% {
+    transform: translate(0px, 2px) rotate(0.5deg);
+  }
+
+  25% {
+    transform: translate(2px, 0px) rotate(-0.5deg);
+  }
+
+  50% {
+    transform: translate(0px, -2px) rotate(0.5deg);
+  }
+
+  75% {
+    transform: translate(-2px, 0px) rotate(-0.5deg);
+  }
+
+  100% {
+    transform: translate(0px, 2px) rotate(0.5deg);
+  }
+}
