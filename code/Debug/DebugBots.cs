@@ -41,8 +41,7 @@ public static partial class PhysboxDebug
 
 		foreach ( var bot in Game.ActiveScene.GetAllComponents<PlayerComponent>().Where( x => x.IsBot ) )
 		{
-			var damageinfo = new DamageInfo( 9999, bot.GameObject, null );
-			bot.OnDamage( damageinfo );
+			bot.CommitSuicide();
 		}
 	}
 }

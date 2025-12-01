@@ -9,7 +9,7 @@
   "OnPropBroken": {
     "__version": 9,
     "__guid": "8291ea87-52b1-43cf-a97e-192b7267ad70",
-    "__changeId": 30,
+    "__changeId": 65,
     "UserData": {
       "Title": "Explode",
       "ReferencedComponentTypes": [],
@@ -22,40 +22,29 @@
         "Id": 0,
         "Type": "input",
         "UserData": {
-          "Position": "12,0"
+          "Position": "-36,0"
         }
       },
       {
         "Id": 1,
         "Type": "physbox.create_explosion",
         "UserData": {
-          "Position": "552,-0"
-        }
-      },
-      {
-        "Id": 2,
-        "Type": "property",
-        "Properties": {
-          "_name": "WorldPosition",
-          "_type": "Sandbox.GameObject"
-        },
-        "UserData": {
-          "Position": "216,24"
+          "Position": "420,0"
         }
       },
       {
         "Id": 4,
         "Type": "comment",
         "UserData": {
-          "Position": "-12,-84",
-          "Size": "780,324",
+          "Position": "-60,-84",
+          "Size": "672,216",
           "Title": "Exploding Barrel Prop",
           "Layer": 1,
           "Description": "Creates an explosion GameObject at the prop position, then triggers the explosion."
         }
       },
       {
-        "Id": 5,
+        "Id": 14,
         "Type": "call",
         "Properties": {
           "_isStatic": false,
@@ -64,29 +53,7 @@
           "T": "PropLifeComponent"
         },
         "UserData": {
-          "Position": "216,120"
-        }
-      },
-      {
-        "Id": 6,
-        "Type": "property",
-        "Properties": {
-          "_name": "LastOwnedBy",
-          "_type": "PropLifeComponent"
-        },
-        "UserData": {
-          "Position": "444,168"
-        }
-      },
-      {
-        "Id": 7,
-        "Type": "property",
-        "Properties": {
-          "_name": "GameObject",
-          "_type": "Sandbox.Component"
-        },
-        "UserData": {
-          "Position": "456,120"
+          "Position": "132,24"
         }
       }
     ],
@@ -98,45 +65,15 @@
         "DstName": "_signal"
       },
       {
-        "SrcId": 0,
-        "SrcName": "prop",
-        "DstId": 1,
-        "DstName": "origin"
-      },
-      {
-        "SrcId": 7,
+        "SrcId": 14,
         "SrcName": "_result",
         "DstId": 1,
-        "DstName": "owner"
-      },
-      {
-        "SrcId": 2,
-        "SrcName": "_result",
-        "DstId": 1,
-        "DstName": "position"
+        "DstName": "propObject"
       },
       {
         "SrcId": 0,
         "SrcName": "prop",
-        "DstId": 2,
-        "DstName": "_target"
-      },
-      {
-        "SrcId": 0,
-        "SrcName": "prop",
-        "DstId": 5,
-        "DstName": "_target"
-      },
-      {
-        "SrcId": 5,
-        "SrcName": "_result",
-        "DstId": 6,
-        "DstName": "_target"
-      },
-      {
-        "SrcId": 6,
-        "SrcName": "_result",
-        "DstId": 7,
+        "DstId": 14,
         "DstName": "_target"
       }
     ]

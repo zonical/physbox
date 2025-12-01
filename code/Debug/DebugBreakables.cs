@@ -78,7 +78,7 @@ public static partial class PhysboxDebug
 		}
 
 		player.Kills += kills;
-		player.Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( player.GameObject, player.Kills ) );
+		player.Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( player, player.Kills ) );
 	}
 
 	[ConCmd( "pb_debug_break_held_prop", ConVarFlags.Cheat )]

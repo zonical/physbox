@@ -245,11 +245,11 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 		var damage = (int)float.Sqrt( @event.AbsoluteSpeed * 0.8f );
 
-		var propLife = @event.GetLifeComponent( prop );
-		propLife?.OnDamage( new DamageInfo( damage, world, null ) );
+		var propLife = @event.GetLifeComponent( prop ) as PropLifeComponent;
+		propLife?.OnDamage( new PhysboxDamageInfo { Prop = propLife?.PropDefinition, Damage = damage } );
 
-		var worldLife = @event.GetLifeComponent( world );
-		worldLife?.OnDamage( new DamageInfo( damage, prop, null ) );
+		var worldLife = @event.GetLifeComponent( world ) as WorldLifeComponent;
+		worldLife?.OnDamage( new PhysboxDamageInfo { Prop = propLife?.PropDefinition, Damage = damage } );
 	}
 
 	private static void ProcessPropAndPropCollision( CollisionEvent @event, GameObject propA, GameObject propB )
@@ -259,22 +259,21 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			return;
 		}
 
-		var lifeA = @event.GetLifeComponent( propA );
-		if ( lifeA is not null )
+		if ( @event.GetLifeComponent( propA ) is PropLifeComponent lifeA &&
+		     @event.GetLifeComponent( propB ) is PropLifeComponent lifeB )
 		{
-			var probB_RB = @event.GetRigidbody( propB );
+			var propADef = lifeA.PropDefinition;
+			var propBDef = lifeB.PropDefinition;
 
-			var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probB_RB?.MassOverride ?? 0 );
-			lifeA.OnDamage( new DamageInfo( damage, propB, propB ) );
-		}
+			// Prop A dealing damage to Prop B.
+			var aRigidBody = @event.GetRigidbody( propA );
+			var damageToB = (int)float.Sqrt( @event.AbsoluteSpeed + aRigidBody?.MassOverride ?? 0 );
+			lifeB.OnDamage( new PhysboxDamageInfo { Damage = damageToB, Prop = propADef } );
 
-		var lifeB = @event.GetLifeComponent( propB );
-		if ( lifeB is not null )
-		{
-			var probA_RB = @event.GetRigidbody( propA );
-
-			var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probA_RB?.MassOverride ?? 0 );
-			lifeB.OnDamage( new DamageInfo( damage, propA, propA ) );
+			// Prop B dealing damage to Prop A.
+			var bRigidBody = @event.GetRigidbody( propB );
+			var damageToA = (int)float.Sqrt( @event.AbsoluteSpeed + bRigidBody?.MassOverride ?? 0 );
+			lifeA.OnDamage( new PhysboxDamageInfo { Damage = damageToA, Prop = propBDef } );
 		}
 	}
 
@@ -285,11 +284,11 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			return;
 		}
 
-		var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) * 0.5f;
+		var damage = float.Sqrt( @event.AbsoluteSpeed ) * 0.25f;
 
 		if ( @event.GetLifeComponent( player ) is PlayerComponent life )
 		{
-			life.RequestDamage( new DamageInfo( damage, world, null ) );
+			life.RequestDamage( new PhysboxDamageInfo { Victim = life, Prop = null, Damage = (int)damage } );
 			life.PlayFallDamageSound( player.WorldPosition );
 		}
 	}
@@ -302,8 +301,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 		}
 
 		var propLife = @event.GetLifeComponent( prop ) as PropLifeComponent;
-		var attacker = (GameObject)null;
-		attacker = propLife?.LastOwnedBy?.GameObject;
+		var attacker = propLife?.LastOwnedBy?.GameObject;
 
 		// Don't damage the player if we don't have someone who last owned us.
 		// Prevent us from taking damage from idle props.
@@ -322,18 +320,20 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				return;
 			}
 
-			var propDamage = (int)float.Sqrt( @event.AbsoluteSpeed );
-			propLife.OnDamage( new DamageInfo( propDamage, null, null ) );
-
-			var playerDamage = (int)float.Sqrt( @event.AbsoluteSpeed ) + 10;
-
+			// Deal damage to the player.
 			var rigidBody = @event.GetRigidbody( prop );
-			playerDamage += (int)float.Sqrt( rigidBody?.MassOverride ?? 0 );
+			var playerDamage = (int)float.Sqrt( @event.AbsoluteSpeed + rigidBody?.MassOverride ?? 0 );
+			var attackerPlayer = attacker.GetComponent<PlayerComponent>();
+			victim.RequestDamage( new PhysboxDamageInfo
+			{
+				Victim = victim, Attacker = attackerPlayer, Damage = playerDamage, Prop = propLife.PropDefinition
+			} );
 
-			victim.RequestDamage( new DamageInfo( playerDamage, attacker, prop ) );
+			// Deal damage to the prop.
+			var propDamage = (int)float.Sqrt( @event.AbsoluteSpeed );
+			propLife.OnDamage( new PhysboxDamageInfo { Damage = propDamage } );
 
 			// Let the attacker know that we've hit the player by sending a hitsound.
-			var attackerPlayer = attacker.GetComponent<PlayerComponent>();
 			if ( attackerPlayer is not null && attackerPlayer.IsPlayer )
 			{
 				attackerPlayer.PlayHitsound();

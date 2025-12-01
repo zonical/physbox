@@ -8,9 +8,9 @@
 <root>
 	<div class="background">
 		<div class="text" style="color: @( AttackerTeamColor?.Hex ?? Color.White.Hex )">
-			@if ( AttackerPlayerComponent is not null )
+			@if ( Info.Attacker is not null )
 			{
-				@GetPlayerName( AttackerPlayerComponent )
+				@Info.Attacker.Name
 			}
 			else
 			{
@@ -18,9 +18,9 @@
 			}
 		</div>
 
-		@if ( Prop is not null )
+		@if ( Info.Prop is not null )
 		{
-			<img Texture=@Prop.KillfeedIcon/>
+			<img Texture=@Info.Prop.KillfeedIcon/>
 		}
 		else
 		{
@@ -28,60 +28,35 @@
 		}
 
 		<div class="text" style="color: @( VictimTeamColor?.Hex ?? Color.White.Hex )">
-			@GetPlayerName( VictimPlayerComponent )
+			@Info.Victim.Name
 		</div>
 	</div>
 </root>
 
 @code
 {
-	public GameObject Victim;
-	public DamageInfo DamageInfo;
-
-	PlayerComponent VictimPlayerComponent => Victim.GetComponent<PlayerComponent>();
-	PlayerComponent AttackerPlayerComponent => DamageInfo.Attacker?.GetComponent<PlayerComponent>();
+	public PhysboxDamageInfo Info;
 
 	// Cached values.
 	Color? AttackerTeamColor = null;
 	Color? VictimTeamColor = null;
 
-	PropDefinitionResource Prop = null;
-
-	public string GetPlayerName( PlayerComponent player )
-	{
-		return player.IsPlayer ? player.Network.Owner.DisplayName : player.BotName;
-	}
-
 	public override void Tick()
 	{
-		if ( Prop is null )
-		{
-			if ( DamageInfo.Attacker?.GetComponent<MapCollider>() is null &&
-			     DamageInfo.Attacker?.GetComponent<MeshComponent>() is null )
-			{
-				Prop = DamageInfo.Weapon?.GetComponent<PropDefinitionComponent>().Definition;
-
-				if ( Prop is not null )
-				{
-					StateHasChanged();
-				}
-			}
-		}
-
-		if ( AttackerTeamColor is null && AttackerPlayerComponent is not null )
+		if ( AttackerTeamColor is null && Info.Attacker is not null )
 		{
 			AttackerTeamColor = !GameLogicComponent.UseTeams
 				? Color.White.Hex
-				: PhysboxUtilites.GetTeamColor( AttackerPlayerComponent.Team ).Lighten( 0.25f ).Hex;
+				: PhysboxUtilites.GetTeamColor( Info.Attacker.Team ).Lighten( 0.25f ).Hex;
 
 			StateHasChanged();
 		}
 
-		if ( VictimTeamColor is null && VictimPlayerComponent is not null )
+		if ( VictimTeamColor is null && Info.Victim is not null )
 		{
 			VictimTeamColor = !GameLogicComponent.UseTeams
 				? Color.White.Hex
-				: PhysboxUtilites.GetTeamColor( VictimPlayerComponent.Team ).Lighten( 0.25f ).Hex;
+				: PhysboxUtilites.GetTeamColor( Info.Victim.Team ).Lighten( 0.25f ).Hex;
 
 			StateHasChanged();
 		}
@@ -89,6 +64,6 @@
 
 	protected override int BuildHash()
 	{
-		return HashCode.Combine( Prop, VictimTeamColor, AttackerTeamColor );
+		return HashCode.Combine( Info, AttackerTeamColor, VictimTeamColor );
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using System.Threading.Tasks;
+using Physbox;
 
 namespace Sandbox;
 
@@ -8,11 +9,11 @@ public class ExplosionComponent : Component
 	[Property] public bool DealDamage { get; set; } = true;
 	[Property] public int BaseDamage { get; set; } = 75;
 	[Property] public float Radius { get; set; } = 256;
-	public GameObject Owner;
-	public GameObject Origin;
+	public PlayerComponent Owner;
+	public PropDefinitionResource Prop;
 
 	[ActionGraphIgnore]
-	void PerfomExplosionTrace()
+	private void PerfomExplosionTrace()
 	{
 		var traces = Scene.Trace.Sphere( Radius, new Ray( WorldPosition, Vector3.Up ), 1 )
 			.IgnoreStatic()
@@ -22,20 +23,23 @@ public class ExplosionComponent : Component
 		foreach ( var trace in traces )
 		{
 			var go = trace.GameObject;
-			if ( go is null ) continue;
+			if ( go is null )
+			{
+				continue;
+			}
 
 			if ( go.Components.TryGet<BaseLifeComponent>( out var life,
-					FindMode.Enabled | FindMode.InSelf | FindMode.InAncestors | FindMode.InDescendants ) )
+				    FindMode.Enabled | FindMode.InSelf | FindMode.InAncestors | FindMode.InDescendants ) )
 			{
 				var distance = trace.Distance;
 				var distanceDamage = 100 * (1 - distance / Radius);
 				distanceDamage = float.Round( float.Max( 0, distanceDamage ) );
 
-				life.RequestDamage( new()
+				var victim = life as PlayerComponent;
+
+				life.RequestDamage( new PhysboxDamageInfo
 				{
-					Damage = distanceDamage,
-					Attacker = Owner,
-					Weapon = Origin
+					Victim = victim, Damage = (int)distanceDamage, Attacker = Owner, Prop = Prop
 				} );
 			}
 		}
@@ -48,9 +52,16 @@ public class ExplosionComponent : Component
 	}
 
 	[ActionGraphNode( "physbox.create_explosion" )]
-	[Title( "Create Explosion" ), Group( "Physbox" ), Icon( "warning" )]
-	public static ExplosionComponent CreateExplosion( Vector3 position, GameObject owner, GameObject origin )
+	[Title( "Create Explosion" )]
+	[Group( "Physbox" )]
+	[Icon( "warning" )]
+	public static ExplosionComponent CreateExplosion( PropLifeComponent propObject )
 	{
+		if ( propObject is null )
+		{
+			return null;
+		}
+
 		var scene = Game.ActiveScene;
 		using ( scene.Push() )
 		{
@@ -63,21 +74,19 @@ public class ExplosionComponent : Component
 			}
 
 			var prefabScene = SceneUtility.GetPrefabScene( prefab );
-			var go = prefabScene.Clone( new(), name: "Explosion Effect" );
+			var go = prefabScene.Clone( new Transform(), name: "Explosion Effect" );
 			go.BreakFromPrefab();
+			go.WorldPosition = propObject.WorldPosition;
 
 			var temp = go.AddComponent<TemporaryEffect>();
 			temp.DestroyAfterSeconds = 3.0f;
-
 			var explosion = go.AddComponent<ExplosionComponent>();
-
-			go.WorldPosition = position;
 
 			go.NetworkMode = NetworkMode.Object;
 			go.NetworkSpawn();
 
-			explosion.Owner = owner;
-			explosion.Origin = origin;
+			explosion.Owner = propObject.GetComponentInParent<PlayerComponent>() ?? propObject.LastOwnedBy;
+			explosion.Prop = propObject.PropDefinition;
 			explosion.PerfomExplosionTrace();
 			explosion.BroadcastSound();
 

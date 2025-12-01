@@ -101,11 +101,11 @@ public partial class PlayerComponent
 		Hitbox.Enabled = false;
 
 		// Let the game know we died.
-		Scene.RunEvent<IGameEvents>( x => x.OnPlayerDeath( GameObject, DeathDamageInfo ) );
+		Scene.RunEvent<IGameEvents>( x => x.OnPlayerDeath( DeathDamageInfo ) );
 	}
 
 	[Rpc.Broadcast]
-	public void HidePlayer()
+	private void HidePlayer()
 	{
 		PlayerController.Renderer.Enabled = false;
 		PlayerController.ColliderObject.Enabled = false;
@@ -125,7 +125,7 @@ public partial class PlayerComponent
 	}
 
 	[Rpc.Broadcast]
-	public void ShowPlayer()
+	private void ShowPlayer()
 	{
 		PlayerController.Renderer.Enabled = true;
 		PlayerController.ColliderObject.Enabled = true;
@@ -134,12 +134,7 @@ public partial class PlayerComponent
 
 	public override void OnDamage( in DamageInfo damage )
 	{
-		if ( IsProxy )
-		{
-			return;
-		}
-
-		if ( GodMode )
+		if ( IsProxy || GodMode )
 		{
 			return;
 		}
@@ -149,7 +144,6 @@ public partial class PlayerComponent
 
 	public void CommitSuicide()
 	{
-		var damageinfo = new DamageInfo( 9999, GameObject, null );
-		OnDamage( damageinfo );
+		OnDamage( new PhysboxDamageInfo { Damage = 9999, Prop = null, Victim = this, Attacker = this } );
 	}
 }

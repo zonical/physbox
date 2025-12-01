@@ -15,52 +15,40 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	[Sync] private NetDictionary<Team, int> TeamKills { get; set; } = new();
 
 	[Rpc.Broadcast]
-	void IGameEvents.OnPlayerDeath( GameObject victim, DamageInfo info )
+	void IGameEvents.OnPlayerDeath( PhysboxDamageInfo info )
 	{
-		if ( RoundOver )
+		if ( RoundOver || info.Victim is null )
 		{
 			return;
 		}
 
-		var victimPlayer = victim.GetComponent<PlayerComponent>();
-		if ( victimPlayer is null )
-		{
-			return;
-		}
+		info.Victim.Deaths++;
+		PhysboxUtilites.IncrementStatForPlayer( info.Victim, PhysboxConstants.DeathsStat, 1 );
 
-		victimPlayer.Deaths++;
-		PhysboxUtilites.IncrementStatForPlayer( victimPlayer, PhysboxConstants.DeathsStat, 1 );
-
-		var attacker = info.Attacker;
-
-		if ( attacker is not null &&
-		     attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) &&
-		     attackerPlayer != victimPlayer )
+		if ( info.Attacker is not null && !info.IsSuicide )
 		{
 			// Add kills to attacking player.
-			attackerPlayer.Kills++;
-			PhysboxUtilites.IncrementStatForPlayer( attackerPlayer, PhysboxConstants.KillsStat, 1 );
+			info.Attacker.Kills++;
+			PhysboxUtilites.IncrementStatForPlayer( info.Attacker, PhysboxConstants.KillsStat, 1 );
 
 			if ( GameLogicComponent.UseTeams )
 			{
-				if ( !TeamKills.ContainsKey( attackerPlayer.Team ) )
+				if ( !TeamKills.ContainsKey( info.Attacker.Team ) )
 				{
-					TeamKills[attackerPlayer.Team] = 0;
+					TeamKills[info.Attacker.Team] = 0;
 				}
 
-				TeamKills[attackerPlayer.Team]++;
-
-				Log.Info( GetKillsForTeam( attackerPlayer.Team ) );
+				TeamKills[info.Attacker.Team]++;
 			}
 
-			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( attacker, attackerPlayer.Kills ) );
+			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( info.Attacker, info.Attacker.Kills ) );
 		}
 
-		victimPlayer.RequestSpawn();
+		info.Victim.RequestSpawn();
 	}
 
 	[Rpc.Broadcast]
-	void IGameEvents.OnPlayerScoreUpdate( GameObject player, int score )
+	void IGameEvents.OnPlayerScoreUpdate( PlayerComponent player, int score )
 	{
 		if ( RoundOver )
 		{
@@ -73,8 +61,7 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 			if ( score == DeathmatchKillsToWin - 1 )
 			{
 				var chat = ChatManagerComponent.GetChatManager();
-				var playerComp = player.GetComponent<PlayerComponent>();
-				var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
+				var name = player.IsPlayer ? player.Network.Owner.DisplayName : player.BotName;
 
 				chat.SendMessage( MessageType.System, $"WARNING! {name} is only one kill away from winning!" );
 			}

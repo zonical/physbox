@@ -1,23 +1,23 @@
 @using Sandbox;
 @using Sandbox.UI;
 @using System;
-@attribute [Title("Player Killfeed Element")]
-@attribute [Icon("screen_share")]
-@attribute [Group("Physbox")]
-@attribute [Tint(EditorTint.Yellow)]
+@attribute [Title( "Player Killfeed Element" )]
+@attribute [Icon( "screen_share" )]
+@attribute [Group( "Physbox" )]
+@attribute [Tint( EditorTint.Yellow )]
 @inherits PanelComponent
 @implements IGameEvents
 @namespace Physbox
 
-@if (IsProxy) return;
-@if (Player is null) return;
-@if (PauseMenu.Paused) return;
+@if ( IsProxy ) return;
+@if ( Player is null ) return;
+@if ( PauseMenu.Paused ) return;
 
 <root>
 	<div class="container root">
-		@foreach ( var ( victim, info, _ ) in KillfeedManager.Deaths.TakeLast(5) )
+		@foreach ( var (victim, info, _) in KillfeedManager.Deaths.TakeLast( 5 ) )
 		{
-			<KillfeedDisplay Victim="@(victim)" DamageInfo="@(info)"></KillfeedDisplay>
+			<KillfeedDisplay Info="@( info )"></KillfeedDisplay>
 		}
 	</div>
 </root>
@@ -30,5 +30,8 @@
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>
-	protected override int BuildHash() => System.HashCode.Combine(KillfeedManager.Deaths.Count());
+	protected override int BuildHash()
+	{
+		return HashCode.Combine(  KillfeedManager.Deaths.Count()  );
+	}
 }

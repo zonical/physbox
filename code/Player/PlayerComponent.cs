@@ -103,6 +103,7 @@ public partial class PlayerComponent :
 	[ShowIf( "IsBot", true )]
 	public string BotName { get; set; }
 
+	public string Name => IsPlayer ? Network.Owner.DisplayName : BotName;
 	[Property] [Feature( "Team" )] public Team Team { get; set; } = Team.None;
 
 	// ==================== [ GAME OBJECTS ] ====================
@@ -215,7 +216,6 @@ public partial class PlayerComponent :
 		Nametag.Name = Network.Owner.DisplayName;
 		LocalPlayer = this;
 
-		DressPlayer();
 		CreateCamera();
 		CreateHitbox();
 		ResetSpeed();

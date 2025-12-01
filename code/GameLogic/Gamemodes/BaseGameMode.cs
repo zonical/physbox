@@ -11,7 +11,7 @@ public class BaseGameMode : Component
 {
 	[Sync] [Property] [ReadOnly] public int RoundsPlayed { get; set; } = 0;
 	[Sync] [Property] [ReadOnly] public bool RoundOver { get; set; } = false;
-	[Property] public GameObject Winner { get; set; }
+	[Property] public PlayerComponent Winner { get; set; }
 
 	protected GameLogicComponent Game => GameLogicComponent.GetGameInstance();
 
@@ -28,7 +28,7 @@ public class BaseGameMode : Component
 	}
 
 	[Rpc.Broadcast]
-	public void DeclareWinner( GameObject player )
+	public void DeclareWinner( PlayerComponent player )
 	{
 		Winner = player;
 	}
@@ -37,9 +37,9 @@ public class BaseGameMode : Component
 	public static void DeclareMeWinner( Connection caller )
 	{
 		var game = GameLogicComponent.GetGameInstance();
-		var player = Sandbox.Game.ActiveScene.GetAllComponents<PlayerComponent>()
-			.Where( x => x.Network.OwnerId == caller.Id && x.IsPlayer ).First();
+		var player = Sandbox.Game.ActiveScene
+			.GetAllComponents<PlayerComponent>().First( x => x.Network.OwnerId == caller.Id && x.IsPlayer );
 
-		game.GameModeComponent.DeclareWinner( player.GameObject );
+		game.GameModeComponent.DeclareWinner( player );
 	}
 }

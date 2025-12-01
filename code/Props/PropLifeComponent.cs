@@ -129,14 +129,15 @@ public sealed class PropLifeComponent :
 		}
 
 		// Run death action.
+		var propModel = PropDefinition.Model;
 		PropDefinition.OnPropBroken?.Invoke( GameObject );
 
 		// We need to add a delay here because the props are going so fast
 		// that it's not registering the physics touch before the prop breaks.
-		_ = CreateGibsWithDelay( GibCreationDelay );
+		_ = CreateGibsWithDelay( 0, propModel );
 	}
 
-	private async Task CreateGibsWithDelay( float delay )
+	private async Task CreateGibsWithDelay( float delay, Model propModel )
 	{
 		// Don't create gibs in the main menu.
 		if ( PhysboxUtilites.IsMainMenuScene() )
@@ -148,7 +149,9 @@ public sealed class PropLifeComponent :
 		await Task.DelaySeconds( delay );
 
 		// Shamelessly stolen and adapted from Prop component code.
-		var breaklist = PropRenderer?.Model?.GetData<ModelBreakPiece[]>();
+		var breaklist = propModel.GetData<ModelBreakPiece[]>();
+		Log.Info( breaklist?.Length );
+
 		if ( breaklist != null && breaklist.Length > 0 )
 		{
 			foreach ( var breakModel in breaklist )

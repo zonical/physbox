@@ -159,6 +159,8 @@ public partial class PlayerComponent
 			CurrentlyLookingAtObject = null;
 		}
 
+		var HaveFacepunchFuckedUpHighlightsAgain = true;
+
 		// We've found something valid, put a highlight on it.
 		if ( trace.GameObject is not null && (
 			    trace.GameObject.Tags.Contains( PhysboxConstants.BreakablePropTag ) ||
@@ -167,10 +169,13 @@ public partial class PlayerComponent
 			//Log.Info( $"Thrower - looking at {trace.GameObject}" );
 
 			CurrentlyLookingAtObject = trace.GameObject;
-			//var outline = CurrentlyLookingAtObject.AddComponent<HighlightOutline>();
+			if ( !HaveFacepunchFuckedUpHighlightsAgain )
+			{
+				var outline = CurrentlyLookingAtObject.AddComponent<HighlightOutline>();
 
-			// Do not network this outline.
-			//outline.Flags = outline.Flags | ComponentFlags.NotNetworked;
+				// Do not network this outline.
+				outline.Flags = outline.Flags | ComponentFlags.NotNetworked;
+			}
 		}
 	}
 

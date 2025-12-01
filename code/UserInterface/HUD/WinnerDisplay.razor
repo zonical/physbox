@@ -9,9 +9,9 @@
 		<div class="text title">
 			WINNER
 		</div>
-		<img src="avatar:@( Player.IsPlayer ? Player.Network.Owner.SteamId : (SteamId)0 )"/>
+		<img src="avatar:@( Winner.IsPlayer ? Winner.Network.Owner.SteamId : (SteamId)0 )"/>
 		<div class="text player">
-			@( Player.IsPlayer ? Player.Network.Owner.DisplayName : Player.BotName )
+			@( Winner.Name )
 		</div>
 	</div>
 
@@ -19,15 +19,13 @@
 
 @code
 {
-	public GameObject Winner;
-	PlayerComponent Player => Winner.GetComponent<PlayerComponent>();
-
+	public PlayerComponent Winner;
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>
 	protected override int BuildHash()
 	{
-		return HashCode.Combine(  Winner  );
+		return HashCode.Combine( Winner );
 	}
 }

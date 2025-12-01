@@ -14,19 +14,19 @@
 	/// Called when a player is spawned into the world.
 	/// </summary>
 	/// <param name="player">Player GameObject (has PlayerComponent attached).</param>
-	void OnPlayerSpawn( GameObject player ) { }
+	void OnPlayerSpawn( PlayerComponent player ) { }
 
 	/// <summary>
 	/// Called when a player dies.
 	/// </summary>
 	/// <param name="victim">Player GameObject (has PlayerComponent attached).</param>
 	/// <param name="info">DamageInfo struct of how the player died.</param>
-	void OnPlayerDeath( GameObject victim, DamageInfo info ) { }
+	void OnPlayerDeath( PhysboxDamageInfo info ) { }
 
 	/// <summary>
 	/// Called when the score of a player has been updated.
 	/// </summary>
 	/// <param name="player">Player GameObject (has PlayerComponent attached).</param>
 	/// <param name="score">The total score for the player.</param>
-	void OnPlayerScoreUpdate( GameObject player, int score ) { }
+	void OnPlayerScoreUpdate( PlayerComponent player, int score ) { }
 };

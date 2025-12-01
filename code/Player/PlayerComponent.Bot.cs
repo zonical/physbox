@@ -13,7 +13,6 @@ public partial class PlayerComponent
 	public void InitBot()
 	{
 		AssignBotName();
-		DressPlayer();
 		HidePlayerControllerComponent();
 		HidePlayer();
 		CreateHitbox();

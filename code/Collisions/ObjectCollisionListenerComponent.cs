@@ -62,6 +62,12 @@ public sealed class ObjectCollisionListenerComponent : Component, Component.ICol
 			}
 		}
 
+		// If we're a held prop, don't receive collisions.
+		if ( Tags.Contains( PhysboxConstants.HeldPropTag ) )
+		{
+			return;
+		}
+
 		// Don't register collisions with the thing we are touching for a while.
 		RecentlyHitBy.Add( other.Id );
 		Invoke( 1.0f, () => RecentlyHitBy.Remove( other.Id ) );

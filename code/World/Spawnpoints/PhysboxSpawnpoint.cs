@@ -41,11 +41,32 @@ public class PhysboxSpawnpoint : Component
 		}
 
 		// Do a quick check to see if there are any players within our range.
-		var trace = Scene.Trace.Sphere( 64, new Ray( GameObject.WorldPosition, Vector3.Up ), 72 )
+		var traces = Scene.Trace.Sphere( 64, new Ray( GameObject.WorldPosition, Vector3.Up ), 72 )
 			.WithTag( PhysboxConstants.PlayerTag )
-			.Run();
+			.WithoutTags( PhysboxConstants.HitboxTag, "clothing" )
+			.RunAll();
 
-		return trace.GameObject is null;
+		foreach ( var trace in traces )
+		{
+			var go = trace.GameObject;
+			if ( go is not null )
+			{
+				if ( go.Components.TryGet<PlayerComponent>( out var otherPlayer ) )
+				{
+					// Let's spawn next to our players, that's alright!
+					if ( GameLogicComponent.UseTeams && otherPlayer.Team == Team )
+					{
+						return true;
+					}
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	protected override void DrawGizmos()
