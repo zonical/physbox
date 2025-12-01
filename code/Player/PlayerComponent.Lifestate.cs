@@ -39,14 +39,24 @@ public partial class PlayerComponent
 		// Revive and reset the player.
 		Health = 100;
 		Hitbox.Enabled = true;
+
+		// If we are not in a team, assign ourselves to the team with the fewest players.
+		if ( GameLogicComponent.UseTeams && Team == Team.None )
+		{
+			var teams = Scene.GetAllComponents<PlayerComponent>()
+				.GroupBy( x => x.Team )
+				.Where( x => x.Key != Team.None );
+
+			Team = teams.OrderBy( x => x.Count() ).First().Key;
+		}
+
 		ShowPlayer();
 		MovePlayerToSpawnpoint();
+		DressPlayer();
 
 		if ( IsPlayer )
 		{
 			FreeCam = false;
-			DressPlayer();
-
 			PlayerController.Jump( Vector3.Up );
 		}
 
@@ -135,5 +145,11 @@ public partial class PlayerComponent
 		}
 
 		base.OnDamage( damage );
+	}
+
+	public void CommitSuicide()
+	{
+		var damageinfo = new DamageInfo( 9999, GameObject, null );
+		OnDamage( damageinfo );
 	}
 }

@@ -1,3 +1,4 @@
+using System;
 using Physbox;
 using Sandbox.Movement;
 using Networking = Sandbox.Debug.Networking;
@@ -8,7 +9,7 @@ using Networking = Sandbox.Debug.Networking;
 [Tint( EditorTint.Yellow )]
 public partial class PlayerComponent :
 	BaseLifeComponent,
-	IGameEvents,
+	IGameEvents, IPhysboxTeam,
 	PlayerController.IEvents
 {
 	// ==================== [ LOCAL PLAYER INSTANCE ] ====================
@@ -101,6 +102,8 @@ public partial class PlayerComponent :
 	[Sync( SyncFlags.FromHost )]
 	[ShowIf( "IsBot", true )]
 	public string BotName { get; set; }
+
+	[Property] [Feature( "Team" )] public Team Team { get; set; } = Team.None;
 
 	// ==================== [ GAME OBJECTS ] ====================
 	[Property]
@@ -220,9 +223,22 @@ public partial class PlayerComponent :
 		InitSpectator();
 
 		var game = GameLogicComponent.GetGameInstance();
-		if ( game is not null && !game.RoundOver )
+		if ( game is not null )
 		{
-			RequestSpawn();
+			// Open select screen.
+			if ( GameLogicComponent.UseTeams && Team == Team.None )
+			{
+				var panel = new TeamSelect();
+				panel.OnTeamSelected += ( team ) => RequestSpawn();
+
+				ScreenPanel.GetPanel().FindRootPanel().AddChild( panel );
+				panel.AcceptsFocus = true;
+				panel.Focus();
+			}
+			else
+			{
+				RequestSpawn();
+			}
 		}
 	}
 
@@ -362,16 +378,96 @@ public partial class PlayerComponent :
 	/// </summary>
 	private void DressPlayer()
 	{
-		Dresser.BodyTarget = PlayerController.Renderer;
-		Dresser.Source = Dresser.ClothingSource.LocalUser;
+		// If we already have clothes on, get rid of them.
+		foreach ( var x in Components.GetAll<ModelRenderer>( FindMode.InDescendants )
+			         .Where( y => y.Tags.Contains( "clothing" ) ) )
+		{
+			x.DestroyGameObject();
+		}
 
+		Dresser.BodyTarget = Renderer;
+		Dresser.Source = Dresser.ClothingSource.Manual;
 		Dresser.ApplyHeightScale = false;
+
+		var localClothing = IsPlayer ? ClothingContainer.CreateFromLocalUser() : new ClothingContainer();
+
+		AttemptToApplyBotClothing( localClothing );
+		AttemptToApplyTeamClothing( localClothing );
+		ApplyAndSpawnClothing( localClothing );
+
+		// I'm probably doing something stupid in my code that makes it so that
+		// the team tints aren't applying automatically on the first spawn for bots.
+		// To get around this, I've added a short delay here which will always
+		// apply the tint.
+		if ( GameLogicComponent.UseTeams )
+		{
+			Invoke( 0.1f, ApplyTeamTintToClothes );
+		}
+	}
+
+	private void AttemptToApplyBotClothing( ClothingContainer container )
+	{
+		if ( !IsBot )
+		{
+			return;
+		}
+
+		var jumpsuit =
+			ResourceLibrary.Get<Clothing>( "models/citizen_clothes/shirt/jumpsuit/blue_jumpsuit.clothing" );
+		if ( jumpsuit is not null )
+		{
+			container.Add( jumpsuit );
+		}
+	}
+
+	private void AttemptToApplyTeamClothing( ClothingContainer container )
+	{
+		// If we are using teams, apply a shirt overtop of our usual stuff.
+		if ( !GameLogicComponent.UseTeams )
+		{
+			return;
+		}
+
+		var shirt = ResourceLibrary.Get<Clothing>(
+			"models/citizen_clothes/jumper/loose_jumper/loose_jumper.clothing" );
+
+		if ( shirt is not null )
+		{
+			container.Add( shirt );
+		}
+
+		var pants = ResourceLibrary.Get<Clothing>(
+			"models/citizen_clothes/trousers/trackiebottoms/trackie_bottoms.clothing" );
+
+		if ( pants is not null )
+		{
+			container.Add( pants );
+		}
+	}
+
+	private void ApplyAndSpawnClothing( ClothingContainer container )
+	{
+		Dresser.Clothing = container.Clothing;
 		_ = Dresser.Apply();
 
 		foreach ( var modelRen in Components.GetAll<ModelRenderer>( FindMode.InDescendants )
 			         .Where( x => x.Tags.Contains( "clothing" ) ) )
 		{
 			modelRen.GameObject.NetworkSpawn();
+		}
+	}
+
+	private void ApplyTeamTintToClothes()
+	{
+		foreach ( var modelRen in Components.GetAll<ModelRenderer>( FindMode.InDescendants )
+			         .Where( x => x.Tags.Contains( "clothing" ) ) )
+		{
+			// Apply team colour tint.
+			if ( modelRen.Model.Name.Contains( "loose_jumper" ) ||
+			     modelRen.Model.Name.Contains( "trackie_bottoms" ) )
+			{
+				modelRen.Tint = PhysboxUtilites.GetTeamColor( Team );
+			}
 		}
 	}
 
@@ -439,15 +535,16 @@ public partial class PlayerComponent :
 		var spawnpoint = (GameObject)null;
 
 		// Prioritise Physbox spawnpoints first, then find a normal Sandbox one.
-		spawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() )?.GameObject ??
-		             Game.Random.FromList( Scene.GetAllComponents<SpawnPoint>().ToList() )?.GameObject;
+		spawnpoint = Scene.GetAllComponents<PhysboxSpawnpoint>()
+			.FirstOrDefault( x => x.IsValidSpawnPoint( this ) )
+			?.GameObject ?? Game.Random.FromList( Scene.GetAllComponents<SpawnPoint>().ToList() )?.GameObject;
 
-		// Teleport to spawnpoint.
 		if ( spawnpoint is null )
 		{
 			return;
 		}
 
+		// Teleport to spawnpoint.
 		WorldPosition = spawnpoint.WorldPosition;
 		PlayerController.EyeAngles = spawnpoint.WorldRotation;
 
@@ -540,16 +637,16 @@ public partial class PlayerComponent :
 	[Title( "Fine. Show me all Components." )]
 	private void ShowDeveloperComponents()
 	{
-		Hud.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
-		Killfeed.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
-		Chat.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
-		PauseMenu.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
-		Dresser.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Hud?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Killfeed?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Chat?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		PauseMenu?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Dresser?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
 
-		Voice.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
-		ScreenPanel.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
-		PlayerController.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
-		Rigidbody.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Voice?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		ScreenPanel?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		PlayerController?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
+		Rigidbody?.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
 
 		foreach ( var moveMode in Components.GetAll<MoveMode>() )
 		{

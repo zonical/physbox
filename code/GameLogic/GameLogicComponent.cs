@@ -100,8 +100,10 @@ public partial class GameLogicComponent :
 
 		SpawnpointOverrideCheck();
 		SaveProps();
-		StartGame();
 		CreateBots();
+
+		// Slight delay to give everything else time to set up.
+		Invoke( 3.0f, StartGame );
 	}
 
 	/// <summary>
@@ -135,6 +137,8 @@ public partial class GameLogicComponent :
 	private void CreateBots()
 	{
 		// Spawn bots.
+		var lastTeam = Team.None;
+
 		for ( var i = 0; i < MaxBots; i++ )
 		{
 			var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/bot.prefab" );
@@ -153,6 +157,16 @@ public partial class GameLogicComponent :
 			// Once the player has been spawned on the network, we can go ahead and
 			// initalise them. Doing this in OnNetworkSpawn is too early.
 			var player = go.GetComponent<PlayerComponent>();
+
+			player.Team = lastTeam + 1;
+			lastTeam = player.Team;
+
+			if ( lastTeam == Enum.GetValues<Team>().Max() )
+			{
+				lastTeam = Team.None;
+			}
+
+			player.IsBot = true; // Sanity.
 			player.InitBot();
 		}
 
@@ -218,11 +232,7 @@ public partial class GameLogicComponent :
 			TimeShouldEnd = (int)Time.Now + TimerLengthInSeconds;
 		}
 
-		// Slight delay to give everything else time to set up.
-		Invoke( 0.1f, () =>
-		{
-			Scene.RunEvent<IGameEvents>( x => x.OnRoundStart() );
-		} );
+		Scene.RunEvent<IGameEvents>( x => x.OnRoundStart() );
 	}
 
 	/// <summary>

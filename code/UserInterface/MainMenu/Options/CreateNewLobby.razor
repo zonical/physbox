@@ -31,12 +31,20 @@
 			</div>
 
 			<div class="option">
+				<i class="option_icon">lock</i>
+				<div class="text option_title">Lobby Privacy</div>
+				<div class="option_background" style="width: 100%;">
+					<DropDown class="text option_text" Value:bind="@Privacy" style="width: 100%"/>
+				</div>
+			</div>
+
+			<div class="option">
 				<i class="option_icon">person</i>
 				<div class="text option_title">Max Players</div>
 				<div class="option_background" style="width: 100%;">
 					<SliderControl @ref=" PlayersSlider"
-					               Min="@( 1 )" Max="@( 64 )" Value="@( 8 )"
-					               ShowValueTooltip="@( false )" ShowTextEntry="@( false )" ShowRange="@( false )"/>
+					               Min="@(1)" Max="@(64)" Value="@(8)"
+					               ShowValueTooltip="@(false)" ShowTextEntry="@(false)" ShowRange="@(false)"/>
 					<NumberEntry class="text option_text" style="width: 64px;" Value:bind="@PlayersSlider.Value"/>
 				</div>
 
@@ -48,19 +56,10 @@
 				<div class="text option_title">Number of Bots</div>
 				<div class="option_background" style="width: 100%;">
 					<SliderControl @ref=" BotsSlider"
-					               Min="@( 0 )" Max="@( 7 )" Value="@( 7 )"
-					               ShowValueTooltip="@( false )" ShowTextEntry="@( false )" ShowRange="@( false )"/>
+					               Min="@(0)" Max="@(7)" Value="@(7)"
+					               ShowValueTooltip="@(false)" ShowTextEntry="@(false)" ShowRange="@(false)"/>
 					<NumberEntry class="text option_text" style="width: 64px;" Value:bind="@BotsSlider.Value"/>
 				</div>
-			</div>
-
-			<div class="option">
-				<i class="option_icon">lock</i>
-				<div class="text option_title">Lobby Privacy</div>
-				<div class="option_background" style="width: 100%;">
-					<DropDown class="text option_text" Value:bind="@Privacy" style="width: 100%"/>
-				</div>
-
 			</div>
 
 			<div class="option">
@@ -80,15 +79,32 @@
 			<div class="option">
 				<i class="option_icon">timer</i>
 				<div class="text option_title">Use Timer</div>
-				<Checkbox @ref="TimerCheckbox" class="option_icon option_background" Value:bind="@UseTimer"/>
+				<Checkbox @ref="TimerCheckbox" class="option_icon option_background option_checkbox"
+				          Value:bind="@UseTimer"/>
 
 				<div class="option_background" style="width: 100%">
 					<SliderControl @ref="TimeSlider"
-					               Min="@( 60 )" Max="@( 600 )" Value="@( 300 )"
-					               ShowValueTooltip="@( false )" ShowTextEntry="@( false )" ShowRange="@( false )"/>
+					               Min="@(60)" Max="@(600)" Value="@(300)"
+					               ShowValueTooltip="@(false)" ShowTextEntry="@(false)" ShowRange="@(false)"/>
 					<NumberEntry @ref="TimerValue" class="text option_text" style="width: 64px;"
 					             Value:bind="@TimeSlider.Value"/>
 				</div>
+			</div>
+
+			<div class="option">
+				<i class="option_icon">groups</i>
+				<div class="text option_title">Use Teams</div>
+				<Checkbox @ref="TeamsCheckbox" class="option_icon option_background option_checkbox"
+				          Value:bind="@UseTeams"/>
+				<div style="width: 100%"/>
+			</div>
+
+			<div class="option">
+				<i class="option_icon">group_off</i>
+				<div class="text option_title">Friendly Fire</div>
+				<Checkbox @ref="FriendlyFireCheckbox" class="option_icon option_background option_checkbox"
+				          Value:bind="@FriendlyFire"/>
+				<div style="width: 100%"/>
 			</div>
 
 			<div class="create_lobby" @ref="CreateLobbyButton" onclick="@( () => { CreateLobby(); } )">
@@ -97,7 +113,6 @@
 					Create Lobby
 				</div>
 			</div>
-
 		</ChildContent>
 	</PopupWindow>
 </root>
@@ -120,7 +135,13 @@
 
 	Checkbox TimerCheckbox;
 	NumberEntry TimerValue;
-	bool UseTimer = true;
+	bool UseTimer { get; set; } = true;
+
+	Checkbox TeamsCheckbox;
+	bool UseTeams { get; set; } = false;
+
+	Checkbox FriendlyFireCheckbox;
+	bool FriendlyFire { get; set; } = false;
 
 	LobbyPrivacy Privacy;
 
@@ -142,8 +163,12 @@
 		// Create our new lobby.
 		PhysboxUtilites.CreateNewLobby( MaxPlayers, LobbyName, GameMode, Privacy, true );
 
+		Log.Info( UseTeams );
+
 		// Set game variables.
 		GameLogicComponent.UseTimer = UseTimer;
+		GameLogicComponent.UseTeams = UseTeams;
+		GameLogicComponent.FriendlyFire = FriendlyFire;
 		GameLogicComponent.TimerLengthInSeconds = Time;
 		GameLogicComponent.MaxBots = Bots;
 
@@ -213,10 +238,9 @@
 
 	void AlterTimerCheckbox( bool value )
 	{
-		TimerCheckbox.Checked = value;
 		TimerCheckbox.Style.Set( "color", value ? "white" : "gray" );
-		TimeSlider.Style.Opacity = value ? 1 : 0f;
-		TimerValue.Style.Opacity = value ? 1 : 0f;
+		TimeSlider.Style.Opacity = TimerCheckbox.Value ? 1 : 0f;
+		TimerValue.Style.Opacity = TimerCheckbox.Value ? 1 : 0f;
 	}
 
 	protected override void OnAfterTreeRender( bool firstTime )
@@ -233,9 +257,14 @@
 		}
 
 		GameModeDropDown.Value = PhysboxConstants.GameModes.Deathmatch;
-
 		LobbyName = $"{Sandbox.Utility.Steam.PersonaName}'s Physbox Lobby";
+
 		TimerCheckbox.ValueChanged += AlterTimerCheckbox;
+		TimerCheckbox.Style.Set( "color", TimerCheckbox.Value ? "white" : "gray" );
+		TimerCheckbox.StateHasChanged();
+
+		FriendlyFireCheckbox.StateHasChanged();
+		TeamsCheckbox.StateHasChanged();
 	}
 
 	public override void Tick()
@@ -244,7 +273,7 @@
 		if ( (int)BotsSlider.Value > BotsSlider.Max )
 		{
 			BotsSlider.Value = MaxPlayers - 1;
-			BotsSlider.StateHasChanged();
+			StateHasChanged();
 		}
 
 		// Don't allow us to create the lobby if we haven't set the map or game mode properly.

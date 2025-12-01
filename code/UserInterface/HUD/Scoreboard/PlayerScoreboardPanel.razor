@@ -9,7 +9,7 @@
 <root>
 	<div class="background">
 		<img src="avatar:@( Player.IsPlayer ? Player.Network.Owner.SteamId : (SteamId)0 )"/>
-		<div class="name big_label" style="filter: drop-shadow(0px 0px);">
+		<div class="name big_label" style="filter: drop-shadow(0px 0px); background-color: @( BackgroundColor.Hex )">
 			@( Player.IsPlayer ? Player.Network.Owner.DisplayName : Player.BotName )
 		</div>
 		<div class="playerStats">
@@ -17,7 +17,6 @@
 			<div class="text value">@Player.Deaths</div>
 			<div class="text value">@( (int)Player.Network.Owner.Ping )</div>
 		</div>
-
 	</div>
 </root>
 
@@ -25,6 +24,10 @@
 {
 	public PlayerComponent Player { get; set; }
 	public string ServerDetails => $"Server: {Networking.ServerName} ({Connection.All.Count} / {@Networking.MaxPlayers}) - {Networking.MapName} playing {GameLogicComponent.GameMode}";
+
+	public Color BackgroundColor => GameLogicComponent.UseTeams
+		? PhysboxUtilites.GetTeamColor( Player.Team )
+		: Color.Black.WithAlpha( 171 );
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt

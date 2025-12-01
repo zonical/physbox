@@ -9,21 +9,33 @@
 
 <root>
 	<div style="flex-direction:column; justify-content: center;">
-		<div class="text title">Kills</div>
-		<div class="text value">@Player.Kills</div>
+		<div class="text title" style="color: @TextColorOverride.Hex">Kills</div>
+		<div class="text value">@( GetKills() )</div>
 	</div>
 </root>
 
 @code
 {
 	PlayerComponent Player => PlayerComponent.LocalPlayer;
+	Color TextColorOverride => GameLogicComponent.UseTeams ? PhysboxUtilites.GetTeamColor( Player.Team ) : Color.White;
 
+	public int GetKills()
+	{
+		if ( !GameLogicComponent.UseTeams )
+		{
+			return Player.Kills;
+		}
+
+		var game = GameLogicComponent.GetGameInstance();
+		var gamemode = game.GameModeComponent as DeathmatchGameMode;
+		return gamemode?.GetKillsForTeam( Player.Team ) ?? 0;
+	}
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>
 	protected override int BuildHash()
 	{
-		return HashCode.Combine( Player.Kills, GameLogicComponent.GameMode );
+		return HashCode.Combine( GetKills(), GameLogicComponent.GameMode );
 	}
 }

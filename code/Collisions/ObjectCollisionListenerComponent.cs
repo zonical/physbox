@@ -8,7 +8,10 @@ public sealed class ObjectCollisionListenerComponent : Component, Component.ICol
 {
 	[Property] public TagSet IgnoreTags = new()
 	{
-		PhysboxConstants.HeldPropTag, PhysboxConstants.DebrisTag, PhysboxConstants.IgnoreBreakablePropTag
+		PhysboxConstants.HeldPropTag,
+		PhysboxConstants.DebrisTag,
+		PhysboxConstants.IgnoreBreakablePropTag,
+		PhysboxConstants.PlayerTag
 	};
 
 	[Property] [ReadOnly] public List<Guid> RecentlyHitBy = new();

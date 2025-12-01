@@ -68,8 +68,7 @@ public static class PlayerConvars
 			return;
 		}
 
-		var damageinfo = new DamageInfo( 9999, player.GameObject, null );
-		player.OnDamage( damageinfo );
+		player.CommitSuicide();
 	}
 
 	[ConCmd( "pb_respawn", ConVarFlags.Cheat )]

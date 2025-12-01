@@ -84,6 +84,11 @@ public static class PhysboxUtilites
 		return Game.ActiveScene.Get<ChatManagerComponent>();
 	}
 
+	public static Color GetTeamColor( Team team )
+	{
+		return team.GetAttributeOfType<TeamColorAttribute>()?.Color ?? Color.White;
+	}
+
 	/// <summary>
 	/// Sends a chat message that will only be visible to the local connection.
 	/// </summary>

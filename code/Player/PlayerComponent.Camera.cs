@@ -1,8 +1,4 @@
-﻿public partial class PlayerComponent :
-	BaseLifeComponent,
-	IGameEvents,
-	PlayerController.IEvents,
-	Component.INetworkListener
+﻿public partial class PlayerComponent
 {
 	private bool _freeCam;
 	private float _pitch;

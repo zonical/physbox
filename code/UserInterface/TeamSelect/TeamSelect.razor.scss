@@ -1,0 +1,30 @@
+TeamSelect {
+  // When the element is deleted make it double in size before being deleted.
+  &:intro {
+    transition: opacity 0.2s ease-in-out;
+    opacity: 1;
+  }
+
+  &:outro {
+    transition: opacity 0.2s ease-in-out;
+    opacity: 0;
+  }
+
+  pointer-events: all;
+  position: absolute;
+  margin: auto;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+
+  backdrop-filter: blur(5px);
+
+  .team {
+    height: 100%;
+    justify-content: center;
+  }
+
+  .team_label {
+    margin: auto;
+  }
+}

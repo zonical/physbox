@@ -96,7 +96,7 @@
           "Color": "1,1,1,1",
           "Elasticity": null,
           "Friction": null,
-          "HideInGame": false,
+          "HideInGame": true,
           "IsTrigger": false,
           "Mesh": {
             "Topology": "H4sIAAAAAAAACk2QCQrDMAwEJ3XTpvd9/P+jLkPXIEOI0a5GKy/AF5j5nxWwBjbAHjgCZ+AKTPn01HMCWuot/RTvvWhz2HXWrfRsC7fFu4SlZ5dcU/QlTDX/h2Qefr0foPfeR1ZnqOvX+wzL+iW7ms3Z7v5KvzWzjl31632XN3ukR90Z7j6yqsvSM97C2WaWL8Os7uhdvmwzqdtvXpkyzPIDgcKAQ8ABAAA=",
@@ -38041,13 +38041,15 @@
           "__guid": "eb29ae73-b1d5-4f5a-a6a4-38cf116aa9dc",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38073,13 +38075,15 @@
           "__guid": "59876f9b-5934-4ca0-87ee-604cd849c0c1",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38105,13 +38109,15 @@
           "__guid": "6dc9b6de-883d-4eba-aa76-ff5ddceab367",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38137,13 +38143,15 @@
           "__guid": "9fe88b4f-7237-4510-bc0f-4e7ce1066331",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38169,13 +38177,15 @@
           "__guid": "4dd54cd7-8ba4-47c1-b74b-acc4fa0c35b2",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38201,13 +38211,15 @@
           "__guid": "1eb5021b-8a45-4c76-be6f-b99d5aab446b",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38233,13 +38245,15 @@
           "__guid": "c31aaaa2-3f7b-4aa6-99c2-e8245f95e639",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38265,13 +38279,15 @@
           "__guid": "1b8cd138-5685-4a78-ad96-93484acdcf67",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38297,13 +38313,15 @@
           "__guid": "114ae773-c310-4362-88c3-0d292672d411",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38329,13 +38347,15 @@
           "__guid": "fe395300-90fb-41cf-8912-4b99d7055f7a",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38361,13 +38381,15 @@
           "__guid": "feea0920-da70-4100-85c3-41818a2de6ba",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38393,13 +38415,15 @@
           "__guid": "8f8a9f4d-4347-4c56-bb03-551ec4b24468",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38425,13 +38449,15 @@
           "__guid": "53c6f16d-bfb2-4d1d-802e-b604e98833e5",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38457,13 +38483,15 @@
           "__guid": "5de5e54d-5bee-4143-936c-890aaeb0e8a3",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38489,13 +38517,15 @@
           "__guid": "1b5ab97c-352c-474a-a273-e6211cedb801",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38521,13 +38551,15 @@
           "__guid": "e1671ee4-6e2b-49ae-8116-163c95302bd7",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38553,13 +38585,15 @@
           "__guid": "ab1b8a1c-f42f-4b77-9eca-f2613e888474",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38585,13 +38619,15 @@
           "__guid": "53ca35d5-85d7-4a41-ad24-d984c052525e",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38617,13 +38653,15 @@
           "__guid": "d63dc541-12ca-437e-bd7b-41c380a102ff",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38649,13 +38687,15 @@
           "__guid": "b84bb265-7f8b-4c80-a795-87b761692a2d",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38891,13 +38931,15 @@
           "__guid": "35cda0c2-6ea7-4489-8df6-e3a2f88d5a9a",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38923,13 +38965,15 @@
           "__guid": "65590084-d69a-47a7-b7e3-8789a3a9e799",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38955,13 +38999,15 @@
           "__guid": "9bf27041-c6a8-49ea-a818-8cdfa23b7fd2",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -38987,13 +39033,15 @@
           "__guid": "3f6c94ed-99b0-49b5-b757-3bdffbbe558b",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -39019,13 +39067,15 @@
           "__guid": "90f9c54c-fa4c-479d-98be-1a3edaa2a794",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -39051,13 +39101,15 @@
           "__guid": "5dbd5a93-43a9-4c07-8eea-c739facd2581",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -39083,13 +39135,15 @@
           "__guid": "f28c8b8c-0bd4-442e-a69a-ebcb279311ba",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -39115,13 +39169,15 @@
           "__guid": "fc7d3611-0021-4b11-aa8e-19d8a4fb282c",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -39147,13 +39203,15 @@
           "__guid": "74bb975b-6e47-4b42-bc59-79d396eeb6d6",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -39179,13 +39237,15 @@
           "__guid": "f3644c22-87f6-4ae8-a766-d92fb036dc33",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []
@@ -39211,13 +39271,15 @@
           "__guid": "27348123-49f6-4758-9ac4-f0ef02ed2a91",
           "__enabled": true,
           "AnyGameMode": true,
+          "AnyTeam": true,
           "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "None"
         }
       ],
       "Children": []

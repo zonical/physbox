@@ -288,19 +288,25 @@ public partial class BotPlayerTasksComponent : Component
 			}
 
 			if ( trace.GameObject.Components.TryGet<PlayerComponent>(
-				    out var player,
+				    out var foundPlayer,
 				    FindMode.EverythingInSelf |
 				    FindMode.EverythingInDescendants |
 				    FindMode.EverythingInAncestors ) )
 			{
 				// Ignore dead players. They still technically exist in the world.
-				if ( !player.IsAlive )
+				if ( !foundPlayer.IsAlive )
+				{
+					continue;
+				}
+
+				// Don't look for our own teammates.
+				if ( foundPlayer.Team == Player.Team )
 				{
 					continue;
 				}
 
 				// Return the first player we get.
-				return player.GameObject;
+				return foundPlayer.GameObject;
 			}
 		}
 

@@ -312,11 +312,19 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			return;
 		}
 
-		var propDamage = (int)float.Sqrt( @event.AbsoluteSpeed );
-		propLife.OnDamage( new DamageInfo( propDamage, null, null ) );
-
 		if ( @event.GetLifeComponent( player ) is PlayerComponent victim )
 		{
+			// Do not deal damage to our teammates if friendly fire is not enabled.
+			if ( GameLogicComponent.UseTeams &&
+			     !GameLogicComponent.FriendlyFire &&
+			     attacker.GetComponent<PlayerComponent>().Team == victim.Team )
+			{
+				return;
+			}
+
+			var propDamage = (int)float.Sqrt( @event.AbsoluteSpeed );
+			propLife.OnDamage( new DamageInfo( propDamage, null, null ) );
+
 			var playerDamage = (int)float.Sqrt( @event.AbsoluteSpeed ) + 10;
 
 			var rigidBody = @event.GetRigidbody( prop );

@@ -96,8 +96,6 @@ public class GameWarmupSystem : GameObjectSystem, ISceneLoadingEvents
 		{
 			Log.Warning( "GameWarmupSystem - NavMesh was not found for this map. Generating one now!" );
 			scene.NavMesh.IsEnabled = true;
-			scene.NavMesh.ExcludedBodies.Add( PhysboxConstants.HitboxTag );
-
 			await scene.NavMesh.Generate( scene.PhysicsWorld );
 			Log.Info( "GameWarmupSystem - NavMesh generated!" );
 		}
@@ -105,5 +103,8 @@ public class GameWarmupSystem : GameObjectSystem, ISceneLoadingEvents
 		{
 			Log.Info( "GameWarmupSystem - Navmesh already exists." );
 		}
+
+		scene.NavMesh.ExcludedBodies.Add( PhysboxConstants.HitboxTag );
+		scene.NavMesh.ExcludedBodies.Add( "clothing" );
 	}
 }

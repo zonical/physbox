@@ -7,7 +7,7 @@
 
 <root>
 	<div class="background">
-		<div class="text">
+		<div class="text" style="color: @( AttackerTeamColor?.Hex ?? Color.White.Hex )">
 			@if ( AttackerPlayerComponent is not null )
 			{
 				@GetPlayerName( AttackerPlayerComponent )
@@ -27,7 +27,7 @@
 			<div class="text">killed</div>
 		}
 
-		<div class="text">
+		<div class="text" style="color: @( VictimTeamColor?.Hex ?? Color.White.Hex )">
 			@GetPlayerName( VictimPlayerComponent )
 		</div>
 	</div>
@@ -40,6 +40,11 @@
 
 	PlayerComponent VictimPlayerComponent => Victim.GetComponent<PlayerComponent>();
 	PlayerComponent AttackerPlayerComponent => DamageInfo.Attacker?.GetComponent<PlayerComponent>();
+
+	// Cached values.
+	Color? AttackerTeamColor = null;
+	Color? VictimTeamColor = null;
+
 	PropDefinitionResource Prop = null;
 
 	public string GetPlayerName( PlayerComponent player )
@@ -49,15 +54,41 @@
 
 	public override void Tick()
 	{
-		if ( Prop is not null ) return;
-		if ( DamageInfo.Attacker.GetComponent<MapCollider>() is not null ) return;
-		if ( DamageInfo.Attacker.GetComponent<MeshComponent>() is not null ) return;
-
-		Prop = DamageInfo.Weapon?.GetComponent<PropDefinitionComponent>().Definition;
-
-		if ( Prop is not null )
+		if ( Prop is null )
 		{
+			if ( DamageInfo.Attacker?.GetComponent<MapCollider>() is null &&
+			     DamageInfo.Attacker?.GetComponent<MeshComponent>() is null )
+			{
+				Prop = DamageInfo.Weapon?.GetComponent<PropDefinitionComponent>().Definition;
+
+				if ( Prop is not null )
+				{
+					StateHasChanged();
+				}
+			}
+		}
+
+		if ( AttackerTeamColor is null && AttackerPlayerComponent is not null )
+		{
+			AttackerTeamColor = !GameLogicComponent.UseTeams
+				? Color.White.Hex
+				: PhysboxUtilites.GetTeamColor( AttackerPlayerComponent.Team ).Lighten( 0.25f ).Hex;
+
 			StateHasChanged();
 		}
+
+		if ( VictimTeamColor is null && VictimPlayerComponent is not null )
+		{
+			VictimTeamColor = !GameLogicComponent.UseTeams
+				? Color.White.Hex
+				: PhysboxUtilites.GetTeamColor( VictimPlayerComponent.Team ).Lighten( 0.25f ).Hex;
+
+			StateHasChanged();
+		}
+	}
+
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( Prop, VictimTeamColor, AttackerTeamColor );
 	}
 }

@@ -17,15 +17,28 @@ public class PhysboxSpawnpoint : Component
 	[HideIf( "AnyGameMode", true )]
 	public List<PhysboxConstants.GameModes> GameModes { get; set; } = new();
 
+	[Property]
+	[Description( "If any team can use this spawnpoint" )]
+	public bool AnyTeam { get; set; } = true;
+
+	[Property]
+	[Description( "The team that can use this spawnpoint." )]
+	[HideIf( "AnyTeam", true )]
+	public Team Team { get; set; } = Team.Red;
+
 	public bool IsValidSpawnPoint( PlayerComponent player )
 	{
 		// Invalid spawnpoint if gamemode doesn't match.
-		if ( !AnyGameMode && GameModes.Any() && !GameModes.Contains( GameLogicComponent.GameMode ) )
+		if ( !AnyGameMode && GameModes.Count != 0 && !GameModes.Contains( GameLogicComponent.GameMode ) )
 		{
 			return false;
 		}
 
-		// TODO: Add team check.
+		// Invalid spawnpoint if our team does not match.
+		if ( GameLogicComponent.UseTeams && !AnyTeam && player.Team != Team )
+		{
+			return false;
+		}
 
 		// Do a quick check to see if there are any players within our range.
 		var trace = Scene.Trace.Sphere( 64, new Ray( GameObject.WorldPosition, Vector3.Up ), 72 )
@@ -40,7 +53,10 @@ public class PhysboxSpawnpoint : Component
 		base.DrawGizmos();
 		var model = Model.Load( "models/editor/spawnpoint.vmdl" );
 		Gizmo.Hitbox.Model( model );
-		Gizmo.Draw.Color = Color.WithAlpha( Gizmo.IsHovered || Gizmo.IsSelected ? 0.7f : 0.5f );
+
+		var color = AnyTeam ? Color : PhysboxUtilites.GetTeamColor( Team );
+
+		Gizmo.Draw.Color = color.WithAlpha( Gizmo.IsHovered || Gizmo.IsSelected ? 0.7f : 0.5f );
 		SceneObject sceneObject = Gizmo.Draw.Model( model, LocalTransform.WithPosition( Vector3.Zero ) );
 		if ( sceneObject != null )
 		{

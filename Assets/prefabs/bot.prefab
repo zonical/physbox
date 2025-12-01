@@ -12,6 +12,7 @@
     "NetworkMode": 1,
     "NetworkInterpolation": true,
     "NetworkOrphaned": 0,
+    "NetworkTransmit": true,
     "OwnerTransfer": 1,
     "Components": [
       {
@@ -96,13 +97,31 @@
           "component_type": "NavMeshAgent"
         },
         "BotName": null,
+        "BuiltUpForce": 0,
         "Camera": null,
         "CanPickupObjects": true,
         "CanThrowObject": true,
+        "Chat": null,
         "CurrentlyLookingAtObject": null,
         "DamageImmunity": false,
-        "DeathDamageInfo": null,
+        "DeathDamageInfo": {
+          "Attacker": null,
+          "Weapon": null,
+          "Hitbox": null,
+          "Damage": 0,
+          "Origin": "0,0,0",
+          "Position": "0,0,0",
+          "Shape": null,
+          "Tags": "",
+          "IsExplosion": false
+        },
         "Deaths": 0,
+        "Dresser": {
+          "_type": "component",
+          "component_id": "7ff74f0d-98d6-44a8-8527-992586b227d5",
+          "go": "139d943f-fe4c-44e2-b53b-92fe622ef708",
+          "component_type": "Dresser"
+        },
         "ForceColorGradient": {
           "blend": "Linear",
           "color": [
@@ -126,7 +145,9 @@
         "HitboxSize": "40,40,72",
         "Hud": null,
         "IsBot": true,
+        "Killfeed": null,
         "Kills": 0,
+        "LastHeldGameObject": null,
         "LastHitBy": null,
         "MaxForce": 3,
         "MaxHealth": 100,
@@ -142,6 +163,7 @@
         "OnComponentFixedUpdate": null,
         "OnComponentStart": null,
         "OnComponentUpdate": null,
+        "PauseMenu": null,
         "PlayerController": {
           "_type": "component",
           "component_id": "1289b948-56d6-49f9-9aa2-441ba56c4221",
@@ -149,6 +171,15 @@
           "component_type": "PlayerController"
         },
         "Ragdoll": null,
+        "Rigidbody": {
+          "_type": "component",
+          "component_id": "350390d7-a030-46c6-8023-9c514c389379",
+          "go": "139d943f-fe4c-44e2-b53b-92fe622ef708",
+          "component_type": "Rigidbody"
+        },
+        "ScreenPanel": null,
+        "Team": "None",
+        "Viewmodel": null,
         "Voice": null
       },
       {
@@ -156,7 +187,10 @@
         "__guid": "744f32ae-11a7-4dfe-ac84-f5c33229523f",
         "__enabled": true,
         "Acceleration": 120,
+        "AllowDefaultArea": true,
+        "AllowedAreas": [],
         "AutoTraverseLinks": true,
+        "ForbiddenAreas": [],
         "Height": 72,
         "MaxSpeed": 120,
         "OnComponentDestroy": null,
@@ -221,11 +255,38 @@
         "ThrowAttemptsRemaining": 5
       },
       {
+        "__type": "Sandbox.Dresser",
+        "__guid": "7ff74f0d-98d6-44a8-8527-992586b227d5",
+        "__enabled": true,
+        "ApplyHeightScale": true,
+        "BodyTarget": {
+          "_type": "component",
+          "component_id": "a44f6ba7-f364-4fc7-bccd-1ac28763b475",
+          "go": "896a10a7-29e6-45ec-81b2-5e9220069f25",
+          "component_type": "SkinnedModelRenderer"
+        },
+        "Clothing": [],
+        "ManualAge": 0.5,
+        "ManualHeight": 0.5,
+        "ManualTint": 0.5,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Source": "Manual",
+        "WorkshopItems": []
+      },
+      {
         "__type": "Sandbox.Rigidbody",
         "__guid": "350390d7-a030-46c6-8023-9c514c389379",
         "__enabled": true,
         "AngularDamping": 1,
+        "EnableImpactDamage": true,
         "Gravity": true,
+        "GravityScale": 1,
+        "ImpactDamage": 0,
         "LinearDamping": 0.1,
         "Locking": {
           "X": false,
@@ -237,6 +298,7 @@
         },
         "MassCenterOverride": "0,0,36",
         "MassOverride": 500,
+        "MinImpactDamageSpeed": 500,
         "MotionEnabled": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
@@ -278,6 +340,7 @@
         "NetworkMode": 2,
         "NetworkInterpolation": true,
         "NetworkOrphaned": 0,
+        "NetworkTransmit": true,
         "OwnerTransfer": 1,
         "Components": [
           {
@@ -340,6 +403,7 @@
         "NetworkMode": 2,
         "NetworkInterpolation": true,
         "NetworkOrphaned": 0,
+        "NetworkTransmit": true,
         "OwnerTransfer": 1,
         "Components": [
           {
@@ -392,14 +456,16 @@
         "NetworkMode": 2,
         "NetworkInterpolation": true,
         "NetworkOrphaned": 0,
+        "NetworkTransmit": true,
         "OwnerTransfer": 1,
         "Components": [
           {
             "__type": "Sandbox.CapsuleCollider",
             "__guid": "7f75d04f-99ed-484e-a4ce-8aadc5c383c4",
             "__enabled": true,
+            "ColliderFlags": 0,
             "Elasticity": null,
-            "End": "0,0,45.05097",
+            "End": "0,0,36",
             "Friction": 0,
             "IsTrigger": false,
             "OnComponentDestroy": null,
@@ -424,6 +490,7 @@
             "__guid": "797ef9bd-0e05-436f-a39b-c8417c43b9d7",
             "__enabled": true,
             "Center": "0,0,18",
+            "ColliderFlags": 0,
             "Elasticity": null,
             "Friction": 0,
             "IsTrigger": false,

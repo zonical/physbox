@@ -1,0 +1,60 @@
+@using Sandbox;
+@using System;
+@using Sandbox.UI;
+@inherits Panel
+@namespace Physbox
+
+@if ( PlayerComponent.LocalPlayer is null ) return;
+
+<root>
+	<PopupWindow Title="Select Team">
+		<ChildContent class="content" style="height: 100%">
+			@foreach ( var team in Teams )
+			{
+				<div class="team" onclick="@( () => JoinTeam( team ) )"
+				     style="background-color: @PhysboxUtilites.GetTeamColor( team ).Hex; width: @( 100 / Teams.Count )%">
+					<div class="team_label text">
+						@team.ToString()
+					</div>
+				</div>
+			}
+		</ChildContent>
+	</PopupWindow>
+</root>
+
+@code
+{
+	// Get all the playable teams in the scene.
+	// TODO: Make this dynamic.
+	public List<Team> Teams = new() { Team.Red, Team.Blue };
+
+	public Action<Team> OnTeamSelected;
+
+	void JoinTeam( Team team )
+	{
+		// TODO: Max team check here as well in the future.
+		if ( team == Team.None ) return;
+
+		var player = PlayerComponent.LocalPlayer;
+		if ( team == player.Team ) return;
+
+		player.Team = team;
+
+		if ( player.IsAlive )
+		{
+			player.CommitSuicide();
+		}
+		else
+		{
+			player.RequestSpawn();
+		}
+
+		OnTeamSelected?.Invoke( team );
+		Delete();
+	}
+
+	protected override void OnEscape( PanelEvent e )
+	{
+		Delete();
+	}
+}

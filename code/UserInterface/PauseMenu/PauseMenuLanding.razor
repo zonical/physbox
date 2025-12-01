@@ -3,21 +3,43 @@
 @inherits Panel
 @namespace Physbox
 <root>
-	<Option class="resume" Icon="play_arrow" Text="Resume" Pressed="@( () => { PauseMenu.Close(); } )"></Option>
+	<Option class="resume"
+	        style="@( GameLogicComponent.UseTeams ? "margin-left: 200px;" : "margin-right: 200px;" )"
+	        Icon="play_arrow" Text="Resume" Pressed="@( () => { PauseMenu.Close(); } )"/>
+	@if ( GameLogicComponent.UseTeams )
+	{
+		<Option class="changeteam" Icon="group" Text="Change Team"
+		        Pressed="@( () => OpenTeamSelect() )"/>
+	}
 	<Option class="about" Icon="info" Text="About Physbox"
-	        Pressed="@( () => { Game.Overlay.ShowPackageModal( "zonical.physbox" ); } )"></Option>
+	        Pressed="@( () => { Game.Overlay.ShowPackageModal( "zonical.physbox" ); } )"/>
 	<Option class="players" Icon="people" Text="Players"
-	        Pressed="@( () => { Game.Overlay.ShowPlayerList(); } )"></Option>
+	        Pressed="@( () => { Game.Overlay.ShowPlayerList(); } )"/>
 	<Option class="controls" Icon="sports_esports" Text="Controls"
-	        Pressed="@( () => { Game.Overlay.ShowBinds(); } )"></Option>
+	        Pressed="@( () => { Game.Overlay.ShowBinds(); } )"/>
 	<Option class="sboxsettings" Icon="settings" Text="s&box Settings"
-	        Pressed="@( () => { Game.Overlay.ShowSettingsModal(); } )"></Option>
-	<Option class="physboxsettings" Icon="settings_applications" Text="Physbox Settings"></Option>
-	<Option class="leave" Icon="exit_to_app" Text="Leave Game" Pressed="@( () => { Disconnect(); } )"></Option>
+	        Pressed="@( () => { Game.Overlay.ShowSettingsModal(); } )"/>
+	<Option class="physboxsettings" Icon="settings_applications" Text="Physbox Settings"/>
+	<Option class="leave" Icon="exit_to_app" Text="Leave Game" Pressed="@( () => { Disconnect(); } )"/>
 </root>
 
 @code
 {
+	public PauseMenuLanding()
+	{
+		Style.Opacity = 1;
+	}
+
+	void OpenTeamSelect()
+	{
+		var panel = new TeamSelect();
+		panel.OnTeamSelected += ( team ) => PauseMenu.Close();
+
+		FindRootPanel().AddChild( panel );
+		panel.AcceptsFocus = true;
+		panel.Focus();
+	}
+
 	void Disconnect()
 	{
 		Networking.Disconnect();

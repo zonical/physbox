@@ -14,10 +14,27 @@
 			<div class="text stats_header_text" style="position:absolute; right: 150px">Ping</div>
 		</div>
 		<div class="container playerContainer">
-			@foreach ( var player in Scene.GetAllComponents<PlayerComponent>().OrderByDescending( x => x.Kills ) )
+			@if ( !GameLogicComponent.UseTeams )
 			{
-				<PlayerScoreboardPanel Player="@player"></PlayerScoreboardPanel>
+				foreach ( var player in Scene.GetAllComponents<PlayerComponent>().OrderByDescending( x => x.Kills ) )
+				{
+					<PlayerScoreboardPanel Player="@player"></PlayerScoreboardPanel>
+				}
 			}
+			else
+			{
+				var teams = Scene.GetAllComponents<PlayerComponent>()
+					.GroupBy( x => x.Team )
+					.Where( x => x.Key != Team.None );
+				foreach ( var team in teams )
+				{
+					foreach ( var player in team.OrderByDescending( x => x.Kills ) )
+					{
+						<PlayerScoreboardPanel Player="@player"></PlayerScoreboardPanel>
+					}
+				}
+			}
+
 		</div>
 
 	</div>

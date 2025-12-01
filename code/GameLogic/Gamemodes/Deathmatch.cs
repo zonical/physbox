@@ -12,6 +12,8 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	[Title( "Kills to Win" )]
 	public static int DeathmatchKillsToWin { get; set; } = 5;
 
+	[Sync] private NetDictionary<Team, int> TeamKills { get; set; } = new();
+
 	[Rpc.Broadcast]
 	void IGameEvents.OnPlayerDeath( GameObject victim, DamageInfo info )
 	{
@@ -39,6 +41,18 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 			attackerPlayer.Kills++;
 			PhysboxUtilites.IncrementStatForPlayer( attackerPlayer, PhysboxConstants.KillsStat, 1 );
 
+			if ( GameLogicComponent.UseTeams )
+			{
+				if ( !TeamKills.ContainsKey( attackerPlayer.Team ) )
+				{
+					TeamKills[attackerPlayer.Team] = 0;
+				}
+
+				TeamKills[attackerPlayer.Team]++;
+
+				Log.Info( GetKillsForTeam( attackerPlayer.Team ) );
+			}
+
 			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( attacker, attackerPlayer.Kills ) );
 		}
 
@@ -53,29 +67,60 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 			return;
 		}
 
-		// Someone is getting close!
-		if ( score == DeathmatchKillsToWin - 1 )
+		if ( !GameLogicComponent.UseTeams )
 		{
-			var chat = ChatManagerComponent.GetChatManager();
-			var playerComp = player.GetComponent<PlayerComponent>();
-			var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
+			// Someone is getting close!
+			if ( score == DeathmatchKillsToWin - 1 )
+			{
+				var chat = ChatManagerComponent.GetChatManager();
+				var playerComp = player.GetComponent<PlayerComponent>();
+				var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
 
-			chat.SendMessage( MessageType.System, $"WARNING! {name} is only one kill away from winning!" );
+				chat.SendMessage( MessageType.System, $"WARNING! {name} is only one kill away from winning!" );
+			}
+			// We have a winner!
+			else if ( score >= DeathmatchKillsToWin )
+			{
+				DeclareWinner( player );
+				var chat = ChatManagerComponent.GetChatManager();
+				var playerComp = player.GetComponent<PlayerComponent>();
+				var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
+
+				chat.SendMessage( MessageType.System, $"Round over! {name} wins with {score} kills!" );
+				PhysboxUtilites.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
+
+				// Hand control back to master logic component.
+				Scene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
+				RoundOver = true;
+			}
 		}
-		// We have a winner!
-		else if ( score >= DeathmatchKillsToWin )
+		else
 		{
-			DeclareWinner( player );
-			var chat = ChatManagerComponent.GetChatManager();
-			var playerComp = player.GetComponent<PlayerComponent>();
-			var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
+			var team = player.GetComponent<PlayerComponent>().Team;
 
-			chat.SendMessage( MessageType.System, $"Round over! {name} wins with {score} kills!" );
-			PhysboxUtilites.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
+			// Someone is getting close!
+			if ( GetKillsForTeam( team ) == DeathmatchKillsToWin - 1 )
+			{
+				var chat = ChatManagerComponent.GetChatManager();
+				chat.SendMessage( MessageType.System, $"WARNING! Team {team} is only one kill away from winning!" );
+			}
 
-			// Hand control back to master logic component.
-			Scene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
-			RoundOver = true;
+			// We have a winner!
+			else if ( GetKillsForTeam( team ) >= DeathmatchKillsToWin )
+			{
+				DeclareWinner( player );
+				var chat = ChatManagerComponent.GetChatManager();
+				var playerComp = player.GetComponent<PlayerComponent>();
+				var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
+
+				chat.SendMessage( MessageType.System,
+					$"Round over! Team {team} wins with {score} kills! Last kill achieved by {name}!" );
+				PhysboxUtilites.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
+
+				// Hand control back to master logic component.
+				Scene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
+				RoundOver = true;
+			}
 		}
 	}
 
@@ -83,6 +128,7 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	void IGameEvents.OnRoundStart()
 	{
 		base.OnRoundStart();
+		TeamKills.Clear();
 
 		foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )
 		{
@@ -93,7 +139,19 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 
 			player.Kills = 0;
 			player.Deaths = 0;
-			player.Spawn();
+
+			// Don't spawn a player unless they are on a team.
+			if ( GameLogicComponent.UseTeams )
+			{
+				if ( player.Team != Team.None )
+				{
+					player.Spawn();
+				}
+			}
+			else
+			{
+				player.Spawn();
+			}
 		}
 	}
 
@@ -110,5 +168,10 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 				player.SpawnCancellationTokenSource.Cancel();
 			}
 		}
+	}
+
+	public int GetKillsForTeam( Team team )
+	{
+		return TeamKills.GetValueOrDefault( team, 0 );
 	}
 }

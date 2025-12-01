@@ -1,9 +1,6 @@
 ﻿using Sandbox;
 
-public partial class PlayerComponent :
-	BaseLifeComponent,
-	IGameEvents,
-	PlayerController.IEvents
+public partial class PlayerComponent
 {
 	/// <summary>
 	/// Creates a viewmodel for the local player.

@@ -49,4 +49,15 @@ public partial class GameLogicComponent
 	{
 		Game.ActiveScene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
 	}
+
+	[ConCmd( "pb_debug_teams_dump", ConVarFlags.Cheat )]
+	public static void DumpTeams( Connection caller )
+	{
+		foreach ( var player in Game.ActiveScene.GetAllComponents<PlayerComponent>()
+			         .OrderBy( x => x.Team ) )
+		{
+			var name = player.IsPlayer ? player.Network.Owner.DisplayName : player.BotName;
+			Log.Info( $"{name} - team {player.Team}" );
+		}
+	}
 }
