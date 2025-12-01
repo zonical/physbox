@@ -3,12 +3,12 @@ using System;
 
 public static class PlayerConvars
 {
-	[ConVar( "pb_player_respawn_immunity", ConVarFlags.Replicated ),
-		Group( "Player" )]
+	[ConVar( "pb_player_respawn_immunity", ConVarFlags.Replicated )]
+	[Group( "Player" )]
 	public static float RespawnImmunity { get; set; } = 3.0f;
 
-	[ConVar( "pb_player_respawn_time", ConVarFlags.Replicated ),
-		Group( "Player" )]
+	[ConVar( "pb_player_respawn_time", ConVarFlags.Replicated )]
+	[Group( "Player" )]
 	public static float RespawnTime { get; set; } = 3.0f;
 
 	[ConVar( "pb_player_run_speed", ConVarFlags.Server )]
@@ -20,12 +20,13 @@ public static class PlayerConvars
 	[ConVar( "pb_player_duck_speed", ConVarFlags.Server )]
 	public static float DuckedSpeed { get; set; } = 240;
 
-	[ConVar( "pb_player_speed_affected_by_mass", ConVarFlags.Replicated ),
-		Group( "Player" )]
+	[ConVar( "pb_player_speed_affected_by_mass", ConVarFlags.Replicated )]
+	[Group( "Player" )]
 	public static bool SpeedAffectedByMass { get; set; } = true;
 
-	[ConVar( "pb_player_deadtalk", ConVarFlags.Replicated ),
-		Title( "Talk while Dead" ), Group( "Player" )]
+	[ConVar( "pb_player_deadtalk", ConVarFlags.Replicated )]
+	[Title( "Talk while Dead" )]
+	[Group( "Player" )]
 	public static bool Deadtalk { get; set; } = true;
 
 	public static bool UseViewmodel { get; set; } = true;
@@ -36,7 +37,11 @@ public static class PlayerConvars
 		UseViewmodel = state;
 		var player = PlayerComponent.LocalPlayer;
 
-		if ( player is null ) return;
+		if ( player is null )
+		{
+			return;
+		}
+
 		if ( UseViewmodel )
 		{
 			player.Viewmodel.Tags.Remove( "viewer" );
@@ -47,7 +52,7 @@ public static class PlayerConvars
 		}
 	}
 
-	[ConVar( "pb_debug_draw_player_hitboxes", ConVarFlags.Server,
+	[ConVar( "pb_debug_draw_player_hitboxes", ConVarFlags.Cheat,
 		Help = "When set to true, draw all player hitboxes." )]
 	public static bool DrawPlayerHitboxes { get; set; } = false;
 

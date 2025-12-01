@@ -4,10 +4,13 @@ using System.Threading.Channels;
 
 public static partial class PhysboxDebug
 {
-	[ConCmd( "pb_bot_create" )]
+	[ConCmd( "pb_bot_create", ConVarFlags.Cheat )]
 	public static void DebugBotCreate( Connection caller )
 	{
-		if ( !caller.IsHost ) return;
+		if ( !caller.IsHost )
+		{
+			return;
+		}
 
 		var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/bot.prefab" );
 		if ( prefab is null )
@@ -18,7 +21,7 @@ public static partial class PhysboxDebug
 
 		// Spawn this object and make the client the owner.
 		var prefabScene = SceneUtility.GetPrefabScene( prefab );
-		var go = prefabScene.Clone( new(), name: $"BOT (Placeholder)" );
+		var go = prefabScene.Clone( new Transform(), name: $"BOT (Placeholder)" );
 		go.BreakFromPrefab();
 		go.NetworkSpawn( caller );
 
@@ -28,10 +31,13 @@ public static partial class PhysboxDebug
 		player.InitBot();
 	}
 
-	[ConCmd( "pb_bot_suicide" )]
+	[ConCmd( "pb_bot_suicide", ConVarFlags.Cheat )]
 	public static void DebugBotSuicide( Connection caller )
 	{
-		if ( !caller.IsHost ) return;
+		if ( !caller.IsHost )
+		{
+			return;
+		}
 
 		foreach ( var bot in Game.ActiveScene.GetAllComponents<PlayerComponent>().Where( x => x.IsBot ) )
 		{

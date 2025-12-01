@@ -28,11 +28,16 @@ public sealed class PropLifeComponent :
 	[Sync]
 	public PlayerComponent LastOwnedBy { get; set; }
 
+	public PlayerComponent InterestedBot { get; set; }
+
 	public PropDefinitionComponent DefinitionComponent => Components.Get<PropDefinitionComponent>();
 	public PropDefinitionResource PropDefinition => DefinitionComponent.Definition;
 
 	public bool IsVisibleToConnection( Connection connection, in BBox worldBounds )
 	{
+		// Would love to look at this again in the future.
+		return true;
+
 		// If this prop is being held, always be networked.
 		if ( Tags.Contains( PhysboxConstants.HeldPropTag ) )
 		{
@@ -100,7 +105,7 @@ public sealed class PropLifeComponent :
 			return;
 		}
 
-		GameObject.Network.AlwaysTransmit = false;
+		GameObject.Network.AlwaysTransmit = true;
 	}
 
 	public override void Spawn()
@@ -108,13 +113,20 @@ public sealed class PropLifeComponent :
 		base.Spawn();
 
 		DamageImmunity = true;
-
 		Invoke( PropDamageImmunityTime, () => { DamageImmunity = false; } );
 	}
 
 	public override void Die()
 	{
 		base.Die();
+
+		// If we are being held, free ourselves from our owner.
+		var owner = GetComponentInParent<PlayerComponent>();
+		// This should ALWAYS return true, but it's here as a sanity check.
+		if ( owner?.HeldGameObject == GameObject )
+		{
+			owner?.DropObject();
+		}
 
 		// Run death action.
 		PropDefinition.OnPropBroken?.Invoke( GameObject );

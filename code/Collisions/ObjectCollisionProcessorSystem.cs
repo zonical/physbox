@@ -37,15 +37,23 @@ public class CollisionEvent : IEquatable<CollisionEvent>
 	public bool Equals( CollisionEvent? other )
 	{
 		if ( other == null )
+		{
 			return false;
+		}
 
-		return (this.A.Id == other.A.Id && this.B.Id == other.B.Id) ||
-			(this.A.Id == other.B.Id && this.B.Id == other.A.Id);
+		return (A.Id == other.A.Id && B.Id == other.B.Id) ||
+		       (A.Id == other.B.Id && B.Id == other.A.Id);
 	}
 
-	public override bool Equals( object? obj ) => Equals( obj as CollisionEvent );
+	public override bool Equals( object? obj )
+	{
+		return Equals( obj as CollisionEvent );
+	}
 
-	public override int GetHashCode() => HashCode.Combine( A, B );
+	public override int GetHashCode()
+	{
+		return HashCode.Combine( A, B );
+	}
 
 	public enum ObjectType
 	{
@@ -65,7 +73,7 @@ public class CollisionEvent : IEquatable<CollisionEvent>
 	private bool IsObjectWorld( GameObject go )
 	{
 		return go.Components.TryGet<MapCollider>( out _, _findMode ) ||
-			go.Components.TryGet<MeshComponent>( out _, _findMode );
+		       go.Components.TryGet<MeshComponent>( out _, _findMode );
 	}
 
 	private bool IsObjectPlayer( GameObject go )
@@ -75,9 +83,21 @@ public class CollisionEvent : IEquatable<CollisionEvent>
 
 	public ObjectType GetObjectType( GameObject go )
 	{
-		if ( IsObjectWorld( go ) ) return ObjectType.World;
-		if ( IsObjectProp( go ) ) return ObjectType.Prop;
-		if ( IsObjectPlayer( go ) ) return ObjectType.Player;
+		if ( IsObjectWorld( go ) )
+		{
+			return ObjectType.World;
+		}
+
+		if ( IsObjectProp( go ) )
+		{
+			return ObjectType.Prop;
+		}
+
+		if ( IsObjectPlayer( go ) )
+		{
+			return ObjectType.Player;
+		}
+
 		return ObjectType.None;
 	}
 
@@ -101,23 +121,23 @@ public class CollisionEvent : IEquatable<CollisionEvent>
 public class ObjectCollisionProcessorSystem : GameObjectSystem
 {
 	[ConVar( "pb_prop_damage_speed_threshold", ConVarFlags.Server | ConVarFlags.Replicated,
-	Help = "The minimum speed an object must be traveling to deal damage." )]
+		Help = "The minimum speed an object must be traveling to deal damage." )]
 	public static float DamageSpeedThreshold { get; set; } = 250.0f;
 
 	[ConVar( "pb_fall_damage_speed_threshold", ConVarFlags.Server | ConVarFlags.Replicated,
-	Help = "The minimum speed a player must be traveling to receive fall damage." )]
+		Help = "The minimum speed a player must be traveling to receive fall damage." )]
 	public static float FallSpeedThreshold { get; set; } = 500.0f;
 
 	[ConVar( "pb_prop_always_damage_players", ConVarFlags.Server | ConVarFlags.Replicated,
-	Help = "When set to true, props will always deal damage to players regardless of speed." )]
+		Help = "When set to true, props will always deal damage to players regardless of speed." )]
 	public static bool PropsAlwaysDamagePlayers { get; set; } = true;
 
 	[ConVar( "pb_debug_collision_iterations", ConVarFlags.Server,
-	Help = "When set to true, logs the amount of collision interactions processed in an update." )]
+		Help = "When set to true, logs the amount of collision interactions processed in an update." )]
 	public static bool PrintCollisionInteractions { get; set; } = false;
 
 	[ConVar( "pb_debug_verbose_collisions", ConVarFlags.Server,
-	Help = "When set to true, logs every single collision." )]
+		Help = "When set to true, logs every single collision." )]
 	public static bool VerboseCollisionLogging { get; set; } = false;
 
 	// List of collisions that need to be processed.
@@ -125,25 +145,38 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 	public ObjectCollisionProcessorSystem( Scene scene ) : base( scene )
 	{
-		if ( PhysboxUtilites.IsMainMenuScene() ) return;
+		if ( PhysboxUtilites.IsMainMenuScene() )
+		{
+			return;
+		}
+
 		Listen( Stage.PhysicsStep, 10, ProcessCollisions, "ProcessCollisions" );
 	}
+
 	public void RegisterCollisionEvent( GameObject a, GameObject b, float speed )
 	{
 		var objectCollision = new CollisionEvent( a, b );
 		objectCollision.AbsoluteSpeed = speed;
 
-		if ( _collisions.Contains( objectCollision ) ) return;
+		if ( _collisions.Contains( objectCollision ) )
+		{
+			return;
+		}
 
 		_collisions.Add( objectCollision );
 	}
 
-	public void ProcessCollisions()
+	private void ProcessCollisions()
 	{
-		//if ( Connection.Local != Connection.Host ) return;
+		// Don't process collisions and deal damage if the game has ended.
+		if ( GameLogicComponent.GetGameInstance()?.RoundOver ?? true )
+		{
+			_collisions.Clear();
+			return;
+		}
 
 		var iterations = 0;
-		while ( _collisions.Any() )
+		while ( _collisions.Count != 0 )
 		{
 			var collision = _collisions.First();
 			_collisions.Remove( collision ); // Pop from list.
@@ -151,9 +184,9 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			var objectTypeTuple = (collision.GetObjectType( collision.A ), collision.GetObjectType( collision.B ));
 
 			// Anything marked with CollisionEvent.ObjectType.None will be ignored.
-			if ( CollisionFunctions.ContainsKey( objectTypeTuple ) )
+			if ( CollisionFunctions.TryGetValue( objectTypeTuple, out var value ) )
 			{
-				CollisionFunctions[objectTypeTuple].Invoke( collision, collision.A, collision.B );
+				value.Invoke( collision, collision.A, collision.B );
 				if ( VerboseCollisionLogging )
 				{
 					Log.Info( $"ObjectCollisionProcessorSystem - collision: {objectTypeTuple}" );
@@ -170,136 +203,137 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 		}
 	}
 
-	public Dictionary<(CollisionEvent.ObjectType, CollisionEvent.ObjectType), Action<CollisionEvent, GameObject, GameObject>> CollisionFunctions = new()
+	private readonly Dictionary<(CollisionEvent.ObjectType, CollisionEvent.ObjectType),
+		Action<CollisionEvent, GameObject, GameObject>> CollisionFunctions = new()
 	{
-		{ ( CollisionEvent.ObjectType.Prop, CollisionEvent.ObjectType.World ), (e, A, B) => { ProcessPropAndWorldCollision( e, A, B ); } },
-		{ ( CollisionEvent.ObjectType.World, CollisionEvent.ObjectType.Prop ), (e, A, B) => { ProcessPropAndWorldCollision( e, B, A ); } },
-
-		{ ( CollisionEvent.ObjectType.Player, CollisionEvent.ObjectType.World ), (e, A, B) => { ProcessPlayerAndWorldCollision( e, A, B ); } },
-		{ ( CollisionEvent.ObjectType.World, CollisionEvent.ObjectType.Player ), (e, A, B) => { ProcessPlayerAndWorldCollision( e, B, A ); } },
-
-		{ ( CollisionEvent.ObjectType.Player, CollisionEvent.ObjectType.Prop ), (e, A, B) => { ProcessPlayerAndPropCollision( e, A, B ); } },
-		{ ( CollisionEvent.ObjectType.Prop, CollisionEvent.ObjectType.Player ), (e, A, B) => { ProcessPlayerAndPropCollision( e, B, A ); } },
-
-		{ ( CollisionEvent.ObjectType.Prop, CollisionEvent.ObjectType.Prop ), (e, A, B) => { ProcessPropAndPropCollision( e, A, B ); } },
+		{
+			(CollisionEvent.ObjectType.Prop, CollisionEvent.ObjectType.World),
+			( e, A, B ) => { ProcessPropAndWorldCollision( e, A, B ); }
+		},
+		{
+			(CollisionEvent.ObjectType.World, CollisionEvent.ObjectType.Prop),
+			( e, A, B ) => { ProcessPropAndWorldCollision( e, B, A ); }
+		},
+		{
+			(CollisionEvent.ObjectType.Player, CollisionEvent.ObjectType.World),
+			( e, A, B ) => { ProcessPlayerAndWorldCollision( e, A, B ); }
+		},
+		{
+			(CollisionEvent.ObjectType.World, CollisionEvent.ObjectType.Player),
+			( e, A, B ) => { ProcessPlayerAndWorldCollision( e, B, A ); }
+		},
+		{
+			(CollisionEvent.ObjectType.Player, CollisionEvent.ObjectType.Prop),
+			( e, A, B ) => { ProcessPlayerAndPropCollision( e, A, B ); }
+		},
+		{
+			(CollisionEvent.ObjectType.Prop, CollisionEvent.ObjectType.Player),
+			( e, A, B ) => { ProcessPlayerAndPropCollision( e, B, A ); }
+		},
+		{
+			(CollisionEvent.ObjectType.Prop, CollisionEvent.ObjectType.Prop),
+			( e, A, B ) => { ProcessPropAndPropCollision( e, A, B ); }
+		}
 	};
 
 	private static void ProcessPropAndWorldCollision( CollisionEvent @event, GameObject prop, GameObject world )
 	{
-		if ( @event.AbsoluteSpeed > DamageSpeedThreshold )
+		if ( !(@event.AbsoluteSpeed > DamageSpeedThreshold) )
 		{
-			var damage = (int)float.Sqrt( @event.AbsoluteSpeed * 0.8f );
-
-			var propLife = @event.GetLifeComponent( prop );
-			if ( propLife is not null )
-			{
-				propLife.OnDamage( new DamageInfo( damage, world, null ) );
-			}
-
-			var worldLife = @event.GetLifeComponent( world );
-			if ( worldLife is not null )
-			{
-				worldLife.OnDamage( new DamageInfo( damage, prop, null ) );
-			}
+			return;
 		}
+
+		var damage = (int)float.Sqrt( @event.AbsoluteSpeed * 0.8f );
+
+		var propLife = @event.GetLifeComponent( prop );
+		propLife?.OnDamage( new DamageInfo( damage, world, null ) );
+
+		var worldLife = @event.GetLifeComponent( world );
+		worldLife?.OnDamage( new DamageInfo( damage, prop, null ) );
 	}
 
 	private static void ProcessPropAndPropCollision( CollisionEvent @event, GameObject propA, GameObject propB )
 	{
-		if ( @event.AbsoluteSpeed > DamageSpeedThreshold )
+		if ( !(@event.AbsoluteSpeed > DamageSpeedThreshold) )
 		{
-			var lifeA = @event.GetLifeComponent( propA );
-			if ( lifeA is not null )
-			{
-				var probB_RB = @event.GetRigidbody( propB );
+			return;
+		}
 
-				var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probB_RB?.MassOverride ?? 0 );
-				lifeA.OnDamage( new DamageInfo( damage, propB, propB ) );
-			}
+		var lifeA = @event.GetLifeComponent( propA );
+		if ( lifeA is not null )
+		{
+			var probB_RB = @event.GetRigidbody( propB );
 
-			var lifeB = @event.GetLifeComponent( propB );
-			if ( lifeB is not null )
-			{
-				var probA_RB = @event.GetRigidbody( propA );
+			var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probB_RB?.MassOverride ?? 0 );
+			lifeA.OnDamage( new DamageInfo( damage, propB, propB ) );
+		}
 
-				var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probA_RB?.MassOverride ?? 0 );
-				lifeB.OnDamage( new DamageInfo( damage, propA, propA ) );
-			}
+		var lifeB = @event.GetLifeComponent( propB );
+		if ( lifeB is not null )
+		{
+			var probA_RB = @event.GetRigidbody( propA );
+
+			var damage = (int)float.Sqrt( @event.AbsoluteSpeed + probA_RB?.MassOverride ?? 0 );
+			lifeB.OnDamage( new DamageInfo( damage, propA, propA ) );
 		}
 	}
 
 	private static void ProcessPlayerAndWorldCollision( CollisionEvent @event, GameObject player, GameObject world )
 	{
-		if ( @event.AbsoluteSpeed >= FallSpeedThreshold )
+		if ( !(@event.AbsoluteSpeed >= FallSpeedThreshold) )
 		{
-			var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) * 0.5f;
-			var life = @event.GetLifeComponent( player ) as PlayerComponent;
+			return;
+		}
 
-			if ( life is not null )
-			{
-				life.RequestDamage( new DamageInfo( damage, world, null ) );
-				life.PlayFallDamageSound( player.WorldPosition );
-			}
+		var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) * 0.5f;
+
+		if ( @event.GetLifeComponent( player ) is PlayerComponent life )
+		{
+			life.RequestDamage( new DamageInfo( damage, world, null ) );
+			life.PlayFallDamageSound( player.WorldPosition );
 		}
 	}
 
 	private static void ProcessPlayerAndPropCollision( CollisionEvent @event, GameObject player, GameObject prop )
 	{
-		if ( @event.AbsoluteSpeed > DamageSpeedThreshold )
+		if ( !(@event.AbsoluteSpeed > DamageSpeedThreshold) )
 		{
-			var propLife = @event.GetLifeComponent( prop ) as PropLifeComponent;
-			var attacker = (GameObject)null;
-			attacker = propLife.LastOwnedBy?.GameObject;
+			return;
+		}
 
-			// Don't damage the player if we don't have someone who last owned us.
-			// Prevent us from taking damage from idle props.
-			if ( attacker is null )
+		var propLife = @event.GetLifeComponent( prop ) as PropLifeComponent;
+		var attacker = (GameObject)null;
+		attacker = propLife?.LastOwnedBy?.GameObject;
+
+		// Don't damage the player if we don't have someone who last owned us.
+		// Prevent us from taking damage from idle props.
+		if ( attacker is null )
+		{
+			return;
+		}
+
+		var propDamage = (int)float.Sqrt( @event.AbsoluteSpeed );
+		propLife.OnDamage( new DamageInfo( propDamage, null, null ) );
+
+		if ( @event.GetLifeComponent( player ) is PlayerComponent victim )
+		{
+			var playerDamage = (int)float.Sqrt( @event.AbsoluteSpeed ) + 10;
+
+			var rigidBody = @event.GetRigidbody( prop );
+			playerDamage += (int)float.Sqrt( rigidBody?.MassOverride ?? 0 );
+
+			victim.RequestDamage( new DamageInfo( playerDamage, attacker, prop ) );
+
+			// Let the attacker know that we've hit the player by sending a hitsound.
+			var attackerPlayer = attacker.GetComponent<PlayerComponent>();
+			if ( attackerPlayer is not null && attackerPlayer.IsPlayer )
 			{
-				return;
-			}
+				attackerPlayer.PlayHitsound();
 
-			if ( propLife is not null )
-			{
-				var damage = (int)float.Sqrt( @event.AbsoluteSpeed );
-				propLife.OnDamage( new DamageInfo( damage, null, null ) );
-
-				// Bounce back.
-				var rigidBody = @event.GetRigidbody( prop );
-				if ( rigidBody is not null )
-				{
-					//rigidBody.Velocity = 0;
-					//rigidBody.AngularVelocity = 0;
-				}
-			}
-
-			var victim = @event.GetLifeComponent( player ) as PlayerComponent;
-			if ( victim is not null )
-			{
-				var damage = (int)float.Sqrt( @event.AbsoluteSpeed ) + 10;
-
-				var rigidBody = @event.GetRigidbody( prop );
-				if ( rigidBody is not null )
-				{
-					damage += (int)float.Sqrt( rigidBody.MassOverride );
-				}
-
-				victim.RequestDamage( new DamageInfo( damage, attacker, prop ) );
-
-				// Let the attacker know that we've hit the player by sending a hitsound.
-				var attackerPlayer = attacker.GetComponent<PlayerComponent>();
-				if ( attackerPlayer is not null && attackerPlayer.IsPlayer )
-				{
-					attackerPlayer.PlayHitsound();
-
-					// Print information in attacker chat.
-					var chat = Game.ActiveScene.Get<ChatManagerComponent>();
-
-					using ( Rpc.FilterInclude( c => c.Id == attackerPlayer.Network.Owner.Id ) )
-					{
-						var name = victim.IsPlayer ? victim.Network.Owner.DisplayName : victim.BotName;
-						chat.SendMessage( MessageType.System, $"You dealt {damage} damage to {name}." );
-					}
-				}
+				// Print information in attacker chat.
+				var name = victim.IsPlayer ? victim.Network.Owner.DisplayName : victim.BotName;
+				PhysboxUtilites.SendMessageToOnlyConnection( attackerPlayer.Network.Owner, MessageType.System,
+					$"You dealt {playerDamage} damage to {name}." );
 			}
 		}
 	}

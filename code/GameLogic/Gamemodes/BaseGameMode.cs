@@ -1,11 +1,16 @@
 ﻿using Sandbox;
 using System;
 
+public class PhysboxGamemodeAttribute( PhysboxConstants.GameModes gameMode ) : Attribute
+{
+	public PhysboxConstants.GameModes GameMode = gameMode;
+}
+
 [Hide]
 public class BaseGameMode : Component
 {
-	[Sync, Property, ReadOnly] public int RoundsPlayed { get; set; } = 0;
-	[Sync, Property, ReadOnly] public bool RoundOver { get; set; } = false;
+	[Sync] [Property] [ReadOnly] public int RoundsPlayed { get; set; } = 0;
+	[Sync] [Property] [ReadOnly] public bool RoundOver { get; set; } = false;
 	[Property] public GameObject Winner { get; set; }
 
 	protected GameLogicComponent Game => GameLogicComponent.GetGameInstance();

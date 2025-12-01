@@ -1,6 +1,7 @@
 using Sandbox;
 using System;
 using System.Threading.Tasks;
+using Sandbox.Audio;
 
 [Group( "Physbox" )]
 [Title( "Game Logic Component" )]
@@ -32,21 +33,32 @@ public partial class GameLogicComponent :
 	[Icon( "alarm" )]
 	public int TimeLeft => TimeShouldEnd - (int)Time.Now;
 
+	private readonly Dictionary<int, string> AnnouncerSecondsSounds = new()
+	{
+		{ 60, "sounds/announcer/60-seconds.sound" },
+		{ 30, "sounds/announcer/30-seconds.sound" },
+		{ 10, "sounds/announcer/10-seconds.sound" },
+		{ 5, "sounds/announcer/countdown-5.sound" },
+		{ 4, "sounds/announcer/countdown-4.sound" },
+		{ 3, "sounds/announcer/countdown-3.sound" },
+		{ 2, "sounds/announcer/countdown-2.sound" },
+		{ 1, "sounds/announcer/countdown-1.sound" }
+	};
+
+	private List<int> AnnouncerSoundsAlreadyPlayed = new();
+
 	public bool RoundOver => GameModeComponent?.RoundOver ?? false;
 
+	/// <summary>
+	/// Creates a lobby if we don't already have one by this point.
+	/// </summary>
 	protected override async Task OnLoad()
 	{
-		if ( Scene.IsEditor )
+		if ( Scene.IsEditor || PhysboxUtilites.IsMainMenuScene() )
 		{
 			return;
 		}
 
-		if ( PhysboxUtilites.IsMainMenuScene() )
-		{
-			return;
-		}
-
-		// Make a lobby if we don't have one by this point.
 		if ( !Networking.IsActive )
 		{
 			LoadingScreen.Title = "Creating Lobby";
@@ -57,14 +69,47 @@ public partial class GameLogicComponent :
 		}
 	}
 
-
-	// Called when a player has joined the lobby. We create a player prefab here and spawn them in.
-	// PlayerComponent will fire the OnPlayerReady event once the component is fully initialised.
+	/// <summary>
+	/// Called when a player has joined the lobby. We create a player prefab here and spawn them in.
+	/// PlayerComponent will fire the OnPlayerReady event once the component is fully initialised.
+	/// </summary>
+	/// <param name="channel">Incoming connection.</param>
 	[ActionGraphIgnore]
 	public void OnActive( Connection channel )
 	{
 		Log.Info( $"Player '{channel.DisplayName}' has joined the game" );
+		CreatePlayer( channel );
+	}
 
+	protected override void OnEnabled()
+	{
+		if ( !Networking.IsHost )
+		{
+			return;
+		}
+
+		// Delete ourselves if we're in the main menu.
+		if ( PhysboxUtilites.IsMainMenuScene() )
+		{
+			DestroyGameObject();
+			return;
+		}
+
+		Log.Info( "Initialising new Physbox game." );
+		GameObject.Name = $"Physbox Game - {GameMode}";
+
+		SpawnpointOverrideCheck();
+		SaveProps();
+		StartGame();
+		CreateBots();
+	}
+
+	/// <summary>
+	/// Creates a player and spawns them into the world.
+	/// </summary>
+	/// <param name="channel">Connection that will own this player.</param>
+	private void CreatePlayer( Connection channel )
+	{
 		var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/player.prefab" );
 		if ( prefab is null )
 		{
@@ -84,37 +129,11 @@ public partial class GameLogicComponent :
 		player.InitPlayer();
 	}
 
-	protected override void OnEnabled()
+	/// <summary>
+	/// Creates a number of bots (pb_maxbots) and spawns them into the world.
+	/// </summary>
+	private void CreateBots()
 	{
-		// Delete ourselves if we're in the main menu.
-		if ( PhysboxUtilites.IsMainMenuScene() )
-		{
-			DestroyGameObject();
-			return;
-		}
-
-		Log.Info( "Initialising new Physbox game." );
-		GameObject.Name = $"Physbox Game - {GameMode}";
-
-		var mapInfo = Scene.Get<MapInformationComponent>();
-		if ( PhysboxUtilites.MapOverridesDefaultSpawnpoints() )
-		{
-			// If there are any default spawnpoints, get rid of them.
-			foreach ( var oldSpawn in Scene.GetAllComponents<SpawnPoint>() )
-			{
-				oldSpawn.GameObject.Destroy();
-			}
-
-			Log.Info( "Updated spawnpoints." );
-		}
-
-		// Save the props that the developer has manually placed in the level.
-		var system = Scene.GetSystem<PersistentObjectRefreshSystem>();
-		system.SaveProps();
-
-		// Start game.
-		StartGame();
-
 		// Spawn bots.
 		for ( var i = 0; i < MaxBots; i++ )
 		{
@@ -140,12 +159,50 @@ public partial class GameLogicComponent :
 		Log.Info( $"Added {MaxBots} bots to game." );
 	}
 
+	/// <summary>
+	/// Tells PersistentObjectRefreshSystem to save props before the game begins.
+	/// </summary>
+	private void SaveProps()
+	{
+		// Save the props that the developer has manually placed in the level.
+		var system = Scene.GetSystem<PersistentObjectRefreshSystem>();
+		system.SaveProps();
+	}
+
+	/// <summary>
+	/// Removes Sandbox spawnpoints if we don't want to keep them around (see MapInformationComponent).
+	/// </summary>
+	private void SpawnpointOverrideCheck()
+	{
+		var mapInfo = Scene.Get<MapInformationComponent>();
+		if ( !PhysboxUtilites.MapOverridesDefaultSpawnpoints() )
+		{
+			return;
+		}
+
+		// If there are any default spawnpoints, get rid of them.
+		foreach ( var oldSpawn in Scene.GetAllComponents<SpawnPoint>() )
+		{
+			oldSpawn.GameObject.Destroy();
+		}
+
+		Log.Info( "Updated spawnpoints." );
+	}
+
+	/// <summary>
+	/// Sets the current gamemode.
+	/// </summary>
+	/// <param name="gameMode"></param>
 	public void SetGameMode( PhysboxConstants.GameModes gameMode )
 	{
 		GameMode = gameMode;
 		RestartGame();
 	}
 
+	/// <summary>
+	/// Creates the gamemode component, adjusts the timer (if we have it enabled),
+	/// and calls round start.
+	/// </summary>
 	[Rpc.Host( NetFlags.HostOnly | NetFlags.Reliable | NetFlags.SendImmediate )]
 	[ActionGraphIgnore]
 	public void StartGame()
@@ -153,21 +210,8 @@ public partial class GameLogicComponent :
 		// Create gamemode.
 		if ( !Scene.GetAllComponents<BaseGameMode>().Any() )
 		{
-			switch ( GameMode )
-			{
-				case PhysboxConstants.GameModes.None:
-					GameModeComponent = GameObject.AddComponent<EmptyGameMode>(); break;
-				case PhysboxConstants.GameModes.Deathmatch:
-					GameModeComponent = GameObject.AddComponent<DeathmatchGameMode>(); break;
-				default:
-					{
-						Log.Error( $"Invalid gamemode selected! ({GameMode})" );
-						break;
-					}
-			}
+			CreateGamemodeComponent();
 		}
-
-		Log.Info( $"Created gamemode component - {GameMode.ToString()}" );
 
 		if ( UseTimer )
 		{
@@ -179,6 +223,25 @@ public partial class GameLogicComponent :
 		{
 			Scene.RunEvent<IGameEvents>( x => x.OnRoundStart() );
 		} );
+	}
+
+	/// <summary>
+	/// Creates a component based on the gamemode.
+	/// </summary>
+	private void CreateGamemodeComponent()
+	{
+		var gameModes = TypeLibrary.GetTypes<BaseGameMode>();
+		var gamemode =
+			gameModes.FirstOrDefault( x => x.GetAttribute<PhysboxGamemodeAttribute>()?.GameMode == GameMode, null );
+
+		if ( gamemode is null )
+		{
+			Log.Error( $"Invalid gamemode selected! ({GameMode})" );
+			return;
+		}
+
+		// BaseGameMode is derived from Component.
+		GameModeComponent = (BaseGameMode)Components.Create( gamemode );
 	}
 
 	[Rpc.Broadcast]
@@ -200,6 +263,8 @@ public partial class GameLogicComponent :
 		// Reset prop spawn timer.
 		Scene.GetSystem<PropSpawnerSystem>().SpawnDelay = 0;
 		Scene.GetSystem<PropSpawnerSystem>().CheckDelay = 0;
+
+		AnnouncerSoundsAlreadyPlayed.Clear();
 	}
 
 	private void RestartGame()
@@ -226,6 +291,21 @@ public partial class GameLogicComponent :
 		Scene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
 	}
 
+	protected override void OnFixedUpdate()
+	{
+		if ( !UseTimer || TimeLeft < 0 || TimeShouldEnd == -1 )
+		{
+			return;
+		}
+
+		// Play announcer sound.
+		if ( AnnouncerSecondsSounds.TryGetValue( TimeLeft, out var sound ) &&
+		     !AnnouncerSoundsAlreadyPlayed.Contains( TimeLeft ) )
+		{
+			AnnouncerSoundsAlreadyPlayed.Add( TimeLeft );
+			Sound.Play( sound, Mixer.FindMixerByName( "UI" ) );
+		}
+	}
 
 	[Rpc.Host( NetFlags.HostOnly | NetFlags.Reliable | NetFlags.SendImmediate )]
 	[ActionGraphIgnore]

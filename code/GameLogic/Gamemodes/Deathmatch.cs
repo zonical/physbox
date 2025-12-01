@@ -3,21 +3,28 @@ using System;
 using static PlayerComponent;
 
 [Hide]
+[PhysboxGamemode( PhysboxConstants.GameModes.Deathmatch )]
 public class DeathmatchGameMode : BaseGameMode, IGameEvents
 {
 	[ConVar( "pb_deathmatch_kills_to_win",
-		ConVarFlags.GameSetting ),
-		Group( "Deathmatch" ),
-		Title( "Kills to Win" )]
+		ConVarFlags.GameSetting )]
+	[Group( "Deathmatch" )]
+	[Title( "Kills to Win" )]
 	public static int DeathmatchKillsToWin { get; set; } = 5;
 
 	[Rpc.Broadcast]
 	void IGameEvents.OnPlayerDeath( GameObject victim, DamageInfo info )
 	{
-		if ( RoundOver ) return;
+		if ( RoundOver )
+		{
+			return;
+		}
 
 		var victimPlayer = victim.GetComponent<PlayerComponent>();
-		if ( victimPlayer is null ) return;
+		if ( victimPlayer is null )
+		{
+			return;
+		}
 
 		victimPlayer.Deaths++;
 		PhysboxUtilites.IncrementStatForPlayer( victimPlayer, PhysboxConstants.DeathsStat, 1 );
@@ -25,8 +32,8 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 		var attacker = info.Attacker;
 
 		if ( attacker is not null &&
-			attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) &&
-			attackerPlayer != victimPlayer )
+		     attacker.Components.TryGet<PlayerComponent>( out var attackerPlayer ) &&
+		     attackerPlayer != victimPlayer )
 		{
 			// Add kills to attacking player.
 			attackerPlayer.Kills++;
@@ -41,11 +48,23 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 	[Rpc.Broadcast]
 	void IGameEvents.OnPlayerScoreUpdate( GameObject player, int score )
 	{
-		if ( RoundOver ) return;
-
-		if ( score >= DeathmatchKillsToWin )
+		if ( RoundOver )
 		{
-			// We have a winner!
+			return;
+		}
+
+		// Someone is getting close!
+		if ( score == DeathmatchKillsToWin - 1 )
+		{
+			var chat = ChatManagerComponent.GetChatManager();
+			var playerComp = player.GetComponent<PlayerComponent>();
+			var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
+
+			chat.SendMessage( MessageType.System, $"WARNING! {name} is only one kill away from winning!" );
+		}
+		// We have a winner!
+		else if ( score >= DeathmatchKillsToWin )
+		{
 			DeclareWinner( player );
 			var chat = ChatManagerComponent.GetChatManager();
 			var playerComp = player.GetComponent<PlayerComponent>();

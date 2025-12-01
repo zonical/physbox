@@ -2,20 +2,22 @@ using System;
 using System.Threading;
 using Physbox;
 using Sandbox.Audio;
+using Sandbox.Diagnostics;
 using Sandbox.Services;
 
 public partial class PlayerComponent
 {
 	private Angles AdditionalPropRotation;
-	public float BuiltUpForce;
-	[Property] [Feature( "Thrower" )] public Gradient ForceColorGradient = new();
 
+
+	[Property] [Feature( "Thrower" )] public Gradient ForceColorGradient = new();
+	[Property] [Feature( "Thrower" )] public float BuiltUpForce;
 	[Property] [Feature( "Thrower" )] public float ForcePerFrame = 0.01f;
 	[Property] [Feature( "Thrower" )] public Vector3 HeldObjectOffset = new();
 	[Property] [Feature( "Thrower" )] public float MaxForce = 2.75f;
-	public CancellationToken PropCancellationToken = CancellationToken.None;
 
-	public CancellationTokenSource PropCancellationTokenSource;
+	private CancellationToken PropCancellationToken = CancellationToken.None;
+	private CancellationTokenSource PropCancellationTokenSource;
 
 	public int Throws;
 
@@ -42,26 +44,26 @@ public partial class PlayerComponent
 	[Property] [Feature( "Thrower" )] public bool CanThrowObject { get; private set; } = true;
 
 	// ==================== [ VARIABLES ] ====================
-	private PropDefinitionResource HeldProp => HeldGameObject?.GetComponent<PropDefinitionComponent>().Definition;
+	private PropDefinitionResource HeldProp =>
+		HeldGameObject?.Components.Get<PropDefinitionComponent>( true ).Definition;
 
+	/// <summary>
+	/// Draws the crosshair. We don't need a fancy Razor panel for this.
+	/// </summary>
 	private void DrawCrosshair()
 	{
-		if ( Hud is null || !Hud.Enabled || !HudRoot.DrawHud )
+		if ( Hud is null || !Hud.Enabled || !HudRoot.DrawHud || Camera is null )
 		{
 			return;
 		}
 
-		Camera?.Hud.DrawCircle( Screen.Size / 2, 4, CurrentlyLookingAtObject is null ? Color.White : Color.Yellow );
+		var color = CurrentlyLookingAtObject is null ? Color.White : Color.Yellow;
+		Camera.Hud.DrawCircle( Screen.Size / 2, 4, color );
 	}
 
 	private void HandleThrowerInput()
 	{
-		if ( IsProxy )
-		{
-			return;
-		}
-
-		if ( !IsAlive )
+		if ( IsProxy || !IsAlive )
 		{
 			return;
 		}
@@ -83,16 +85,8 @@ public partial class PlayerComponent
 				}
 				else
 				{
-					var chat = Scene.Get<ChatManagerComponent>();
-					if ( chat is not null )
-					{
-						using ( Rpc.FilterInclude( c => c.Id == Connection.Local.Id ) )
-						{
-							chat.SendMessage( MessageType.System,
-								"Cannot throw prop. Too close to a wall or another object." );
-						}
-					}
-
+					PhysboxUtilites.SendLocalChatMessage( MessageType.System,
+						"Cannot throw prop. Too close to a wall or another object." );
 					Sound.Play( "sounds/player_use_fail.sound", Mixer.FindMixerByName( "UI" ) );
 				}
 			}
@@ -127,19 +121,26 @@ public partial class PlayerComponent
 		if ( IsPlayer )
 		{
 			var cameraOffset = Camera.WorldPosition - new Vector3( 0, 0, 16 ) + Camera.WorldRotation.Forward * 64;
-			var targetPos = cameraOffset +
-			                HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
+			var heldPositionOffset = HeldProp?.HeldPositionOffset ?? Vector3.Zero;
+			var propOffset = heldPositionOffset.RotateAround( Vector3.Zero, Camera.WorldRotation );
+			var targetPos = cameraOffset + propOffset;
+
+			var heldRotationOffset = HeldProp?.HeldRotationOffset.ToRotation() ?? new Rotation();
+
+			var rotation = Camera.WorldRotation * heldRotationOffset * AdditionalPropRotation.ToRotation();
 
 			HeldGameObject.WorldPosition = targetPos;
-			HeldGameObject.WorldRotation = Camera.WorldRotation * HeldProp.HeldRotationOffset.ToRotation() *
-			                               AdditionalPropRotation.ToRotation();
+			HeldGameObject.WorldRotation = rotation;
 		}
 		else if ( IsBot )
 		{
+			Assert.IsValid( HeldProp );
+
 			var zOffset = 56; // 72 (eye height) - 16
 			var targetPos = WorldPosition + new Vector3( 0, 0, zOffset ) + WorldRotation.Forward * 64;
-			HeldGameObject.WorldPosition =
-				targetPos + HeldProp.HeldPositionOffset.RotateAround( Vector3.Zero, WorldRotation );
+			var heldPositionOffset = HeldProp?.HeldPositionOffset ?? Vector3.Zero;
+			var propOffset = heldPositionOffset.RotateAround( Vector3.Zero, WorldRotation );
+			HeldGameObject.WorldPosition = targetPos + propOffset;
 		}
 	}
 
@@ -163,11 +164,13 @@ public partial class PlayerComponent
 			    trace.GameObject.Tags.Contains( PhysboxConstants.BreakablePropTag ) ||
 			    trace.GameObject.GetComponent<WorldLifeComponent>() is not null) )
 		{
+			//Log.Info( $"Thrower - looking at {trace.GameObject}" );
+
 			CurrentlyLookingAtObject = trace.GameObject;
-			var outline = CurrentlyLookingAtObject.AddComponent<HighlightOutline>();
+			//var outline = CurrentlyLookingAtObject.AddComponent<HighlightOutline>();
 
 			// Do not network this outline.
-			outline.Flags = outline.Flags | ComponentFlags.NotNetworked;
+			//outline.Flags = outline.Flags | ComponentFlags.NotNetworked;
 		}
 	}
 
@@ -189,15 +192,34 @@ public partial class PlayerComponent
 
 	public void PickupObject( GameObject go )
 	{
-		// Move GameObject in front of us.
+		MakeGameObjectHeldObject( go );
+		BroadcastPickupAnimation();
+		CancelPreviousOwnerRemovalProcess();
+		UpdateSpeedFromHeldObject();
+		UpdateHeldObjectComponents();
+
+		if ( IsPlayer )
+		{
+			Stats.Increment( PhysboxConstants.PropsPickedUpStat, 1 );
+		}
+	}
+
+	private void MakeGameObjectHeldObject( GameObject go )
+	{
 		go.SetParent( GameObject );
 		HeldGameObject = go;
 
 		HeldGameObject.Network.AssignOwnership( Network.Owner );
 		HeldGameObject.Tags.Add( PhysboxConstants.HeldPropTag );
 
-		BroadcastPickupAnimation();
+		if ( HeldGameObject.Components.TryGet<PropLifeComponent>( out var propLifeComponent ) )
+		{
+			propLifeComponent.LastOwnedBy = this;
+		}
+	}
 
+	private void CancelPreviousOwnerRemovalProcess()
+	{
 		// Cancel Invoke token if we're picking up this prop again.
 		if ( HeldGameObject.Id == LastHeldGameObject?.Id &&
 		     PropCancellationToken != CancellationToken.None &&
@@ -209,23 +231,25 @@ public partial class PlayerComponent
 			PropCancellationTokenSource?.Dispose();
 			PropCancellationToken = CancellationToken.None;
 		}
+	}
 
-		if ( HeldGameObject.Components.TryGet<PropLifeComponent>( out var propLifeComponent ) )
+	private void UpdateSpeedFromHeldObject()
+	{
+		// Alter our speed.
+		if ( !PlayerConvars.SpeedAffectedByMass || !IsPlayer )
 		{
-			propLifeComponent.LastOwnedBy = this;
-
-			// Alter our speed.
-			if ( PlayerConvars.SpeedAffectedByMass && IsPlayer )
-			{
-				var def = propLifeComponent.DefinitionComponent.Definition;
-				var subtractAmount = float.Round( float.Sqrt( def.Mass ) * 10 );
-
-				PlayerController.RunSpeed = float.Max( PlayerController.RunSpeed - subtractAmount, 50 );
-				PlayerController.WalkSpeed = float.Max( PlayerController.WalkSpeed - subtractAmount, 30 );
-				PlayerController.DuckedSpeed = float.Max( PlayerController.DuckedSpeed - subtractAmount, 20 );
-			}
+			return;
 		}
 
+		var subtractAmount = float.Round( float.Sqrt( HeldProp.Mass ) * 10 );
+
+		PlayerController.RunSpeed = float.Max( PlayerController.RunSpeed - subtractAmount, 50 );
+		PlayerController.WalkSpeed = float.Max( PlayerController.WalkSpeed - subtractAmount, 30 );
+		PlayerController.DuckedSpeed = float.Max( PlayerController.DuckedSpeed - subtractAmount, 20 );
+	}
+
+	private void UpdateHeldObjectComponents()
+	{
 		// Make this object slightly translucent so we can see through it.
 		if ( HeldGameObject.Components.TryGet<ModelRenderer>( out var modelRen ) )
 		{
@@ -244,11 +268,6 @@ public partial class PlayerComponent
 		{
 			collider.Enabled = false;
 			collider.ColliderFlags = ColliderFlags.IgnoreTraces;
-		}
-
-		if ( IsPlayer )
-		{
-			Stats.Increment( PhysboxConstants.PropsPickedUpStat, 1 );
 		}
 	}
 
@@ -295,14 +314,19 @@ public partial class PlayerComponent
 		LastHeldGameObject = HeldGameObject;
 		HeldGameObject = null;
 
+		StartPreviousOwnerRemovalProcess();
+
+		return LastHeldGameObject;
+	}
+
+	private void StartPreviousOwnerRemovalProcess()
+	{
 		// Start a new cancellation token.
 		PropCancellationTokenSource = new CancellationTokenSource();
 		PropCancellationToken = PropCancellationTokenSource.Token;
 
 		// After a few seconds, set ourselves to not own this object anymore.
 		Invoke( 5.0f, () => RemovePreviousOwner( LastHeldGameObject ), PropCancellationToken );
-
-		return LastHeldGameObject;
 	}
 
 	private void RemovePreviousOwner( GameObject go )
@@ -348,34 +372,34 @@ public partial class PlayerComponent
 
 		var go = FreeAndReturnHeldObject();
 		RestoreFormallyHeldObject( go );
-
-		// Fling it!
-		if ( go.Components.TryGet<Rigidbody>( out var rigidBody ) )
-		{
-			var mass = rigidBody.Mass;
-
-			// Slightly offset where we throw.
-			var dir = CalculateThrowVelocity( mass );
-
-			rigidBody.Sleeping = false;
-			rigidBody.Gravity = true;
-			rigidBody.Velocity = dir;
-
-			BuiltUpForce = 0;
-		}
+		FlingGameObject( go );
+		TriggerViewmodelThrowAnimation();
 
 		if ( IsPlayer )
 		{
-			var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
-			if ( viewmodel.Enabled )
-			{
-				viewmodel.Parameters.Set( "b_attack", true );
-			}
-
 			Sound.Play( "sounds/player/swoosh.sound" );
+			ResetSpeed();
+		}
+	}
+
+	private void FlingGameObject( GameObject go )
+	{
+		// Fling it!
+		if ( !go.Components.TryGet<Rigidbody>( out var rigidBody ) )
+		{
+			return;
 		}
 
-		ResetSpeed();
+		var mass = rigidBody.Mass;
+
+		// Slightly offset where we throw.
+		var dir = CalculateThrowVelocity( mass );
+
+		rigidBody.Sleeping = false;
+		rigidBody.Gravity = true;
+		rigidBody.Velocity = dir;
+
+		BuiltUpForce = 0;
 	}
 
 	public void DropObject()
@@ -392,10 +416,9 @@ public partial class PlayerComponent
 
 		var go = FreeAndReturnHeldObject();
 		RestoreFormallyHeldObject( go );
+		ResetSpeed();
 
 		BuiltUpForce = 0;
-
-		ResetSpeed();
 	}
 
 	private float CalculateDistanceDroppedForPreview( float distance )
@@ -455,21 +478,24 @@ public partial class PlayerComponent
 
 		var model = HeldGameObject.GetComponent<ModelRenderer>().Model ?? Model.Cube;
 		var trace = GenerateValidThrowTrace( model );
-		var highlight = HeldGameObject.GetComponent<HighlightOutline>();
 
-		if ( trace.Hit || trace.StartedSolid )
+		CanThrowObject = !(trace.Hit || trace.StartedSolid);
+
+		var highlight = HeldGameObject.GetComponent<HighlightOutline>();
+		if ( highlight is not null )
 		{
-			// Set highlight accordingly.
-			CanThrowObject = false;
-			highlight.Color = Color.White;
-			highlight.ObscuredColor = Color.Red;
-			highlight.InsideObscuredColor = Color.Red.WithAlpha( 0.5f );
-		}
-		else
-		{
-			CanThrowObject = true;
-			highlight.Color = Color.Green;
-			highlight.ObscuredColor = Color.White.WithAlpha( 0.1f );
+			if ( CanThrowObject )
+			{
+				// Set highlight accordingly.
+				highlight.Color = Color.White;
+				highlight.ObscuredColor = Color.Red;
+				highlight.InsideObscuredColor = Color.Red.WithAlpha( 0.5f );
+			}
+			else
+			{
+				highlight.Color = Color.Green;
+				highlight.ObscuredColor = Color.White.WithAlpha( 0.1f );
+			}
 		}
 	}
 

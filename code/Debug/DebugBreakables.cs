@@ -65,7 +65,7 @@ public static partial class PhysboxDebug
 		player.PlayerController.Renderer.Parameters.Set( "holdtype_pose", pose );
 	}
 
-	[ConCmd( "pb_debug_modify_kills" )]
+	[ConCmd( "pb_debug_modify_kills", ConVarFlags.Cheat )]
 	public static void ModifyKills( Connection caller, int kills )
 	{
 		var player = PlayerComponent.LocalPlayer;
@@ -79,5 +79,21 @@ public static partial class PhysboxDebug
 
 		player.Kills += kills;
 		player.Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( player.GameObject, player.Kills ) );
+	}
+
+	[ConCmd( "pb_debug_break_held_prop", ConVarFlags.Cheat )]
+	public static void BreakHeldProp( Connection caller )
+	{
+		var player = PlayerComponent.LocalPlayer;
+
+		// Find caller in the world.
+		if ( player is null )
+		{
+			Log.Error( "Could not find local player." );
+			return;
+		}
+
+		var life = player.HeldGameObject?.GetComponent<PropLifeComponent>();
+		life?.Die();
 	}
 }

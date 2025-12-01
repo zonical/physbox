@@ -37,13 +37,9 @@ public static class PhysboxUtilites
 
 		// Update our name.
 		GameObject.Name = $"Prop ({resource.ResourcePath})";
-
-		if ( !IsMainMenuScene() )
-		{
-			GameObject.NetworkMode = NetworkMode.Object;
-			GameObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
-			GameObject.NetworkSpawn();
-		}
+		GameObject.NetworkMode = NetworkMode.Object;
+		GameObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
+		GameObject.NetworkSpawn();
 
 		return GameObject;
 	}
@@ -81,6 +77,50 @@ public static class PhysboxUtilites
 	{
 		var mapInfo = Game.ActiveScene.Get<MapInformationComponent>();
 		return mapInfo?.OverrideDefaultSpawnpoints ?? false;
+	}
+
+	public static ChatManagerComponent GetChatComponent()
+	{
+		return Game.ActiveScene.Get<ChatManagerComponent>();
+	}
+
+	/// <summary>
+	/// Sends a chat message that will only be visible to the local connection.
+	/// </summary>
+	/// <param name="type">Message type (player, system, etc...)</param>
+	/// <param name="message">Text of the message.</param>
+	public static void SendLocalChatMessage( MessageType type, string message )
+	{
+		var chat = GetChatComponent();
+		if ( chat is null )
+		{
+			return;
+		}
+
+		using ( Rpc.FilterInclude( c => c.Id == Connection.Local.Id ) )
+		{
+			chat.SendMessage( type, message );
+		}
+	}
+
+	/// <summary>
+	/// Sends a chat message that will only be visible to one connection.
+	/// </summary>
+	/// <param name="player">Connection to send the message to.</param>
+	/// <param name="type">Message type (player, system, etc...)</param>
+	/// <param name="message">Text of the message.</param>
+	public static void SendMessageToOnlyConnection( Connection player, MessageType type, string message )
+	{
+		var chat = GetChatComponent();
+		if ( chat is null )
+		{
+			return;
+		}
+
+		using ( Rpc.FilterInclude( c => c.Id == player.Id ) )
+		{
+			chat.SendMessage( type, message );
+		}
 	}
 
 	public static void CreateNewLobby(

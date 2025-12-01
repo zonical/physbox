@@ -119,20 +119,27 @@ public partial class PlayerComponent :
 	[Feature( "Game Objects" )]
 	public GameObject Viewmodel { get; set; }
 
+	public SkinnedModelRenderer Renderer => GetComponentInChildren<SkinnedModelRenderer>();
+
 	// ==========================================================
 
 	public bool IsPlayer => !IsBot;
 
+	/// <summary>
+	/// Updates the viewmodel to play a jump animation.
+	/// </summary>
 	void PlayerController.IEvents.OnJumped()
 	{
-		var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
-		if ( viewmodel.Enabled )
-		{
-			viewmodel.Parameters.Set( "b_jump", true );
-		}
+		TriggerViewmodelJump();
 	}
 
-	// Couldn't put this in ObjectCollisionListenerComponent, so it's here instead :(
+
+	/// <summary>
+	/// Deals fall damage to a player. I couldn't put this in ObjectCollisionListenerComponent,
+	/// so it's here instead :(
+	/// </summary>
+	/// <param name="distance">Distance travelled.</param>
+	/// <param name="impactVelocity">Impact velocity from the fall.</param>
 	void PlayerController.IEvents.OnLanded( float distance, Vector3 impactVelocity )
 	{
 		if ( distance < 200 )
@@ -140,31 +147,32 @@ public partial class PlayerComponent :
 			return;
 		}
 
-		if ( impactVelocity.Length >= ObjectCollisionProcessorSystem.FallSpeedThreshold )
+		if ( !(impactVelocity.Length >= ObjectCollisionProcessorSystem.FallSpeedThreshold) )
 		{
-			var player = GameObject.GetComponent<PlayerController>();
-			if ( player is not null )
-			{
-				var other = player.GroundObject;
-				var listener = GetComponent<ObjectCollisionListenerComponent>();
-				if ( listener is not null )
-				{
-					if ( listener.RecentlyHitBy.Contains( other.Id ) )
-					{
-						return;
-					}
-
-					// Don't register collisions with the thing we are touching for a while.
-					listener.RecentlyHitBy.Add( other.Id );
-					Invoke( 1.0f, () => listener.RecentlyHitBy.Remove( other.Id ) );
-				}
-
-				var collisionProcessor = Scene.GetSystem<ObjectCollisionProcessorSystem>();
-				collisionProcessor.RegisterCollisionEvent( GameObject, other, impactVelocity.Length );
-			}
+			return;
 		}
+
+		var other = PlayerController.GroundObject;
+		var listener = GetComponent<ObjectCollisionListenerComponent>();
+		if ( listener is not null )
+		{
+			if ( listener.RecentlyHitBy.Contains( other.Id ) )
+			{
+				return;
+			}
+
+			// Don't register collisions with the thing we are touching for a while.
+			listener.RecentlyHitBy.Add( other.Id );
+			Invoke( 1.0f, () => listener.RecentlyHitBy.Remove( other.Id ) );
+		}
+
+		var collisionProcessor = Scene.GetSystem<ObjectCollisionProcessorSystem>();
+		collisionProcessor.RegisterCollisionEvent( GameObject, other, impactVelocity.Length );
 	}
 
+	/// <summary>
+	/// Reset thrower-related things on round start.
+	/// </summary>
 	void IGameEvents.OnRoundStart()
 	{
 		if ( IsProxy )
@@ -178,6 +186,9 @@ public partial class PlayerComponent :
 		BuiltUpForce = 0;
 	}
 
+	/// <summary>
+	/// Disable our ability to pickup objects when the round ends.
+	/// </summary>
 	void IGameEvents.OnRoundEnd()
 	{
 		if ( IsProxy )
@@ -192,45 +203,36 @@ public partial class PlayerComponent :
 		}
 	}
 
+	/// <summary>
+	/// Initalises the player (this should only be called once).
+	/// </summary>
 	[Rpc.Owner]
 	public void InitPlayer()
 	{
-		//var panel = new Panel();
-		//panel.Style.StartAnimation( "HudElementAnimation", 1, 1, 4 );
-
 		Nametag.Name = Network.Owner.DisplayName;
 		LocalPlayer = this;
 
 		DressPlayer();
-		InitaliseCamera();
-		HidePlayer();
+		CreateCamera();
 		CreateHitbox();
+		ResetSpeed();
+		HideDeveloperComponents();
+		InitSpectator();
 
-		// Update speed variables based on ConVars.
-		PlayerController.RunSpeed = PlayerConvars.RunSpeed;
-		PlayerController.WalkSpeed = PlayerConvars.WalkSpeed;
-		PlayerController.DuckedSpeed = PlayerConvars.DuckedSpeed;
-
-		// Start in our spectator state.
-		FreeCam = true;
-
-		// We don't need to network the following components at all.
-		Hud.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		Killfeed.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		Chat.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		PauseMenu.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		Dresser.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-
-		// Hide, but still network (just in case).
-		Voice.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
-		ScreenPanel.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
-		PlayerController.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
-		Rigidbody.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
-
-		foreach ( var moveMode in Components.GetAll<MoveMode>() )
+		var game = GameLogicComponent.GetGameInstance();
+		if ( game is not null && !game.RoundOver )
 		{
-			moveMode.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+			RequestSpawn();
 		}
+	}
+
+	/// <summary>
+	/// Enables the spectator camera and moves the camera to a specator spawnpoint.
+	/// </summary>
+	private void InitSpectator()
+	{
+		FreeCam = true;
+		HidePlayer();
 
 		var spectatorSpawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpectatorSpawnpoint>().ToList() );
 		if ( spectatorSpawnpoint is not null )
@@ -242,79 +244,32 @@ public partial class PlayerComponent :
 		{
 			Log.Warning( "Spectator spawnpoint not found! Reverting to regular spawnpoints." );
 			var regularSpawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() );
-			if ( regularSpawnpoint is not null )
+			if ( regularSpawnpoint is null )
 			{
-				Camera.WorldPosition = regularSpawnpoint.WorldPosition;
-				Camera.WorldRotation = regularSpawnpoint.WorldRotation;
+				return;
 			}
-		}
 
-		var game = GameLogicComponent.GetGameInstance();
-		if ( game is not null && !game.RoundOver )
-		{
-			RequestSpawn();
+			Camera.WorldPosition = regularSpawnpoint.WorldPosition;
+			Camera.WorldRotation = regularSpawnpoint.WorldRotation;
 		}
 	}
 
-	[Rpc.Owner]
-	public void InitBot()
+	protected override void OnEnabled()
 	{
-		var names = new List<string>
+		if ( IsProxy )
 		{
-			"Adam",
-			"Rhys",
-			"Chloe",
-			"Jasmine",
-			"Jo",
-			"Jack",
-			"Maverick",
-			"Ruth",
-			"Paul",
-			"Patrick",
-			"Xavier",
-			"Bridget",
-			"Bianca",
-			"Josh"
-		};
-
-		BotName = "[BOT] " + Game.Random.FromList( names );
-		Nametag.Name = BotName;
-		GameObject.Name = BotName;
-
-		// Create a fake connection.
-		Networking.AddEmptyConnection();
-
-		// If we have the PlayerController component for what ever reason,
-		// disable it. We only have one that we locally control.
-		var playerController = GetComponent<PlayerController>();
-		if ( playerController is not null )
-		{
-			playerController.Enabled = false;
-
-			// Delete all of our existing colliders.
-			foreach ( var collider in Components.GetAll<Collider>(
-				         FindMode.EverythingInSelf |
-				         FindMode.EverythingInAncestors |
-				         FindMode.EverythingInDescendants ) )
-			{
-				collider.Destroy();
-			}
+			return;
 		}
 
-		// Make our agent move very quickly.
-		BotAgent.Acceleration = PlayerConvars.RunSpeed;
-		BotAgent.MaxSpeed = PlayerConvars.RunSpeed;
-
-		HidePlayer();
-		CreateHitbox();
-
-		var game = GameLogicComponent.GetGameInstance();
-		if ( !game.RoundOver )
+		if ( IsBot )
 		{
-			RequestSpawn();
+			BotAgent.LinkEnter += OnBotLinkJump;
 		}
 	}
 
+	/// <summary>
+	/// Main update loop.
+	/// </summary>
 	protected override void OnUpdate()
 	{
 		if ( IsProxy )
@@ -343,6 +298,9 @@ public partial class PlayerComponent :
 		}
 	}
 
+	/// <summary>
+	/// Main player update loop.
+	/// </summary>
 	private void OnPlayerUpdate()
 	{
 		// There's probably a better way to implement this, but this will do for now.
@@ -384,74 +342,6 @@ public partial class PlayerComponent :
 		}
 	}
 
-	private void CreateViewmodel()
-	{
-		// Destory viewmodel if it currently exists.
-		Viewmodel?.Destroy();
-
-		Viewmodel = new GameObject( true, "Viewmodel" );
-		Viewmodel.NetworkMode = NetworkMode.Never;
-		Viewmodel.Tags.Add( "viewmodel" );
-
-		var modelComp = Viewmodel.AddComponent<SkinnedModelRenderer>();
-		modelComp.Model = Cloud.Model( "facepunch.v_first_person_arms_human" );
-		modelComp.RenderOptions.Overlay = true;
-		modelComp.RenderOptions.Game = false;
-		modelComp.RenderType = ModelRenderer.ShadowRenderType.Off;
-		modelComp.UseAnimGraph = true;
-
-		Viewmodel.WorldRotation = new Angles( 45, 0, 5 );
-
-		// Parent model to camera.
-		Viewmodel.Parent = Camera.GameObject;
-	}
-
-	private void UpdateViewmodel()
-	{
-		if ( Viewmodel is null )
-		{
-			return;
-		}
-
-		Viewmodel.WorldPosition = Camera.WorldPosition - new Vector3( 0, 0, 0 ) + Camera.WorldRotation.Forward * 8;
-		Viewmodel.WorldRotation = Camera.WorldRotation * new Angles( 45, 0, 5 );
-
-		var model = Viewmodel.GetComponent<SkinnedModelRenderer>();
-
-		model.Parameters.Set( "move_x", PlayerController.Velocity.x );
-		model.Parameters.Set( "move_y", PlayerController.Velocity.y );
-		model.Parameters.Set( "move_z", PlayerController.Velocity.z );
-
-		var moving = Input.Down( "forward" ) || Input.Down( "left" ) || Input.Down( "right" ) ||
-		             Input.Down( "backward" );
-		model.Parameters.Set( "move_bob", moving ? 1.0f : 0f );
-
-		var left = model.Parameters.GetFloat( "FingerAdjustment_BlendNeutralPose_L" );
-		var right = model.Parameters.GetFloat( "FingerAdjustment_BlendNeutralPose_R" );
-
-		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_L",
-			HeldGameObject is not null
-				? float.Lerp( left, 1.0f, 10 * Time.Delta )
-				: float.Lerp( left, 0f, 10 * Time.Delta ) );
-		model.Parameters.Set( "FingerAdjustment_BlendNeutralPose_R",
-			HeldGameObject is not null
-				? float.Lerp( right, 1.0f, 10 * Time.Delta )
-				: float.Lerp( right, 0f, 10 * Time.Delta ) );
-	}
-
-	private void OnBotUpdate()
-	{
-		if ( !IsAlive )
-		{
-			return;
-		}
-
-		if ( HeldGameObject is not null )
-		{
-			PositionHeldObject();
-		}
-	}
-
 	protected override void OnFixedUpdate()
 	{
 		// Contrary to OnUpdate() above, we can let bots build up force.
@@ -467,6 +357,9 @@ public partial class PlayerComponent :
 		}
 	}
 
+	/// <summary>
+	/// Applies local clothing to the player model.
+	/// </summary>
 	private void DressPlayer()
 	{
 		Dresser.BodyTarget = PlayerController.Renderer;
@@ -482,6 +375,9 @@ public partial class PlayerComponent :
 		}
 	}
 
+	/// <summary>
+	/// Creates a ragdoll at the player's location.
+	/// </summary>
 	private void CreateRagdoll()
 	{
 		if ( IsProxy )
@@ -535,6 +431,36 @@ public partial class PlayerComponent :
 		}
 	}
 
+	/// <summary>
+	/// Called when a player spawns.
+	/// </summary>
+	private void MovePlayerToSpawnpoint()
+	{
+		var spawnpoint = (GameObject)null;
+
+		// Prioritise Physbox spawnpoints first, then find a normal Sandbox one.
+		spawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() )?.GameObject ??
+		             Game.Random.FromList( Scene.GetAllComponents<SpawnPoint>().ToList() )?.GameObject;
+
+		// Teleport to spawnpoint.
+		if ( spawnpoint is null )
+		{
+			return;
+		}
+
+		WorldPosition = spawnpoint.WorldPosition;
+		PlayerController.EyeAngles = spawnpoint.WorldRotation;
+
+		// If we are a bot, force set our destination.
+		if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
+		{
+			bot.Agent.SetAgentPosition( WorldPosition );
+		}
+	}
+
+	/// <summary>
+	/// Custom use function that ignores the hitbox.
+	/// </summary>
 	private void HandleUseInput()
 	{
 		if ( Input.Pressed( "use" ) )
@@ -543,45 +469,76 @@ public partial class PlayerComponent :
 			var ray = new Ray( Camera.WorldPosition, Camera.WorldRotation.Forward );
 			var trace = Scene.Trace.Ray( ray, 256 )
 				.IgnoreGameObject( GameObject )
-				.IgnoreGameObject( Hitbox )
 				.WithoutTags(
 					PhysboxConstants.BreakablePropTag,
 					PhysboxConstants.RagdollTag,
 					PhysboxConstants.DebrisTag )
 				.Run();
 
-			if ( trace.GameObject is not null )
+			if ( trace.GameObject is null )
 			{
-				var pressEvent = new IPressable.Event( this, ray );
+				return;
+			}
 
-				// Find all pressables and... use them!
-				foreach ( var pressable in trace.GameObject.Components.GetAll<IPressable>(
-					         FindMode.EnabledInSelf |
-					         FindMode.InDescendants |
-					         FindMode.InAncestors ) )
+			var pressEvent = new IPressable.Event( this, ray );
+
+			// Find all pressables and... use them!
+			foreach ( var pressable in trace.GameObject.Components.GetAll<IPressable>(
+				         FindMode.EnabledInSelf |
+				         FindMode.InDescendants |
+				         FindMode.InAncestors ) )
+			{
+				if ( !pressable.CanPress( pressEvent ) )
 				{
-					if ( pressable.CanPress( pressEvent ) )
-					{
-						var success = pressable.Press( pressEvent );
+					continue;
+				}
 
-						var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
-						viewmodel.Parameters.Set( "b_attack", true );
+				var success = pressable.Press( pressEvent );
 
-						if ( success )
-						{
-							pressable.Release( pressEvent );
-						}
-					}
+				var viewmodel = Viewmodel.GetComponent<SkinnedModelRenderer>();
+				viewmodel.Parameters.Set( "b_attack", true );
+
+				if ( success )
+				{
+					pressable.Release( pressEvent );
 				}
 			}
 		}
 	}
 
+	/// <summary>
+	/// I personally like hiding all the components away on the player GameObject
+	/// so I can easily debug things going on with PlayerComponent.
+	/// </summary>
+	private void HideDeveloperComponents()
+	{
+		// We don't need to network the following components at all.
+		Hud.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		Killfeed.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		Chat.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		PauseMenu.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+		Dresser.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
+
+		// Hide, but still network (just in case).
+		Voice.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		ScreenPanel.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		PlayerController.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		Rigidbody.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+
+		foreach ( var moveMode in Components.GetAll<MoveMode>() )
+		{
+			moveMode.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		}
+	}
+
+	/// <summary>
+	/// But if you really want to see all the components, I won't stop you.
+	/// </summary>
 	[Icon( "star" )]
 	[Button]
 	[Feature( "Components" )]
 	[Title( "Fine. Show me all Components." )]
-	private void ShowAllComponents()
+	private void ShowDeveloperComponents()
 	{
 		Hud.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
 		Killfeed.Flags &= ~(ComponentFlags.Hidden | ComponentFlags.NotEditable);
@@ -600,6 +557,9 @@ public partial class PlayerComponent :
 		}
 	}
 
+	/// <summary>
+	/// Plays a hitsound to the player.
+	/// </summary>
 	[Rpc.Owner]
 	public void PlayHitsound()
 	{
@@ -611,19 +571,13 @@ public partial class PlayerComponent :
 		Sound.Play( "sounds/player/ding-hitsound.sound" );
 	}
 
+	/// <summary>
+	/// Plays the fall damage "bone breaking" sound to the player.
+	/// </summary>
+	/// <param name="position"></param>
 	[Rpc.Broadcast]
 	public void PlayFallDamageSound( Vector3 position )
 	{
 		Sound.Play( "sounds/player/bone-break.sound", position );
-	}
-
-
-	[ActionGraphNode( "physbox.get_local_player" )]
-	[Title( "Get Local Player" )]
-	[Group( "Physbox" )]
-	[Icon( "home" )]
-	public static PlayerComponent GetGameInstance()
-	{
-		return LocalPlayer;
 	}
 }

@@ -8,19 +8,19 @@
 <root>
 	<div class="background">
 		<div class="text">
-			@if (AttackerPlayerComponent is not null)
+			@if ( AttackerPlayerComponent is not null )
 			{
-				@GetPlayerName(AttackerPlayerComponent)
+				@GetPlayerName( AttackerPlayerComponent )
 			}
 			else
 			{
-				@("🌎")
+				@( "🌎" )
 			}
 		</div>
 
 		@if ( Prop is not null )
 		{
-			<img Texture=@Prop.KillfeedIcon />
+			<img Texture=@Prop.KillfeedIcon/>
 		}
 		else
 		{
@@ -28,7 +28,7 @@
 		}
 
 		<div class="text">
-			@GetPlayerName(VictimPlayerComponent)
+			@GetPlayerName( VictimPlayerComponent )
 		</div>
 	</div>
 </root>
@@ -37,13 +37,27 @@
 {
 	public GameObject Victim;
 	public DamageInfo DamageInfo;
-	
+
 	PlayerComponent VictimPlayerComponent => Victim.GetComponent<PlayerComponent>();
 	PlayerComponent AttackerPlayerComponent => DamageInfo.Attacker?.GetComponent<PlayerComponent>();
-	PropDefinitionResource Prop => DamageInfo.Weapon?.GetComponent<PropDefinitionComponent>().Definition;
-	
+	PropDefinitionResource Prop = null;
+
 	public string GetPlayerName( PlayerComponent player )
 	{
 		return player.IsPlayer ? player.Network.Owner.DisplayName : player.BotName;
+	}
+
+	public override void Tick()
+	{
+		if ( Prop is not null ) return;
+		if ( DamageInfo.Attacker.GetComponent<MapCollider>() is not null ) return;
+		if ( DamageInfo.Attacker.GetComponent<MeshComponent>() is not null ) return;
+
+		Prop = DamageInfo.Weapon?.GetComponent<PropDefinitionComponent>().Definition;
+
+		if ( Prop is not null )
+		{
+			StateHasChanged();
+		}
 	}
 }

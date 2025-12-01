@@ -5,11 +5,11 @@
 @inherits Panel
 @namespace Physbox
 
-@if (PauseMenu.Paused) return;
+@if ( PauseMenu.Paused ) return;
 
 <root>
 	<div>
-		<img src="@(GetImageSource())" />
+		<img src="@( GetImageSource() )"/>
 	</div>
 	<div style="flex-direction:column">
 		<div class="text" style="color: @( GetNameColor() )">
@@ -24,31 +24,26 @@
 
 @code
 {
-	
+	public Guid Sender = Guid.Empty;
+
 	public MessageType MessageType;
-	public Guid Sender;
 	public string Message;
 	public TimeSince TimeSince;
 	public bool ForceVisible = false;
-	
-	public string Name => MessageType == MessageType.Player ? Connection.Find(Sender).DisplayName : "SYSTEM";
+
+	SteamId SenderSteamID = (long)0;
+	string SenderDisplayName = null;
+	string Name => MessageType == MessageType.Player ? SenderDisplayName : "SYSTEM";
+
 	private string GetNameColor()
 	{
-		if (MessageType == MessageType.System) return "lightgreen";
-
-		var connection = Connection.Find(Sender);
-		if (connection.SteamId == (SteamId)76561198808392634)
-		{
-			return "gold";
-		}
-
-		return "lightblue";
+		if ( MessageType == MessageType.System ) return "lightgreen";
+		return SenderSteamID == (SteamId)76561198808392634 ? "gold" : "lightblue";
 	}
 
 	private string GetImageSource()
 	{
-		if (MessageType == MessageType.System) return "materials/ui/hud_chat_system_icon.png";
-		else return $"avatar:{Connection.Find(Sender).SteamId}";
+		return MessageType == MessageType.System ? "materials/ui/hud_chat_system_icon.png" : $"avatar:{SenderSteamID}";
 	}
 
 	public void Hide()
@@ -70,15 +65,24 @@
 
 	public override void Tick()
 	{
-		// Hide after five seconds.
-		if ( TimeSince.Relative >= 5 )
+		// Update our details as soon as possible. We cache these details so that if
+		// the connection leaves the game, we can still display their chat messages.
+		if ( Sender != Guid.Empty && (SenderDisplayName is null || SenderSteamID == 0) )
 		{
-			Hide();
+			SenderDisplayName ??= Connection.Find( Sender ).DisplayName;
+			SenderSteamID = Connection.Find( Sender ).SteamId;
+			StateHasChanged();
 		}
 
 		if ( ForceVisible == true )
 		{
 			TimeSince = 0;
+		}
+
+		// Hide after five seconds.
+		if ( TimeSince.Relative >= 5 && !ForceVisible )
+		{
+			Hide();
 		}
 	}
 }

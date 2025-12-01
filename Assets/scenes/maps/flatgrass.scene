@@ -96,7 +96,7 @@
           "Color": "1,1,1,1",
           "Elasticity": null,
           "Friction": null,
-          "HideInGame": true,
+          "HideInGame": false,
           "IsTrigger": false,
           "Mesh": {
             "Topology": "H4sIAAAAAAAACk2QCQrDMAwEJ3XTpvd9/P+jLkPXIEOI0a5GKy/AF5j5nxWwBjbAHjgCZ+AKTPn01HMCWuot/RTvvWhz2HXWrfRsC7fFu4SlZ5dcU/QlTDX/h2Qefr0foPfeR1ZnqOvX+wzL+iW7ms3Z7v5KvzWzjl31632XN3ukR90Z7j6yqsvSM97C2WaWL8Os7uhdvmwzqdtvXpkyzPIDgcKAQ8ABAAA=",

@@ -79,10 +79,13 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 		Log.Info( $"PersistentObjectRefreshSystem - stored {PersistantMeshes.Count} meshes." );
 	}
 
-
-	[Rpc.Host( NetFlags.HostOnly | NetFlags.SendImmediate )]
 	void IGameEvents.OnRoundStart()
 	{
+		if ( !Networking.IsHost )
+		{
+			return;
+		}
+
 		RespawnProps();
 		RespawnMeshes();
 	}

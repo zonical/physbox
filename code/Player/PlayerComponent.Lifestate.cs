@@ -7,6 +7,9 @@ public partial class PlayerComponent
 	public CancellationTokenSource SpawnCancellationTokenSource;
 	public CancellationToken SpawnCancellationToken = CancellationToken.None;
 
+	/// <summary>
+	/// Attatches a cancellation token to a spawn request.
+	/// </summary>
 	public void RequestSpawn()
 	{
 		SpawnCancellationTokenSource = new CancellationTokenSource();
@@ -15,7 +18,9 @@ public partial class PlayerComponent
 		Invoke( PlayerConvars.RespawnTime, Spawn, SpawnCancellationToken );
 	}
 
-	// Spawns the player into the world.
+	/// <summary>
+	/// Spawns the player into the world.
+	/// </summary>
 	[Rpc.Owner( NetFlags.OwnerOnly | NetFlags.SendImmediate )]
 	public override void Spawn()
 	{
@@ -26,38 +31,16 @@ public partial class PlayerComponent
 			SpawnCancellationTokenSource.Cancel();
 		}
 
-		SpawnCancellationTokenSource.Dispose();
+		SpawnCancellationTokenSource?.Dispose();
 		SpawnCancellationToken = CancellationToken.None;
 
 		base.Spawn();
 
 		// Revive and reset the player.
 		Health = 100;
-		ShowPlayer();
 		Hitbox.Enabled = true;
-
-		var spawnpoint = (GameObject)null;
-
-		// Prioritise Physbox spawnpoints first.
-		spawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>().ToList() )?.GameObject;
-		if ( spawnpoint is null )
-		{
-			// Then find a normal Sandbox one.
-			spawnpoint = Game.Random.FromList( Scene.GetAllComponents<SpawnPoint>().ToList() )?.GameObject;
-		}
-
-		// Teleport to spawnpoint.
-		if ( spawnpoint is not null )
-		{
-			WorldPosition = spawnpoint.WorldPosition;
-			PlayerController.EyeAngles = spawnpoint.WorldRotation;
-
-			// If we are a bot, force set our destination.
-			if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
-			{
-				bot.Agent.SetAgentPosition( WorldPosition );
-			}
-		}
+		ShowPlayer();
+		MovePlayerToSpawnpoint();
 
 		if ( IsPlayer )
 		{
@@ -79,7 +62,9 @@ public partial class PlayerComponent
 		Invoke( PlayerConvars.RespawnImmunity, () => { DamageImmunity = false; } );
 	}
 
-	// Kills the player in the world.
+	/// <summary>
+	/// Oh no, the player has died!
+	/// </summary>
 	[Rpc.Owner( NetFlags.OwnerOnly )]
 	public override void Die()
 	{

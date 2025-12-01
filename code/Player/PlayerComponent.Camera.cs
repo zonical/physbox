@@ -39,7 +39,11 @@
 		}
 	}
 
-	private void InitaliseCamera()
+	/// <summary>
+	/// Creates the scene camera, which is derived from a prefab that
+	/// has some special components placed on top (mainly post-processing).
+	/// </summary>
+	private void CreateCamera()
 	{
 		if ( Camera is null )
 		{
@@ -70,6 +74,9 @@
 		FreeCam = false;
 	}
 
+	/// <summary>
+	/// Detaches the camera from the player.
+	/// </summary>
 	private void CreateFreeCam()
 	{
 		if ( IsProxy )
@@ -81,6 +88,9 @@
 		Camera.GameObject.SetParent( null );
 	}
 
+	/// <summary>
+	/// Creates the normal first-person camera.
+	/// </summary>
 	private void CreateNormalCam()
 	{
 		if ( IsProxy )
@@ -96,6 +106,9 @@
 		Camera.GameObject.SetParent( GameObject );
 	}
 
+	/// <summary>
+	/// Freecam movement.
+	/// </summary>
 	private void HandleNoclipMovement()
 	{
 		var mouseX = Input.AnalogLook.yaw;
