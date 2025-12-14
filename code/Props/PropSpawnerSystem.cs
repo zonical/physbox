@@ -97,6 +97,11 @@ public class PropSpawnerSystem : GameObjectSystem, IPhysboxGameEvents, ISceneLoa
 
 		// Spawn from a random spawner.
 		var spawner = Random.Shared.FromList( ValidSpawners );
+		if ( spawner is null )
+		{
+			return;
+		}
+
 		spawner.Sleeping = true;
 		spawner.TimeSinceWentToSleep = 0;
 

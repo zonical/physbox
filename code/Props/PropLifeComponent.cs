@@ -59,7 +59,19 @@ public sealed class PropLifeComponent :
 			return true;
 		}
 
-		return player.CameraFrustum.IsInside( worldBounds, true );
+		// Simple frustum check first.
+		if ( !player.CameraFrustum.IsInside( worldBounds, true ) )
+		{
+			return false;
+		}
+
+		// Block if we don't have a clear line of sight.
+		var trace = Scene.Trace.Ray( player.PlayerController.EyePosition, worldBounds.Center )
+			.WithoutTags( PhysboxConstants.DebrisTag, PhysboxConstants.PlayerTag, PhysboxConstants.RagdollTag,
+				PhysboxConstants.BreakablePropTag )
+			.Run();
+
+		return !trace.Hit;
 	}
 
 	public void OnDefinitionChanged( PropDefinitionResource oldValue, PropDefinitionResource newValue )

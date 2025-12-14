@@ -141,13 +141,9 @@ public partial class GameLogicComponent :
 	/// Creates the gamemode component, adjusts the timer (if we have it enabled),
 	/// and calls round start.
 	/// </summary>
+	[Rpc.Broadcast]
 	public void StartGame()
 	{
-		if ( !Networking.IsHost )
-		{
-			return;
-		}
-
 		Log.Info( "GameLogicComponent::StartGame() has been called." );
 
 		ForceCleanup();

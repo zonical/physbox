@@ -256,28 +256,28 @@ public partial class PlayerComponent :
 					return;
 				}
 
-				animHelper.WithVelocity( BotAgent.Velocity );
-				animHelper.WithWishVelocity( BotAgent.WishVelocity );
+				animHelper.WithVelocity( NetworkedBotVelocity );
+				animHelper.WithWishVelocity( NetworkedBotWishVelocity );
+			}
+		}
+		else
+		{
+			// If our held object suddenly gets destroyed for whatever reason,
+			// we should stop owning it.
+			if ( HeldGameObject?.IsDestroyed ?? false )
+			{
+				FreeAndReturnHeldObject();
 			}
 
-			return;
-		}
+			if ( IsPlayer )
+			{
+				OnPlayerUpdate();
+			}
 
-		// If our held object suddenly gets destroyed for whatever reason,
-		// we should stop owning it.
-		if ( HeldGameObject?.IsDestroyed ?? false )
-		{
-			FreeAndReturnHeldObject();
-		}
-
-		if ( IsPlayer )
-		{
-			OnPlayerUpdate();
-		}
-
-		if ( IsBot )
-		{
-			OnBotUpdate();
+			if ( IsBot )
+			{
+				OnBotUpdate();
+			}
 		}
 	}
 
@@ -287,7 +287,10 @@ public partial class PlayerComponent :
 	private void OnPlayerUpdate()
 	{
 		// There's probably a better way to implement this, but this will do for now.
-		//CameraFrustum = Camera.GetFrustum();
+		if ( Camera is not null )
+		{
+			CameraFrustum = Camera.GetFrustum();
+		}
 
 		if ( FreeCam )
 		{

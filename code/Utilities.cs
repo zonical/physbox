@@ -55,6 +55,7 @@ public partial class PhysboxUtilities
 		GameObject.Name = $"Prop ({resource.ResourcePath})";
 		GameObject.WorldTransform = transform;
 
+		GameObject.Network.AlwaysTransmit = false;
 		GameObject.NetworkMode = NetworkMode.Object;
 		GameObject.Network.SetOwnerTransfer( OwnerTransfer.Takeover );
 		GameObject.NetworkSpawn( Connection.Host );

@@ -5,11 +5,17 @@ using Networking = Sandbox.Debug.Networking;
 
 public partial class PlayerComponent
 {
+	[Sync] public Vector3 NetworkedBotVelocity { get; set; }
+	[Sync] public Vector3 NetworkedBotWishVelocity { get; set; }
+
 	/// <summary>
 	/// Bot update loop. Very simple.
 	/// </summary>
 	private void OnBotUpdate()
 	{
+		NetworkedBotVelocity = BotAgent.Velocity;
+		NetworkedBotWishVelocity = BotAgent.WishVelocity;
+
 		if ( !IsAlive )
 		{
 			return;
