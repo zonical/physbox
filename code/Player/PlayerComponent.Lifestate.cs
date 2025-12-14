@@ -10,20 +10,31 @@ public partial class PlayerComponent
 	/// <summary>
 	/// Attatches a cancellation token to a spawn request.
 	/// </summary>
+	[Rpc.Owner]
 	public void RequestSpawn()
 	{
+		Log.Info( $"RequestSpawn called for {Name}" );
+		// If a spawn has already been requested, cancel it.
+		if ( SpawnCancellationToken.CanBeCanceled )
+		{
+			SpawnCancellationTokenSource?.Cancel();
+			SpawnCancellationTokenSource?.Dispose();
+		}
+
+		// Create a new token and spawn in X seconds.
 		SpawnCancellationTokenSource = new CancellationTokenSource();
 		SpawnCancellationToken = SpawnCancellationTokenSource.Token;
-
 		Invoke( PlayerConvars.RespawnTime, Spawn, SpawnCancellationToken );
 	}
 
 	/// <summary>
 	/// Spawns the player into the world.
 	/// </summary>
-	[Rpc.Owner( NetFlags.OwnerOnly | NetFlags.SendImmediate )]
+	[Rpc.Owner]
 	public override void Spawn()
 	{
+		base.Spawn();
+
 		// Cancel anything that is trying to call Spawn() again,
 		// e.g. getting respawned early due to the round restarting.
 		if ( SpawnCancellationTokenSource is not null && !SpawnCancellationTokenSource.IsCancellationRequested )
@@ -34,58 +45,48 @@ public partial class PlayerComponent
 		SpawnCancellationTokenSource?.Dispose();
 		SpawnCancellationToken = CancellationToken.None;
 
-		base.Spawn();
-
-		// Revive and reset the player.
-		Health = 100;
-		Hitbox.Enabled = true;
-
-		// If we are not in a team, assign ourselves to the team with the fewest players.
-		if ( GameLogicComponent.UseTeams && Team == Team.None )
-		{
-			var teams = Scene.GetAllComponents<PlayerComponent>()
-				.GroupBy( x => x.Team )
-				.Where( x => x.Key != Team.None );
-
-			Team = teams.OrderBy( x => x.Count() ).First().Key;
-		}
-
-		ShowPlayer();
-		MovePlayerToSpawnpoint();
-		DressPlayer();
-
 		if ( IsPlayer )
 		{
 			FreeCam = false;
-			PlayerController.Jump( Vector3.Up );
+			Hud?.StateHasChanged();
+			Nametag?.StateHasChanged();
+
+			// Spawn us slightly further up in the air so we don't get stuck in the ground.
+			WorldPosition += Vector3.Up;
+			Rigidbody.ApplyImpulse( Vector3.Up * 1000 );
 		}
 
-		// Delete our ragdoll.
-		if ( Ragdoll is not null )
+		ShowPlayer();
+		BroadcastPutDownAnimation();
+		DressPlayer();
+		MovePlayerToSpawnpoint();
+
+		// If we are not in a team at this pont, assign ourselves
+		// to the team with the fewest players.
+		if ( GameLogicComponent.UseTeams && Team == Team.None )
 		{
-			Ragdoll.Destroy();
-			Ragdoll = null;
+			AssignToBestTeam();
 		}
 
-		// Enable temporary damage immunity.
-		DamageImmunity = true;
-		Invoke( PlayerConvars.RespawnImmunity, () => { DamageImmunity = false; } );
+		Scene.RunEvent<IPhysboxGameEvents>( x => x.OnPlayerSpawn( this ) );
+		Network.Refresh( this );
+		Log.Info( $"PlayerComponent::Spawn() - {Name}" );
 	}
 
 	/// <summary>
 	/// Oh no, the player has died!
 	/// </summary>
-	[Rpc.Owner( NetFlags.OwnerOnly )]
+	[Rpc.Owner]
 	public override void Die()
 	{
+		CreateRagdoll();
+		HidePlayer();
+		DropObject();
+
 		if ( IsPlayer )
 		{
 			FreeCam = true;
 		}
-
-		CreateRagdoll();
-		HidePlayer();
-		DropObject();
 
 		// If we are a bot, stop moving to our destination and forget everything.
 		if ( IsBot && Components.TryGet<BotPlayerTasksComponent>( out var bot ) )
@@ -98,17 +99,15 @@ public partial class PlayerComponent
 			bot.ThrowAttemptsRemaining = bot.MaximumThrowAttempts;
 		}
 
-		Hitbox.Enabled = false;
-
 		// Let the game know we died.
-		Scene.RunEvent<IGameEvents>( x => x.OnPlayerDeath( DeathDamageInfo ) );
+		Scene.RunEvent<IPhysboxGameEvents>( x => x.OnPlayerDeath( DeathDamageInfo ) );
 	}
 
 	[Rpc.Broadcast]
 	private void HidePlayer()
 	{
-		PlayerController.Renderer.Enabled = false;
-		PlayerController.ColliderObject.Enabled = false;
+		Collider.Enabled = false;
+		Renderer.Enabled = false;
 		Nametag.Enabled = false;
 
 		// Hide all clothes (or things attached to us)
@@ -127,12 +126,12 @@ public partial class PlayerComponent
 	[Rpc.Broadcast]
 	private void ShowPlayer()
 	{
-		PlayerController.Renderer.Enabled = true;
-		PlayerController.ColliderObject.Enabled = true;
+		Collider.Enabled = true;
+		Renderer.Enabled = true;
 		Nametag.Enabled = true;
 	}
 
-	public override void OnDamage( in DamageInfo damage )
+	public new void OnDamage( in DamageInfo damage )
 	{
 		if ( IsProxy || GodMode )
 		{
@@ -145,5 +144,47 @@ public partial class PlayerComponent
 	public void CommitSuicide()
 	{
 		OnDamage( new PhysboxDamageInfo { Damage = 9999, Prop = null, Victim = this, Attacker = this } );
+	}
+
+	[Rpc.Broadcast]
+	public void VisualiseDamageImmunity()
+	{
+		foreach ( var model in Components.GetAll<ModelRenderer>() )
+		{
+			if ( model.Tags.Contains( PhysboxConstants.HeldPropTag ) )
+			{
+				continue;
+			}
+
+			var color = Color.White;
+			Color immuneColor = "#8eeddf";
+			var isTeamClothing = model.Model.Name.Contains( "loose_jumper" ) ||
+			                     model.Model.Name.Contains( "trackie_bottoms" );
+
+			// Tint us slightly transparent.
+			if ( DamageImmunity )
+			{
+				if ( isTeamClothing )
+				{
+					color = GameLogicComponent.UseTeams ? PhysboxUtilities.GetTeamColor( Team ) : Color.White;
+					color = color.WithAlpha( 0.5f );
+				}
+				else
+				{
+					color = immuneColor.WithAlpha( 0.5f );
+				}
+			}
+			else
+			{
+				// If we are clothing, revert back to our original colour.
+				if ( isTeamClothing )
+				{
+					color = GameLogicComponent.UseTeams ? PhysboxUtilities.GetTeamColor( Team ) : Color.White;
+				}
+			}
+
+			model.Tint = color;
+			model.Network.Refresh();
+		}
 	}
 }

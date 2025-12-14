@@ -27,7 +27,7 @@ public static partial class PhysboxDebug
 			prop = prop[5..];
 		}
 
-		var go = PhysboxUtilites.CreatePropFromResource(
+		var go = PhysboxUtilities.CreatePropFromResource(
 			ResourceLibrary.Get<PropDefinitionResource>( $"props/{prop}.pdef" ) );
 
 		go.WorldPosition = player.Camera.WorldPosition + player.Camera.WorldRotation.Forward * 100;
@@ -78,7 +78,7 @@ public static partial class PhysboxDebug
 		}
 
 		player.Kills += kills;
-		player.Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( player, player.Kills ) );
+		player.Scene.RunEvent<IPhysboxGameEvents>( x => x.OnPlayerScoreUpdate( player, player.Kills ) );
 	}
 
 	[ConCmd( "pb_debug_break_held_prop", ConVarFlags.Cheat )]

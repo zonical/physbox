@@ -1,38 +1,44 @@
 @using Sandbox;
 @using Sandbox.UI;
-@attribute [Title("Player Nametag")]
-@attribute [Icon("info")]
-@attribute [Group("Physbox")]
-@attribute [Tint(EditorTint.Yellow)]
+@using System;
+@attribute [Title( "Player Nametag" )]
+@attribute [Icon( "info" )]
+@attribute [Group( "Physbox" )]
+@attribute [Tint( EditorTint.Yellow )]
 @inherits PanelComponent
 @namespace Sandbox
 
-@if ( !PhysboxUtilites.IsMainMenuScene() )
+@if ( !PhysboxUtilities.IsMainMenuScene() )
 {
 	if ( !IsProxy && !IsBot() ) return;
 }
 
 <root>
-	<div class="background big_label" style="font-size: 40px">@Name</div>
+	<div class="background text" style="font-size: 40px; color: @GetTeamColor().Hex">@Name</div>
 </root>
 
 @code
 {
 
-	[Sync] public string Name { get; set; } = !PhysboxUtilites.IsMainMenuScene() ? "Placeholder" : Sandbox.Utility.Steam.PersonaName;
+	[Sync] public string Name { get; set; } = !PhysboxUtilities.IsMainMenuScene() ? "Placeholder" : Utility.Steam.PersonaName;
 
 	public bool IsBot()
 	{
-		var owner = GameObject.Parent;
-		if ( owner.Components.TryGet<PlayerComponent>( out var player ) )
-		{
-			return player.IsBot;
-		}
-		return false;
+		return Player?.IsBot ?? false;
+	}
+
+	public PlayerComponent Player => GameObject.Parent.Components.Get<PlayerComponent>();
+
+	public Color GetTeamColor()
+	{
+		return GameLogicComponent.UseTeams ? PhysboxUtilities.GetTeamColor( Player.Team ) : Color.White;
 	}
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>
-	protected override int BuildHash() => System.HashCode.Combine( Name );
+	protected override int BuildHash()
+	{
+		return HashCode.Combine( Name );
+	}
 }

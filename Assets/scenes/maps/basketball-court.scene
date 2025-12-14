@@ -1,0 +1,2504 @@
+{
+  "__guid": "6a3cc659-fe5d-4d6d-a4d1-85530b8085b3",
+  "GameObjects": [
+    {
+      "__guid": "ce241282-7bbd-469d-a661-b4abaf60fa10",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Map Instance",
+      "Position": "0,0,0",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MapInstance",
+          "__guid": "df8f242c-4fdb-489a-add4-b39acec393b5",
+          "__enabled": true,
+          "__version": 1,
+          "EnableCollision": true,
+          "MapName": "thieves.basketballcourtfw",
+          "NoOrigin": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnMapLoaded": null,
+          "OnMapUnloaded": null,
+          "UseMapFromLaunch": false
+        },
+        {
+          "__type": "MapInformationComponent",
+          "__guid": "c120206f-559a-4d91-a184-cd1ea5628307",
+          "__enabled": true,
+          "Image": null,
+          "IsVisibleInMenu": false,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OverrideDefaultSpawnpoints": true,
+          "PackageIdent": "thieves.basketballcourtfw",
+          "SupportedGamemodes": [
+            "Dodgeball"
+          ]
+        },
+        {
+          "__type": "Sandbox.SceneInformation",
+          "__guid": "06af398f-b091-4a24-a01c-62e357740104",
+          "__enabled": true,
+          "Author": "Three Thieves",
+          "Changes": null,
+          "Description": null,
+          "Group": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SceneTags": "",
+          "Title": "Basketball Court",
+          "Version": null
+        },
+        {
+          "__type": "Sandbox.PhysboxEventsListenerComponent",
+          "__guid": "b009649d-61f1-46cf-9487-057c1d6027da",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnPlayerDeathAction": null,
+          "OnPlayerScoreUpdateAction": null,
+          "OnPlayerSpawnAction": null,
+          "OnRoundEndAction": null,
+          "OnRoundStartAction": {
+            "__version": 9,
+            "__guid": "aec1a5f3-14ab-4090-b71e-5045b538c9fd",
+            "__changeId": 369,
+            "UserData": {
+              "Title": "On Round Start",
+              "ReferencedComponentTypes": []
+            },
+            "Variables": [],
+            "Nodes": [
+              {
+                "Id": 0,
+                "Type": "input",
+                "UserData": {
+                  "Position": "36,0"
+                }
+              },
+              {
+                "Id": 3,
+                "Type": "op.equal",
+                "UserData": {
+                  "Position": "492,24"
+                }
+              },
+              {
+                "Id": 24,
+                "Type": "physbox.get_gamemode",
+                "UserData": {
+                  "Position": "192,0"
+                }
+              },
+              {
+                "Id": 31,
+                "Type": "scene.find",
+                "UserData": {
+                  "Position": "504,-144"
+                }
+              },
+              {
+                "Id": 44,
+                "Type": "op.isnotnull",
+                "UserData": {
+                  "Position": "684,-120"
+                }
+              },
+              {
+                "Id": 45,
+                "Type": "if",
+                "UserData": {
+                  "Position": "756,-144"
+                }
+              },
+              {
+                "Id": 47,
+                "Type": "property",
+                "Properties": {
+                  "_name": "Enabled",
+                  "_type": "Sandbox.GameObject"
+                },
+                "UserData": {
+                  "Position": "936,-96"
+                }
+              },
+              {
+                "Id": 48,
+                "Type": "scene.find",
+                "UserData": {
+                  "Position": "504,-252"
+                }
+              },
+              {
+                "Id": 49,
+                "Type": "op.isnotnull",
+                "UserData": {
+                  "Position": "684,-228"
+                }
+              },
+              {
+                "Id": 50,
+                "Type": "if",
+                "UserData": {
+                  "Position": "756,-252"
+                }
+              },
+              {
+                "Id": 51,
+                "Type": "property",
+                "Properties": {
+                  "_name": "Enabled",
+                  "_type": "Sandbox.GameObject"
+                },
+                "UserData": {
+                  "Position": "936,-204"
+                }
+              },
+              {
+                "Id": 64,
+                "Type": "comment",
+                "UserData": {
+                  "Position": "336,-312",
+                  "Size": "864,300",
+                  "Title": "Enable/Disable Clip Brushes",
+                  "Layer": 1
+                }
+              },
+              {
+                "Id": 185,
+                "Type": "scene.find",
+                "UserData": {
+                  "Position": "564,324"
+                }
+              },
+              {
+                "Id": 186,
+                "Type": "op.isnotnull",
+                "UserData": {
+                  "Position": "744,348"
+                }
+              },
+              {
+                "Id": 187,
+                "Type": "if",
+                "UserData": {
+                  "Position": "816,324"
+                }
+              },
+              {
+                "Id": 188,
+                "Type": "property",
+                "Properties": {
+                  "_name": "Enabled",
+                  "_type": "Sandbox.GameObject"
+                },
+                "UserData": {
+                  "Position": "996,372"
+                }
+              },
+              {
+                "Id": 189,
+                "Type": "scene.find",
+                "UserData": {
+                  "Position": "564,168"
+                }
+              },
+              {
+                "Id": 190,
+                "Type": "op.isnotnull",
+                "UserData": {
+                  "Position": "744,192"
+                }
+              },
+              {
+                "Id": 191,
+                "Type": "if",
+                "UserData": {
+                  "Position": "816,168"
+                }
+              },
+              {
+                "Id": 192,
+                "Type": "property",
+                "Properties": {
+                  "_name": "Enabled",
+                  "_type": "Sandbox.GameObject"
+                },
+                "UserData": {
+                  "Position": "996,216"
+                }
+              },
+              {
+                "Id": 193,
+                "Type": "comment",
+                "UserData": {
+                  "Position": "372,108",
+                  "Size": "948,516",
+                  "Title": "Enable/Disable Nav Areas",
+                  "Layer": 1
+                }
+              },
+              {
+                "Id": 244,
+                "Type": "call",
+                "Properties": {
+                  "_isStatic": false,
+                  "_name": "Generate",
+                  "_type": "Sandbox.Navigation.NavMesh"
+                },
+                "UserData": {
+                  "Position": "1104,516"
+                }
+              },
+              {
+                "Id": 245,
+                "Type": "property",
+                "Properties": {
+                  "_name": "Scene",
+                  "_type": "Sandbox.GameObject"
+                },
+                "UserData": {
+                  "Position": "684,468"
+                }
+              },
+              {
+                "Id": 246,
+                "Type": "property",
+                "Properties": {
+                  "_name": "NavMesh",
+                  "_type": "Sandbox.Scene"
+                },
+                "UserData": {
+                  "Position": "852,468"
+                }
+              },
+              {
+                "Id": 247,
+                "Type": "property",
+                "Properties": {
+                  "_name": "PhysicsWorld",
+                  "_type": "Sandbox.Scene"
+                },
+                "UserData": {
+                  "Position": "852,564"
+                }
+              }
+            ],
+            "Links": [
+              {
+                "SrcId": 24,
+                "SrcName": "_result",
+                "DstId": 3,
+                "DstName": "a"
+              },
+              {
+                "Id": 257,
+                "Value": {
+                  "$type": "Simple",
+                  "Type": "GameModes",
+                  "Value": "Dodgeball"
+                },
+                "DstId": 3,
+                "DstName": "b"
+              },
+              {
+                "SrcId": 0,
+                "SrcName": "_signal",
+                "DstId": 24,
+                "DstName": "_signal"
+              },
+              {
+                "Id": 258,
+                "Value": false,
+                "DstId": 31,
+                "DstName": "ignoreCase"
+              },
+              {
+                "Id": 259,
+                "Value": "Clip",
+                "DstId": 31,
+                "DstName": "name"
+              },
+              {
+                "SrcId": 31,
+                "SrcName": "_result",
+                "DstId": 44,
+                "DstName": "input"
+              },
+              {
+                "SrcId": 24,
+                "SrcName": "_signal",
+                "DstId": 45,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 44,
+                "SrcName": "_result",
+                "DstId": 45,
+                "DstName": "condition"
+              },
+              {
+                "SrcId": 45,
+                "SrcName": "true",
+                "DstId": 47,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 31,
+                "SrcName": "_result",
+                "DstId": 47,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 3,
+                "SrcName": "_result",
+                "DstId": 47,
+                "DstName": "_value",
+                "UserData": {
+                  "x": 372
+                }
+              },
+              {
+                "Id": 260,
+                "Value": false,
+                "DstId": 48,
+                "DstName": "ignoreCase"
+              },
+              {
+                "Id": 261,
+                "Value": "Center Clip",
+                "DstId": 48,
+                "DstName": "name"
+              },
+              {
+                "SrcId": 48,
+                "SrcName": "_result",
+                "DstId": 49,
+                "DstName": "input"
+              },
+              {
+                "SrcId": 24,
+                "SrcName": "_signal",
+                "DstId": 50,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 49,
+                "SrcName": "_result",
+                "DstId": 50,
+                "DstName": "condition"
+              },
+              {
+                "SrcId": 50,
+                "SrcName": "true",
+                "DstId": 51,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 48,
+                "SrcName": "_result",
+                "DstId": 51,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 3,
+                "SrcName": "_result",
+                "DstId": 51,
+                "DstName": "_value",
+                "UserData": {
+                  "x": 372
+                }
+              },
+              {
+                "Id": 262,
+                "Value": false,
+                "DstId": 185,
+                "DstName": "ignoreCase"
+              },
+              {
+                "Id": 263,
+                "Value": "Navmesh Area Blue",
+                "DstId": 185,
+                "DstName": "name"
+              },
+              {
+                "SrcId": 185,
+                "SrcName": "_result",
+                "DstId": 186,
+                "DstName": "input"
+              },
+              {
+                "SrcId": 191,
+                "SrcName": "_signal",
+                "DstId": 187,
+                "DstName": "_signal",
+                "UserData": {
+                  "y": 120
+                }
+              },
+              {
+                "SrcId": 186,
+                "SrcName": "_result",
+                "DstId": 187,
+                "DstName": "condition"
+              },
+              {
+                "SrcId": 187,
+                "SrcName": "true",
+                "DstId": 188,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 185,
+                "SrcName": "_result",
+                "DstId": 188,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 3,
+                "SrcName": "_result",
+                "DstId": 188,
+                "DstName": "_value"
+              },
+              {
+                "Id": 264,
+                "Value": false,
+                "DstId": 189,
+                "DstName": "ignoreCase"
+              },
+              {
+                "Id": 265,
+                "Value": "Navmesh Area Red",
+                "DstId": 189,
+                "DstName": "name"
+              },
+              {
+                "SrcId": 189,
+                "SrcName": "_result",
+                "DstId": 190,
+                "DstName": "input"
+              },
+              {
+                "SrcId": 24,
+                "SrcName": "_signal",
+                "DstId": 191,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 190,
+                "SrcName": "_result",
+                "DstId": 191,
+                "DstName": "condition"
+              },
+              {
+                "SrcId": 191,
+                "SrcName": "true",
+                "DstId": 192,
+                "DstName": "_signal"
+              },
+              {
+                "SrcId": 189,
+                "SrcName": "_result",
+                "DstId": 192,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 3,
+                "SrcName": "_result",
+                "DstId": 192,
+                "DstName": "_value"
+              },
+              {
+                "SrcId": 187,
+                "SrcName": "_signal",
+                "DstId": 244,
+                "DstName": "_signal",
+                "UserData": {
+                  "x": -120
+                }
+              },
+              {
+                "SrcId": 246,
+                "SrcName": "_result",
+                "DstId": 244,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 247,
+                "SrcName": "_result",
+                "DstId": 244,
+                "DstName": "world"
+              },
+              {
+                "SrcId": 0,
+                "SrcName": "_target",
+                "DstId": 245,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 245,
+                "SrcName": "_result",
+                "DstId": 246,
+                "DstName": "_target"
+              },
+              {
+                "SrcId": 245,
+                "SrcName": "_result",
+                "DstId": 247,
+                "DstName": "_target"
+              }
+            ]
+          }
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "2ab6a5bf-54db-49c3-86ed-0b0915a0e657",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Clip",
+      "Position": "0,0,320.0011",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "91617a26-4145-4bcb-85a7-b233d86319e0",
+          "__enabled": true,
+          "ColliderFlags": 0,
+          "Collision": "Mesh",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": true,
+          "IsTrigger": false,
+          "Mesh": {
+            "Topology": "H4sIAAAAAAAACk2QBw7DQAzD2KYj3Xv8/6NXEJUBH3BIYlOK7Bn4Aiv+Z5n3DTADe+AInIFFrkw/N2CMMaxPzavYd+redbz7v17RW9s23ynsPazaXTItojXjI3rZQ/Lal5d9xkvvU5tFXvYTvX6XeNqXl722mZ3Vut8+7elZerPoUbswuzlqP87ad2E2Z6r8ZnEG+2Zwdz6rbx79ZX7IReYTvAEAAA==",
+            "Position": "0,0,320.0011",
+            "Rotation": "0,0,0,1",
+            "Positions": [
+              "696,-408,320",
+              "696,408,320",
+              "696,408,-320",
+              "696,-408,-320",
+              "-696,-408,-320",
+              "-696,408,-320",
+              "-696,408,320",
+              "-696,-408,320"
+            ],
+            "TextureCoord": [
+              "-6.375,-5",
+              "0,0",
+              "-6.375,5",
+              "10.875,-5",
+              "6.375,5",
+              "0,0",
+              "6.375,-5",
+              "-10.875,5",
+              "6.375,5",
+              "0,0",
+              "6.375,-5",
+              "-10.875,5",
+              "-6.375,-5",
+              "0,0",
+              "-6.375,5",
+              "10.875,-5",
+              "-10.875,-5",
+              "0,0",
+              "10.875,5",
+              "0,0",
+              "10.875,5",
+              "0,0",
+              "-10.875,-5",
+              "0,0"
+            ],
+            "TextureUAxis": [
+              "0,-1,0",
+              "0,1,0",
+              "-1,0,0",
+              "1,0,0"
+            ],
+            "TextureVAxis": [
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1",
+              "0,0,-1"
+            ],
+            "TextureScale": [
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25"
+            ],
+            "TextureOffset": [
+              "0,0.004394531",
+              "0,0.004394531",
+              "0,0.004394531",
+              "0,0.004394531"
+            ],
+            "MaterialIndex": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "EdgeFlags": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "Materials": [
+              "materials/tools/toolsclip.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": true,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "df10bbcb-11c5-4de7-b1a7-85cd934098da",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Center Clip",
+      "Position": "0,0,320",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "player_only",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.MeshComponent",
+          "__guid": "7ee9a7f2-a74d-4a9e-8ea9-c62bb12c4a2e",
+          "__enabled": true,
+          "ColliderFlags": 0,
+          "Collision": "Mesh",
+          "Color": "1,1,1,1",
+          "Elasticity": null,
+          "Friction": null,
+          "HideInGame": true,
+          "IsTrigger": false,
+          "Mesh": {
+            "Topology": "H4sIAAAAAAAACl2QCQ7CMAwEp4Qj3NBy/f+laMRGsohUVbFn1+t04ANs+Z0VsM69AwfgBFyAKZ9MPXdgk3qLnsI+Um/h/me9i2ZXfFvYOazafTJN0XRgKZmPyWtfXvYVL73PZRd52WdYPa7xtC8veys7u6t17/7t6Tn0ZtFjvIXZR895zjKjPWf4NiOrGt+ivpXZ3XnozaOndVn9vvVkkTjEAQAA",
+            "Position": "0,0,320",
+            "Rotation": "0,0,0,1",
+            "Positions": [
+              "-8,-408,320",
+              "8,-408,320",
+              "8,408,320",
+              "-8,408,320",
+              "-8,408,-320",
+              "8,408,-320",
+              "8,-408,-320",
+              "-8,-408,-320"
+            ],
+            "TextureCoord": [
+              "0.125,6.375",
+              "-0.125,-5",
+              "0.125,-6.375",
+              "-6.375,-5",
+              "-0.125,-6.375",
+              "-0.125,-5",
+              "-0.125,6.375",
+              "-6.375,-5",
+              "0.125,-6.375",
+              "0.125,5",
+              "0.125,6.375",
+              "6.375,5",
+              "-0.125,6.375",
+              "0.125,5",
+              "-0.125,-6.375",
+              "6.375,5",
+              "6.375,-5",
+              "-0.125,5",
+              "-6.375,5",
+              "0.125,-5",
+              "-6.375,5",
+              "0.125,-5",
+              "6.375,-5",
+              "-0.125,5"
+            ],
+            "TextureUAxis": [
+              "1,0,0",
+              "1,0,-0",
+              "0,-1,0",
+              "0,1,0",
+              "-1,0,0",
+              "1,-0,0"
+            ],
+            "TextureVAxis": [
+              "0,-1,0",
+              "0,-1,0",
+              "0,0,-1",
+              "-0,0,-1",
+              "0,0,-1",
+              "-0,0,-1"
+            ],
+            "TextureScale": [
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25",
+              "0.25,0.25"
+            ],
+            "TextureOffset": [
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0",
+              "0,0"
+            ],
+            "MaterialIndex": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "EdgeFlags": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "Materials": [
+              "materials/tools/toolsclip.vmat"
+            ]
+          },
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "OnObjectTriggerEnter": null,
+          "OnObjectTriggerExit": null,
+          "OnTriggerEnter": null,
+          "OnTriggerExit": null,
+          "RenderType": "On",
+          "RollingResistance": null,
+          "SmoothingAngle": 40,
+          "Static": true,
+          "Surface": null,
+          "SurfaceVelocity": "0,0,0"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "7fcc0d14-93be-4063-9cf4-89490062c423",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,-312,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "2e9c3903-37bb-4361-b4d0-23b946f7589a",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "68e8272b-9ce0-4ccf-ac88-f4c8f05c9c86",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,-312,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "64e59c04-769c-4d4e-8024-a5f4b0ea6ec8",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "32569683-76b4-45c1-a99f-f20bd435d3ca",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,-72,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "30f9e428-0480-4695-bf70-a6fd6482bb32",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "ded3e358-efcf-48c4-8ca0-47cbacc1f2cd",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,-72,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "e8f887bc-74f0-4703-a79a-389f3c8f836e",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "4bd7b684-24bc-4d50-b595-069f43d19aa2",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,-264,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "9f40501e-0a6a-42f7-a079-50c84e6db701",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "79b1b638-b9a7-4dd0-8452-5c1169b81923",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,-264,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "ebea7573-e359-4900-b356-006608ae411d",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "e8cde660-4bdc-4ad9-b16e-e487364d7351",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,-24,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "08b6efaa-54cb-4ad3-8b78-fb47138cb090",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "7735de13-2187-4786-bc23-60297b0d1a25",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,-24,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "f1761bd6-dbaa-48ab-ad5b-dfd83e72fbc0",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "45106cff-5fce-45cd-92f1-8f9297619723",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,-216,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "29912a64-d05e-4745-9111-29d88a4e739c",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "ac9fca41-36e4-441a-aeda-3b3a3a6af281",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,-216,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "a6e95221-0501-4d00-8501-edc9f5c75525",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "bde32c1f-963a-455b-aad4-ca1f4917d1ba",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,24,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "e50d54d6-5ee8-4153-91c5-0b490b6ac0d6",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "abd7552c-067d-46c2-89db-45fe31df9050",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,24,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "09f9b2e0-4286-49db-ba5e-3191a6dbb9bf",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "b1aed000-a1ac-49ba-aece-c1cf12b41879",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,-168,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "5cca975d-2d72-4650-b175-29d1a85ef875",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "6e46c7c6-4bac-412a-9fde-d6b80cb22440",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,-168,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "ffd05eaa-c049-4ba8-bb81-b58e82256abd",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "889e26b1-c862-435e-902c-5d780316323a",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,72,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "20ffab37-75d4-45c5-b302-ec7e0b8b77cb",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "e1968bf8-cada-4b0b-8f1f-f832e3acd920",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,72,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "b2b0ef21-2ecf-4282-b352-c95396e56877",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "5fdaaac2-e5c6-4449-aeea-45c972f3d111",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,168,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "d0454e40-7273-490d-8848-bab09d7be3fc",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "5b4b4b0c-943d-4959-a947-7ad358610ef6",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,168,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "b482d7a6-85e2-4ff0-a66a-cc43182a4ad2",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "9af48d8b-04f3-4b09-9c9f-69df15429d43",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,-120,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "371eb58c-2903-4478-99cd-478351a15f7e",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "f27ab265-2ef1-4a09-acd3-a4afffad2e95",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,-120,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "3042221b-a825-4944-969a-0f6ff7bd2197",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "7dd8f7b8-6fb4-466f-a7fc-7053c4ee7703",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,120,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "960176e9-ca2a-41f7-afbf-e6108601295a",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "f664b75e-58b8-4429-a00a-94f08a66002a",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,120,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "58fc37d1-42ca-46be-8ffb-74019f1110c3",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "38e73afe-075e-4e7e-baac-a7e847fab24a",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,216,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "7758dc62-fd76-4d00-8964-4af74aecc05a",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "324e656f-d4df-4e02-b505-315f88da5ee2",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,216,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "d9522d60-3639-46e6-98c3-95d556bb0638",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "1f80155c-0547-49f5-9fa6-60e1b197f28b",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,264,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "7665488d-2152-4cbb-bc6a-90be7f48ed1a",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "987859ec-8bc1-40f9-9161-088757776447",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,264,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "8ef9057f-6e24-4337-afe8-dc76aa73ac61",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "45ee55c5-9eb9-4b9a-a176-ce08bb0b7f05",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Red, Dodgeball)",
+      "Position": "-608,312,0.1240463",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "9834778b-da21-4f3a-a919-6d7fc29e0615",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "f524c78c-b29c-4fc4-8768-e1328d11236d",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (Blue, Dodgeball)",
+      "Position": "608,312,0.1240463",
+      "Rotation": "0,0,1,-0.00000004371139",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "f1342d95-a64e-436a-accb-e84ae1e60f27",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Blue"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "5762e707-5e67-48b2-9556-19053ece3dd8",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spectator Spawnpoint",
+      "Position": "-0.3695679,-384,216",
+      "Rotation": "0.1530459,0.1530459,-0.6903455,0.6903455",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpectatorSpawnpoint",
+          "__guid": "8863a893-16d3-4e85-9ce5-5cd84bc0c8f6",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "b09735f1-d18b-4635-b8b6-0c1ca24a9730",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,320,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "5c7cc2e7-522e-415a-990b-1dda2b10bb00",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "4d00d544-d9b6-43a3-8cb8-4c7cf0e9ffcf",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,256,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "ca5af912-2b88-4976-b21c-3bea94e9acad",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "cf039825-35e9-487b-b98a-b1ed7c3863e6",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,192,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "2c483c4b-cdbe-4d3f-8df6-db957a7db044",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "14bdcb6a-bf1c-42d8-a078-fe509a73ed77",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,128,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "27e6aebf-37c9-4f65-baa4-c36766a7aa8b",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "766af664-5afe-4d52-9a0b-5b6939ca4269",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,64,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "95e36ead-7372-4dcc-b48b-8446f290a423",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "3c8c98f5-33ad-433d-8528-d9f8f1f49825",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,0,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "318ffffb-600d-4fd0-a7fa-2249846b655a",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "6bdd657d-3227-42eb-b82d-478a12e18fc8",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,-64,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "cf5d303e-10cb-441a-aa67-9662a79b22a7",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "ce450666-8195-4ce3-9b59-a30bdaa8e05b",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,-128,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "a42d72a0-1c7d-4ceb-855f-14c1896e16ae",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "e538502b-49ba-4eab-bd99-692d4a9485df",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,-192,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "82c067a5-ffc5-44db-ad38-00d66f51f729",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "25f334cd-8c62-4f3a-9bae-ec98e61b77fd",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,-256,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "495699c4-00a6-4a89-af1b-f14d85502834",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "89d9a27a-2352-4efc-b415-ab3b44d5b86b",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawner (Spectacular Crate)",
+      "Position": "1,-320,0.1276924",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PropSpawnerComponent",
+          "__guid": "b4b02294-5d3f-44bb-b43d-ca1515f8a039",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "GameModes": [
+            "Dodgeball"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Prop": "props/crate.pdef",
+          "Sleeping": false,
+          "SpawnImmediately": true,
+          "TraceDirection": "0,0,1",
+          "TraceDistance": 64,
+          "TraceOffset": "0,0,0",
+          "TraceRadius": 72
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "ce9938b5-29ac-44a3-bbf9-38050319680a",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Navmesh Area Blue",
+      "Position": "320,0,128",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.NavMeshArea",
+          "__guid": "214c656a-ae62-4174-a692-595dabada7e6",
+          "__enabled": true,
+          "Area": "nav/blue.navarea",
+          "IsBlocker": false,
+          "LinkedCollider": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SceneVolume": {
+            "Type": "Box",
+            "Sphere": {
+              "Center": "0,0,0",
+              "Radius": 10
+            },
+            "Box": {
+              "Mins": "-320,-410,-128",
+              "Maxs": "380,408,50"
+            },
+            "Capsule": {
+              "CenterA": "0,0,10",
+              "CenterB": "0,0,90",
+              "Radius": 10
+            }
+          }
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "257d28d1-3f79-4028-80ca-50cbd493bb7a",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Navmesh Area Red",
+      "Position": "-384,0,128",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "Sandbox.NavMeshArea",
+          "__guid": "f5f744b3-e1c9-4242-b133-2d15baf62264",
+          "__enabled": true,
+          "Area": "nav/red.navarea",
+          "IsBlocker": false,
+          "LinkedCollider": null,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "SceneVolume": {
+            "Type": "Box",
+            "Sphere": {
+              "Center": "0,0,0",
+              "Radius": 10
+            },
+            "Box": {
+              "Mins": "-320,-410,-128",
+              "Maxs": "380,408,50"
+            },
+            "Capsule": {
+              "CenterA": "0,0,10",
+              "CenterB": "0,0,90",
+              "Radius": 10
+            }
+          }
+        }
+      ],
+      "Children": []
+    }
+  ],
+  "SceneProperties": {
+    "NetworkInterpolation": true,
+    "TimeScale": 1,
+    "WantsSystemScene": true,
+    "Metadata": {
+      "Image": null,
+      "IsVisibleInMenu": "False",
+      "GameModes": "Dodgeball",
+      "PackageIdent": "thieves.basketballcourtfw",
+      "Title": "Basketball Court",
+      "Author": "Three Thieves"
+    },
+    "NavMesh": {
+      "Enabled": true,
+      "IncludeStaticBodies": true,
+      "IncludeKeyframedBodies": true,
+      "EditorAutoUpdate": true,
+      "AgentHeight": 64,
+      "AgentRadius": 16,
+      "AgentStepSize": 18,
+      "AgentMaxSlope": 40,
+      "ExcludedBodies": "ignore_navmesh",
+      "IncludedBodies": ""
+    }
+  },
+  "ResourceVersion": 3,
+  "Title": "Basketball Court",
+  "Description": null,
+  "__references": [],
+  "__version": 3
+}

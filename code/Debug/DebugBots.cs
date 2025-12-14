@@ -24,11 +24,6 @@ public static partial class PhysboxDebug
 		var go = prefabScene.Clone( new Transform(), name: $"BOT (Placeholder)" );
 		go.BreakFromPrefab();
 		go.NetworkSpawn( caller );
-
-		// Once the player has been spawned on the network, we can go ahead and
-		// initalise them. Doing this in OnNetworkSpawn is too early.
-		var player = go.GetComponent<PlayerComponent>();
-		player.InitBot();
 	}
 
 	[ConCmd( "pb_bot_suicide", ConVarFlags.Cheat )]

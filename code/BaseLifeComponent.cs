@@ -42,39 +42,43 @@ public class BaseLifeComponent : Component, Component.IDamageable
 		OnDamage( damage );
 	}
 
-	public virtual void OnDamage( in DamageInfo damage )
+	public void OnDamage( in DamageInfo damage )
 	{
-		if ( !IsAlive )
+		if ( !IsAlive || DamageImmunity )
 		{
 			return;
 		}
 
-		if ( DamageImmunity )
+		var info = damage as PhysboxDamageInfo;
+		if ( info is not null )
 		{
-			return;
-		}
-
-		if ( damage is PhysboxDamageInfo info )
-		{
-			Log.Info( $"{this} received {info.Damage} damage" );
 			Health = int.Max( 0, Health - info.Damage );
 			LastHitBy = info.Attacker;
+		}
+		// Some s&box components, such as TriggerHurt, will still
+		// send us a regular DamageInfo struct.
+		else
+		{
+			Health = int.Max( 0, Health - (int)damage.Damage );
+		}
 
-			// Oh no, we died! :(
-			if ( Health == 0 )
-			{
-				DeathDamageInfo = info;
-				Die();
-			}
+		// Oh no, we died! :(
+		if ( Health == 0 )
+		{
+			DeathDamageInfo =
+				info ?? new PhysboxDamageInfo { Damage = (int)damage.Damage, Victim = this as PlayerComponent };
+			Die();
 		}
 	}
 
+	[Rpc.Owner]
 	public virtual void Spawn()
 	{
 		Health = MaxHealth;
 		DeathDamageInfo = null;
 	}
 
+	[Rpc.Owner]
 	public virtual void Die()
 	{
 	}

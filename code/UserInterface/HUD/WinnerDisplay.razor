@@ -6,12 +6,24 @@
 
 <root>
 	<div style="flex-direction:column; margin: auto;">
-		<div class="text title">
-			WINNER
-		</div>
-		<img src="avatar:@( Winner.IsPlayer ? Winner.Network.Owner.SteamId : (SteamId)0 )"/>
+		<div class="text title">WINNER</div>
+		@if ( WinningPlayer is not null )
+		{
+			<img src="@( PhysboxUtilities.GetSourceForPlayerIcon( WinningPlayer ) )"/>
+		}
+		else if ( WinningTeam != Team.None )
+		{
+			<div class="winningTeamIcon" style="background-color: @PhysboxUtilities.GetTeamColor( WinningTeam ).Hex"/>
+		}
 		<div class="text player">
-			@( Winner.Name )
+			@if ( WinningPlayer is not null )
+			{
+				@( WinningPlayer.Name )
+			}
+			else if ( WinningTeam != Team.None )
+			{
+				@( WinningTeam.ToString() + " Team" )
+			}
 		</div>
 	</div>
 
@@ -19,13 +31,14 @@
 
 @code
 {
-	public PlayerComponent Winner;
+	public PlayerComponent WinningPlayer => GameLogicComponent.GetGameInstance().GameModeComponent.WinningPlayer;
+	public Team WinningTeam => GameLogicComponent.GetGameInstance().GameModeComponent.WinningTeam;
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
 	/// </summary>
 	protected override int BuildHash()
 	{
-		return HashCode.Combine( Winner );
+		return HashCode.Combine( WinningPlayer, WinningTeam );
 	}
 }

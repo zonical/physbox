@@ -6,7 +6,7 @@
 @attribute [Group( "Physbox" )]
 @attribute [Tint( EditorTint.Yellow )]
 @inherits PanelComponent
-@implements IGameEvents
+@implements IPhysboxGameEvents
 @namespace Physbox
 
 @if ( IsProxy ) return;
@@ -32,6 +32,6 @@
 	/// </summary>
 	protected override int BuildHash()
 	{
-		return HashCode.Combine(  KillfeedManager.Deaths.Count()  );
+		return HashCode.Combine( KillfeedManager.Deaths.Count() );
 	}
 }

@@ -18,7 +18,7 @@ public struct PersistantMesh
 	public int MaxHealth;
 }
 
-public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISceneLoadingEvents
+public class PersistentObjectRefreshSystem : GameObjectSystem, IPhysboxGameEvents, ISceneLoadingEvents
 {
 	public List<PersistantProp> PersistantProps = new();
 	public List<PersistantMesh> PersistantMeshes = new();
@@ -36,7 +36,7 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 	public void SaveProps()
 	{
 		if ( Scene.IsEditor ||
-		     PhysboxUtilites.IsMainMenuScene() ||
+		     PhysboxUtilities.IsMainMenuScene() ||
 		     !Networking.IsHost )
 		{
 			return;
@@ -79,7 +79,7 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 		Log.Info( $"PersistentObjectRefreshSystem - stored {PersistantMeshes.Count} meshes." );
 	}
 
-	void IGameEvents.OnRoundStart()
+	void IPhysboxGameEvents.OnRoundStart()
 	{
 		if ( !Networking.IsHost )
 		{
@@ -97,7 +97,7 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IGameEvents, ISce
 		// Respawn all props.
 		foreach ( var storedProp in PersistantProps )
 		{
-			var go = PhysboxUtilites.CreatePropFromResource( storedProp.PropDef );
+			var go = PhysboxUtilities.CreatePropFromResource( storedProp.PropDef );
 			go.WorldPosition = storedProp.Transform.Position;
 			go.WorldRotation = storedProp.Transform.Rotation;
 			go.WorldScale = storedProp.Transform.Scale;

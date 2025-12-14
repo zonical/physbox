@@ -8,11 +8,11 @@ public partial class GameLogicComponent
 			return;
 		}
 
-		GameMode = (PhysboxConstants.GameModes)input;
-		if ( GameMode >= PhysboxConstants.GameModes.MAX_GAMEMODE )
+		GameMode = (GameModes)input;
+		if ( GameMode >= GameModes.MAX_GAMEMODE )
 		{
 			Log.Warning( "Invalid gamemode selected, defaulting to Deathmatch." );
-			GameMode = PhysboxConstants.GameModes.Deathmatch;
+			GameMode = GameModes.Deathmatch;
 		}
 
 		GetGameInstance().GameObject.GetComponent<BaseGameMode>().Destroy();
@@ -20,14 +20,14 @@ public partial class GameLogicComponent
 	}
 
 	[ConCmd( "pb_restart_game", ConVarFlags.Server )]
-	public static void RestartGameCommand()
+	public static void StartGameCommand()
 	{
 		if ( !Networking.IsHost )
 		{
 			return;
 		}
 
-		GetGameInstance().RestartGame();
+		GetGameInstance().StartGame();
 	}
 
 	[ConCmd( "pb_load_testbed", ConVarFlags.Server )]
@@ -47,7 +47,7 @@ public partial class GameLogicComponent
 	[ConCmd( "pb_round_end", ConVarFlags.Admin )]
 	public static void EndRound( Connection caller )
 	{
-		Game.ActiveScene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
+		Game.ActiveScene.RunEvent<IPhysboxGameEvents>( x => x.OnRoundEnd() );
 	}
 
 	[ConCmd( "pb_debug_teams_dump", ConVarFlags.Cheat )]

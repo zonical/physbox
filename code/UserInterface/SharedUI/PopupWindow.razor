@@ -3,7 +3,7 @@
 @inherits Sandbox.UI.Panel
 @namespace Physbox
 <root>
-	<div class="window">
+	<div class="window" @ref="WindowPanel">
 		<div class="top_bar">
 			<div class="text title_text">@Title</div>
 		</div>
@@ -25,7 +25,26 @@
 {
 	public string Title { get; set; } = "Window";
 
+	Panel WindowPanel;
+	public Length? CustomHeight = null;
+	public Length? CustomWidth = null;
+
 	public Action OnClose { get; set; }
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( !firstTime ) return;
+
+		if ( CustomHeight is not null )
+		{
+			WindowPanel.Style.Height = CustomHeight;
+		}
+
+		if ( CustomWidth is not null )
+		{
+			WindowPanel.Style.Width = CustomWidth;
+		}
+	}
 
 	public void Close()
 	{

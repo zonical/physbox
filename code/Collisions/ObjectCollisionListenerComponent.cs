@@ -8,10 +8,7 @@ public sealed class ObjectCollisionListenerComponent : Component, Component.ICol
 {
 	[Property] public TagSet IgnoreTags = new()
 	{
-		PhysboxConstants.HeldPropTag,
-		PhysboxConstants.DebrisTag,
-		PhysboxConstants.IgnoreBreakablePropTag,
-		PhysboxConstants.PlayerTag
+		PhysboxConstants.HeldPropTag, PhysboxConstants.DebrisTag, PhysboxConstants.IgnoreBreakablePropTag
 	};
 
 	[Property] [ReadOnly] public List<Guid> RecentlyHitBy = new();
@@ -60,12 +57,6 @@ public sealed class ObjectCollisionListenerComponent : Component, Component.ICol
 			{
 				return;
 			}
-		}
-
-		// If we're a held prop, don't receive collisions.
-		if ( Tags.Contains( PhysboxConstants.HeldPropTag ) )
-		{
-			return;
 		}
 
 		// Don't register collisions with the thing we are touching for a while.

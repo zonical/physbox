@@ -7,9 +7,10 @@
 <root>
 	<PopupWindow Title="Select Map">
 		<ChildContent class="content" style="overflow: scroll; overflow-x: hidden;">
-			@foreach ( var map in Maps )
+			@foreach ( var map in Maps.OrderByDescending( IsMapCompatible ) )
 			{
-				<MapDisplay Map="@(map)" onclick="@( () => { OnMapSelected( map ); } )"/>
+				<MapDisplay Map="@( map )" IsMapCompatible=@( IsMapCompatible( map ) )
+				            onclick="@( () => { OnMapSelected( map ); } )"/>
 			}
 		</ChildContent>
 	</PopupWindow>
@@ -17,13 +18,22 @@
 
 @code
 {
+	public GameModes CurrentlySelectedGamemode;
 	SceneFile SelectedMap { get; set; }
 	Panel SelectedOption { get; set; }
 
 	public Action<SceneFile> OnSelected;
 
+	public bool IsMapCompatible( SceneFile map )
+	{
+		return map.GetMetadata( "gamemodes", "" ) == "all" ||
+		       map.GetMetadata( "gamemodes", "" ).Contains( CurrentlySelectedGamemode.ToString() );
+	}
+
 	void OnMapSelected( SceneFile map )
 	{
+		if ( !IsMapCompatible( map ) ) return;
+
 		SelectedMap = map;
 		OnSelected?.Invoke( map );
 	}
@@ -31,5 +41,5 @@
 	IEnumerable<SceneFile> Maps => ResourceLibrary.GetAll<SceneFile>()
 		.Where( x => x.ResourcePath.Contains( "scenes/maps" ) )
 		.Where( x => !string.IsNullOrEmpty( x.GetMetadata( "Title" ) ) )
-		.Where( x => x.GetMetadata( "IsVisibleInMenu"  ).ToBool() is true );
+		.Where( x => x.GetMetadata( "IsVisibleInMenu" ).ToBool() is true );
 }

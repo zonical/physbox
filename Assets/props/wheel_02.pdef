@@ -1,1 +1,12 @@
-{"Name":"Misplaced Wheel","Model":"models/citizen_props/wheel02.vmdl","Mass":100,"MaxHealth":125,"HeldPositionOffset":"0,0,16","HeldRotationOffset":"0,0,0","KillfeedIcon":"materials/ui/props_generated/wheel_02.png","__references":[],"__version":0}
+{
+  "Name": "Misplaced Wheel",
+  "Model": "models/citizen_props/wheel02.vmdl",
+  "Mass": 100,
+  "MaxHealth": 125,
+  "HeldPositionOffset": "0,0,16",
+  "HeldRotationOffset": "0,90,0",
+  "KillfeedIcon": "materials/ui/props_generated/wheel_02.png",
+  "OnPropBroken": null,
+  "__references": [],
+  "__version": 0
+}

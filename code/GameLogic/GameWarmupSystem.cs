@@ -27,7 +27,7 @@ public class GameWarmupSystem : GameObjectSystem, ISceneLoadingEvents
 		// and causes the game to hang (for some reason). We get to disable this
 		// just in time as the system scene is added after this scene has
 		// finished loading.
-		if ( PhysboxUtilites.IsMainMenuScene() )
+		if ( PhysboxUtilities.IsMainMenuScene() )
 		{
 			scene.WantsSystemScene = false;
 		}
@@ -86,7 +86,7 @@ public class GameWarmupSystem : GameObjectSystem, ISceneLoadingEvents
 	{
 		LoadingScreen.Title = "Generating NavMesh";
 
-		if ( PhysboxUtilites.IsMainMenuScene() )
+		if ( PhysboxUtilities.IsMainMenuScene() )
 		{
 			return;
 		}
@@ -104,6 +104,7 @@ public class GameWarmupSystem : GameObjectSystem, ISceneLoadingEvents
 			Log.Info( "GameWarmupSystem - Navmesh already exists." );
 		}
 
+		scene.NavMesh.ExcludedBodies.Add( PhysboxConstants.PlayerTag );
 		scene.NavMesh.ExcludedBodies.Add( PhysboxConstants.HitboxTag );
 		scene.NavMesh.ExcludedBodies.Add( "clothing" );
 	}

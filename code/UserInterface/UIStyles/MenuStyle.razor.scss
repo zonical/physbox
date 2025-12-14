@@ -46,6 +46,11 @@
 
   .option_checkbox {
     color: grey;
+    height: 48px;
+
+    IconPanel {
+      margin: auto;
+    }
   }
 
   .checked {

@@ -23,32 +23,33 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 	public bool CanOpenMultipleAssets => false;
 
 	// ====================== [ ICON PREVIEW ] ======================
-	Scene KillfeedScenePreview;
-	Scene FirstPersonScenePreview;
-	ModelRenderer KillfeedPropPreview => KillfeedScenePreview.Get<ModelRenderer>();
-	ModelRenderer FirstPersonPropPreview;
-	ModelTransformOffset PreviewTransformOffset = new();
+	private Scene KillfeedScenePreview;
+	private Scene FirstPersonScenePreview;
+	private ModelRenderer KillfeedPropPreview => KillfeedScenePreview.Get<ModelRenderer>();
+	private ModelRenderer FirstPersonPropPreview;
+	private ModelTransformOffset PreviewTransformOffset = new();
 
 	// ====================== [ RESOURCE ] ======================
-	Asset MyAsset;
-	GameResource Resource;
-	Dictionary<string, ModelTransformOffset> Offsets;
-	Model PreviewModel => Resource.GetSerialized().GetProperty( "Model" ).GetValue<Model>( Model.Error );
-	string KillfeedIcon => Resource.GetSerialized().GetProperty( "KillfeedIcon" ).GetValue<string>();
-	Vector3 HeldPositionOffset => Resource.GetSerialized().GetProperty( "HeldPositionOffset" ).GetValue<Vector3>();
-	Angles HeldRotationOffset => Resource.GetSerialized().GetProperty( "HeldRotationOffset" ).GetValue<Angles>();
+	private Asset MyAsset;
+	private GameResource Resource;
+	private Dictionary<string, ModelTransformOffset> Offsets;
+	private Model PreviewModel => Resource.GetSerialized().GetProperty( "Model" ).GetValue<Model>( Model.Error );
+	private string KillfeedIcon => Resource.GetSerialized().GetProperty( "KillfeedIcon" ).GetValue<string>();
+
+	private Vector3 HeldPositionOffset =>
+		Resource.GetSerialized().GetProperty( "HeldPositionOffset" ).GetValue<Vector3>();
+
+	private Angles HeldRotationOffset =>
+		Resource.GetSerialized().GetProperty( "HeldRotationOffset" ).GetValue<Angles>();
 
 	// ====================== [ WIDGETS ] ======================
-	ScrollArea ResourceEditor;
-	SceneRenderingWidget KillfeedSceneRenderer;
-	SceneRenderingWidget FirstPersonSceneRenderer;
-	ScrollArea Properties;
-	WarningBox NoGibsWarning;
-	WarningBox NoIconWarning;
-	InformationBox NoWarningBox;
-	ControlSheet ResourceControlSheet;
-
-	bool NeedsSave = false;
+	private ScrollArea ResourceEditor;
+	private SceneRenderingWidget KillfeedSceneRenderer;
+	private ScrollArea Properties;
+	private WarningBox NoGibsWarning;
+	private WarningBox NoIconWarning;
+	private InformationBox NoWarningBox;
+	private ControlSheet ResourceControlSheet;
 
 	public void AssetOpen( Asset asset )
 	{
@@ -57,7 +58,7 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		Resource = MyAsset.LoadResource<GameResource>();
 
 		// Get our saved offsets.
-		Offsets = new();
+		Offsets = new Dictionary<string, ModelTransformOffset>();
 
 		// Load our offsets file from disk (if we have it).
 		var filePath = GetPathToGeneratedIcons() + "saved_icon_offsets.json";
@@ -89,7 +90,8 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		Resource = CreatePlaceholderResource();
 
 		WindowTitle = $"Prop Definition Editor - (untitled)";
-		WindowFlags = WindowFlags.Dialog | WindowFlags.Customized | WindowFlags.CloseButton | WindowFlags.WindowSystemMenuHint | WindowFlags.WindowTitle | WindowFlags.MaximizeButton;
+		WindowFlags = WindowFlags.Dialog | WindowFlags.Customized | WindowFlags.CloseButton |
+		              WindowFlags.WindowSystemMenuHint | WindowFlags.WindowTitle | WindowFlags.MaximizeButton;
 		SetWindowIcon( "inventory_2" );
 		Size = new Vector2( 1024, 640 );
 
@@ -162,7 +164,8 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		ResourceEditor.Canvas.Layout.Add( NoGibsWarning );
 
 		NoIconWarning = new WarningBox( ResourceEditor );
-		NoIconWarning.Label.Text = "No killfeed icon is set for this prop. The killfeed will show a blank image when a player is killed with this prop.";
+		NoIconWarning.Label.Text =
+			"No killfeed icon is set for this prop. The killfeed will show a blank image when a player is killed with this prop.";
 		ResourceEditor.Canvas.Layout.Add( NoIconWarning );
 
 		NoWarningBox = new InformationBox( ResourceEditor );
@@ -216,7 +219,8 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 		file.AddSeparator();
 
-		var assetLocationOption = file.AddOption( "Open Asset Location", "folder", () => EditorUtility.OpenFileFolder( MyAsset.AbsolutePath ) );
+		var assetLocationOption = file.AddOption( "Open Asset Location", "folder",
+			() => EditorUtility.OpenFileFolder( MyAsset.AbsolutePath ) );
 		assetLocationOption.StatusTip = "Open Asset Location";
 		assetLocationOption.Enabled = true;
 
@@ -235,7 +239,8 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		generateKillfeedIcon.StatusTip = "Generate Killfeed Icon";
 		generateKillfeedIcon.Enabled = true;
 		icon.AddSeparator();
-		icon.AddOption( "Open Generated Icons Folder", "folder", OpenGeneratedFoldersIcon ).StatusTip = " Generated Icons Folder";
+		icon.AddOption( "Open Generated Icons Folder", "folder", OpenGeneratedFoldersIcon ).StatusTip =
+			" Generated Icons Folder";
 	}
 
 	[EditorEvent.Frame]
@@ -276,7 +281,7 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 	}
 
 	[Shortcut( "editor.quit", "CTRL+Q" )]
-	void Quit()
+	private void Quit()
 	{
 		Close();
 	}
@@ -310,7 +315,7 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 			var viewModel = new GameObject( true, "Viewmodel" );
 
 			var modelComp = viewModel.AddComponent<SkinnedModelRenderer>();
-			modelComp.Model = Cloud.Model( "facepunch.v_first_person_arms_human" );
+			modelComp.Model = Model.Error; //Cloud.Model( "facepunch.v_first_person_arms_human" );
 			modelComp.RenderOptions.Overlay = true;
 			modelComp.RenderOptions.Game = false;
 			modelComp.RenderType = ModelRenderer.ShadowRenderType.Off;
@@ -323,21 +328,19 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 			var firstPersonModel = new GameObject( true, "Object" );
 			FirstPersonPropPreview = firstPersonModel.AddComponent<ModelRenderer>();
 			FirstPersonPropPreview.Model = PreviewModel;
-
 		}
 	}
 
 	[Shortcut( "editor.open", "CTRL+O", ShortcutType.Window )]
 	public void Open()
 	{
-		var fileDialogue = new FileDialog( null )
-		{
-			Title = "Open Prop Definition",
-			DefaultSuffix = ".pdef"
-		};
+		var fileDialogue = new FileDialog( null ) { Title = "Open Prop Definition", DefaultSuffix = ".pdef" };
 		fileDialogue.SetNameFilter( "Prop Definition (*.pdef)" );
 
-		if ( !fileDialogue.Execute() ) return;
+		if ( !fileDialogue.Execute() )
+		{
+			return;
+		}
 
 		AssetOpen( AssetSystem.FindByPath( fileDialogue.SelectedFile ) );
 	}
@@ -354,14 +357,18 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 		// Save resource.
 		var json = Resource.Serialize().ToJsonString();
 		if ( string.IsNullOrWhiteSpace( json ) )
+		{
 			return;
+		}
 
 		System.IO.File.WriteAllText( MyAsset.AbsolutePath, json );
 
 		// Save offsets.
 		var offsetsJson = Json.Serialize( Offsets );
 		if ( string.IsNullOrWhiteSpace( offsetsJson ) )
+		{
 			return;
+		}
 
 		System.IO.File.WriteAllText( GetPathToGeneratedIcons() + "saved_icon_offsets.json", offsetsJson );
 
@@ -370,16 +377,14 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 
 	public void SaveAs()
 	{
-		var fileDialogue = new FileDialog( null )
-		{
-			Title = "Open Prop Definition",
-			DefaultSuffix = ".pdef",
-
-		};
+		var fileDialogue = new FileDialog( null ) { Title = "Open Prop Definition", DefaultSuffix = ".pdef" };
 		fileDialogue.SetNameFilter( "Prop Definition (*.pdef)" );
 		fileDialogue.SetModeSave();
 
-		if ( !fileDialogue.Execute() ) return;
+		if ( !fileDialogue.Execute() )
+		{
+			return;
+		}
 
 
 		MyAsset ??= AssetSystem.CreateResource( "pdef", fileDialogue.SelectedFile );
@@ -431,9 +436,13 @@ public class PropDefinitionResourceEditor : DockWindow, IAssetEditor
 	}
 
 	// Stolen from shadergraph.
-	bool PropertyFilter( SerializedProperty property )
+	private bool PropertyFilter( SerializedProperty property )
 	{
-		if ( property.HasAttribute<JsonIgnoreAttribute>() ) return false;
+		if ( property.HasAttribute<JsonIgnoreAttribute>() )
+		{
+			return false;
+		}
+
 		return true;
 	}
 }

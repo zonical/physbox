@@ -28,6 +28,9 @@
 					.Where( x => x.Key != Team.None );
 				foreach ( var team in teams )
 				{
+					<div class="text team"
+					     style="color: @( PhysboxUtilities.GetTeamColor( team.Key ).Hex );">@( GetTeamString( team.Key ) )
+					</div>
 					foreach ( var player in team.OrderByDescending( x => x.Kills ) )
 					{
 						<PlayerScoreboardPanel Player="@player"></PlayerScoreboardPanel>
@@ -44,4 +47,17 @@
 {
 	PlayerComponent Player => PlayerComponent.LocalPlayer;
 	public string ServerDetails => $"\"{Networking.ServerName}\" ({Connection.All.Count} / {@Networking.MaxPlayers}) - {GameLogicComponent.GameMode} on {Networking.MapName}";
+
+	public string GetTeamString( Team team )
+	{
+		var suffix = "";
+		var baseString = $"{team} Team";
+		if ( GameLogicComponent.GameMode == GameModes.Dodgeball &&
+		     GameLogicComponent.GetGameInstance().GameModeComponent is DodgeballGameMode gamemode )
+		{
+			suffix += $" - {gamemode.GetLivesRemainingForTeam( team )} Lives Remaining";
+		}
+
+		return baseString += suffix;
+	}
 }

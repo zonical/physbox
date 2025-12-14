@@ -3,13 +3,13 @@ MainMenuLanding {
   margin: auto;
   justify-content: center;
   align-items: center;
-  
+
   width: 1000px;
   height: 1000px;
 
   flex-direction: column;
   gap: 20px;
-  
+
   .play {
     width: 300px;
     height: 100px;
@@ -18,7 +18,7 @@ MainMenuLanding {
     animation-delay: -3s;
     margin-right: 200px;
   }
-  
+
   .about {
     width: 300px;
     height: 100px;
@@ -27,7 +27,7 @@ MainMenuLanding {
     animation-delay: -5s;
     margin-left: 200px;
   }
-  
+
   .players {
     width: 300px;
     height: 100px;
@@ -36,7 +36,7 @@ MainMenuLanding {
     animation-delay: -4s;
     margin-right: 200px;
   }
-  
+
   .controls {
     width: 300px;
     height: 100px;
@@ -45,7 +45,7 @@ MainMenuLanding {
     animation-delay: -7s;
     margin-left: 200px;
   }
-  
+
   .sboxsettings {
     width: 400px;
     height: 100px;
@@ -54,7 +54,7 @@ MainMenuLanding {
     animation-delay: -9s;
     margin-right: 200px;
   }
-  
+
   .physboxsettings {
     width: 400px;
     height: 100px;
@@ -62,16 +62,18 @@ MainMenuLanding {
     background-image: url(materials/ui/hud_background_1.png);
     animation-delay: -1s;
     margin-left: 200px;
-    
+
     .text {
-      color: gray; !important;
+      color: gray;
+    !important;
     }
 
     i {
-      color: gray; !important;
+      color: gray;
+    !important;
     }
   }
-  
+
   .leave {
     width: 300px;
     height: 100px;

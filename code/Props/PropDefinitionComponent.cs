@@ -33,6 +33,12 @@ public class PropDefinitionComponent : Component
 
 	public override int ComponentVersion => 1;
 
+	[Button( "Update GameObject Name" )]
+	public void UpdateGameObjectName()
+	{
+		GameObject.Name = $"Breakable Prop ({Definition.Name})";
+	}
+
 	/// <summary>
 	/// Defines the first upgrade for MyComponent, which deletes StringProperty and replaces it with NewStringProperty.
 	/// </summary>

@@ -1,7 +1,7 @@
 ﻿using Sandbox;
 
 [Hide]
-[PhysboxGamemode( PhysboxConstants.GameModes.None )]
+[PhysboxGamemode( GameModes.None )]
 public class EmptyGameMode : BaseGameMode
 {
 	public void OnPlayerDeath( PlayerComponent player, GameObject attacker )

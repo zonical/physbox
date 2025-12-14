@@ -21,6 +21,10 @@
           "__type": "GameLogicComponent",
           "__guid": "01f8f5c2-1036-4afc-ab9a-3a7ddfd50a2a",
           "__enabled": true,
+          "BotPrefab": {
+            "_type": "gameobject",
+            "prefab": "prefabs/bot.prefab"
+          },
           "GameModeComponent": null,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -28,8 +32,23 @@
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "TimeLeft": -17179,
+          "PlayerPrefab": {
+            "_type": "gameobject",
+            "prefab": "prefabs/player.prefab"
+          },
+          "TimeLeft": -23384,
           "TimeShouldEnd": -1
+        },
+        {
+          "__type": "GameNetworkingComponent",
+          "__guid": "444192b3-33d1-4247-9daf-3d3db8bee849",
+          "__enabled": true,
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null
         },
         {
           "__type": "KillfeedManagerComponent",

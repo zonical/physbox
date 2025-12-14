@@ -1,3 +1,4 @@
+@using System.Globalization
 @using System.Threading.Tasks
 @using Sandbox;
 @using Sandbox.Network
@@ -19,8 +20,31 @@
 {
 	public SceneFile Map { get; set; }
 	public string MapThumbnail;
+	public bool IsMapCompatible;
 
 	Panel Background { get; set; }
+
+	protected override void OnAfterTreeRender( bool firstTime )
+	{
+		if ( !firstTime ) return;
+		if ( !IsMapCompatible )
+		{
+			var borderLength = new Length { Unit = LengthUnit.Pixels, Value = 4 };
+			var borderRadius = new Length { Unit = LengthUnit.Pixels, Value = 12 };
+
+			Style.FilterTint = Color.Gray;
+
+			var colorCode = "#ff5757";
+			var rgb = uint.Parse( colorCode.Replace( "#", "" ), NumberStyles.HexNumber );
+
+			Style.BorderColor = Color.FromRgb( rgb );
+			Style.BorderWidth = borderLength;
+			Style.BorderBottomLeftRadius = borderRadius;
+			Style.BorderBottomRightRadius = borderRadius;
+			Style.BorderTopLeftRadius = borderRadius;
+			Style.BorderTopRightRadius = borderRadius;
+		}
+	}
 
 	public override void Tick()
 	{

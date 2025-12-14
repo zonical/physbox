@@ -16,38 +16,46 @@
 	      !Game.RoundOver &&
 	      Game.GameModeComponent is not null )
 	{
-		<Timer></Timer>
+		<Timer/>
 	}
 
 	@if ( Input.Down( "score" ) )
 	{
-		<Scoreboard></Scoreboard>
+		<Scoreboard/>
 	}
 
-	@if ( Game.RoundOver && Game.GameModeComponent.Winner is not null )
+	@if ( Game.RoundOver && Game.GameModeComponent.HasWinner )
 	{
-		<WinnerDisplay Winner="@( Game.GameModeComponent.Winner )"></WinnerDisplay>
+		<WinnerDisplay/>
 	}
 
 	@if ( Player.IsAlive )
 	{
-		<Health></Health>
-		<Score></Score>
+		switch ( GameLogicComponent.GameMode )
+		{
+			case GameModes.Deathmatch:
+				<Health/>
+				<Score/>
+				break;
+			case GameModes.Dodgeball:
+				<Lives/> break;
+		}
+
 
 		@if ( !Input.Down( "score" ) )
 		{
-			<PropSelector></PropSelector>
+			<PropSelector/>
 		}
 
 		@if ( Player.HeldGameObject is not null )
 		{
-			<Charge></Charge>
-			<HeldProp></HeldProp>
+			<Charge/>
+			<HeldProp/>
 		}
 	}
 	else
 	{
-		<DeadMessage></DeadMessage>
+		<DeadMessage/>
 	}
 </root>
 

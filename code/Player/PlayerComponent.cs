@@ -1,7 +1,8 @@
 using System;
 using Physbox;
+using Sandbox.Citizen;
+using Sandbox.Diagnostics;
 using Sandbox.Movement;
-using Networking = Sandbox.Debug.Networking;
 
 [Group( "Physbox" )]
 [Title( "Physbox Player" )]
@@ -9,7 +10,7 @@ using Networking = Sandbox.Debug.Networking;
 [Tint( EditorTint.Yellow )]
 public partial class PlayerComponent :
 	BaseLifeComponent,
-	IGameEvents, IPhysboxTeam,
+	IPhysboxGameEvents,
 	PlayerController.IEvents
 {
 	// ==================== [ LOCAL PLAYER INSTANCE ] ====================
@@ -87,8 +88,8 @@ public partial class PlayerComponent :
 	public Rigidbody Rigidbody => Components.Get<Rigidbody>( true );
 
 	// ==================== [ PROPERTIES ] ====================
-	[Sync] [Property] [ReadOnly] public int Kills { get; set; } = 0;
-	[Sync] [Property] [ReadOnly] public int Deaths { get; set; } = 0;
+	[Sync] [Property] public int Kills { get; set; } = 0;
+	[Sync] [Property] public int Deaths { get; set; } = 0;
 	[Sync] public bool GodMode { get; set; } = false;
 	[Sync] private bool HasDied { get; set; } = false;
 	[Property] public Vector3 HitboxSize { get; set; } = new();
@@ -97,6 +98,8 @@ public partial class PlayerComponent :
 	[Property]
 	[Sync( SyncFlags.FromHost )]
 	public bool IsBot { get; set; }
+
+	public bool IsPlayer => !IsBot;
 
 	[Property]
 	[Sync( SyncFlags.FromHost )]
@@ -113,21 +116,23 @@ public partial class PlayerComponent :
 	private GameObject Ragdoll { get; set; }
 
 	[Property]
-	[Sync]
-	[ReadOnly]
-	[Feature( "Game Objects" )]
-	private GameObject Hitbox { get; set; }
-
-	[Property]
 	[ReadOnly]
 	[Feature( "Game Objects" )]
 	public GameObject Viewmodel { get; set; }
 
-	public SkinnedModelRenderer Renderer => GetComponentInChildren<SkinnedModelRenderer>();
+	[Property]
+	[ReadOnly]
+	[Feature( "Game Objects" )]
+	public GameObject Renderer { get; set; }
+
+	[Property]
+	[ReadOnly]
+	[Feature( "Game Objects" )]
+	public GameObject Collider { get; set; }
+
+	public SkinnedModelRenderer RendererComponent => Renderer.GetComponent<SkinnedModelRenderer>();
 
 	// ==========================================================
-
-	public bool IsPlayer => !IsBot;
 
 	/// <summary>
 	/// Updates the viewmodel to play a jump animation.
@@ -177,7 +182,7 @@ public partial class PlayerComponent :
 	/// <summary>
 	/// Reset thrower-related things on round start.
 	/// </summary>
-	void IGameEvents.OnRoundStart()
+	void IPhysboxGameEvents.OnRoundStart()
 	{
 		if ( IsProxy )
 		{
@@ -193,7 +198,7 @@ public partial class PlayerComponent :
 	/// <summary>
 	/// Disable our ability to pickup objects when the round ends.
 	/// </summary>
-	void IGameEvents.OnRoundEnd()
+	void IPhysboxGameEvents.OnRoundEnd()
 	{
 		if ( IsProxy )
 		{
@@ -204,41 +209,6 @@ public partial class PlayerComponent :
 		if ( HeldGameObject is not null )
 		{
 			DropObject();
-		}
-	}
-
-	/// <summary>
-	/// Initalises the player (this should only be called once).
-	/// </summary>
-	[Rpc.Owner]
-	public void InitPlayer()
-	{
-		Nametag.Name = Network.Owner.DisplayName;
-		LocalPlayer = this;
-
-		CreateCamera();
-		CreateHitbox();
-		ResetSpeed();
-		HideDeveloperComponents();
-		InitSpectator();
-
-		var game = GameLogicComponent.GetGameInstance();
-		if ( game is not null )
-		{
-			// Open select screen.
-			if ( GameLogicComponent.UseTeams && Team == Team.None )
-			{
-				var panel = new TeamSelect();
-				panel.OnTeamSelected += ( team ) => RequestSpawn();
-
-				ScreenPanel.GetPanel().FindRootPanel().AddChild( panel );
-				panel.AcceptsFocus = true;
-				panel.Focus();
-			}
-			else
-			{
-				RequestSpawn();
-			}
 		}
 	}
 
@@ -270,19 +240,6 @@ public partial class PlayerComponent :
 		}
 	}
 
-	protected override void OnEnabled()
-	{
-		if ( IsProxy )
-		{
-			return;
-		}
-
-		if ( IsBot )
-		{
-			BotAgent.LinkEnter += OnBotLinkJump;
-		}
-	}
-
 	/// <summary>
 	/// Main update loop.
 	/// </summary>
@@ -290,17 +247,27 @@ public partial class PlayerComponent :
 	{
 		if ( IsProxy )
 		{
+			// Update bot animations
+			if ( IsBot )
+			{
+				var animHelper = Components.Get<CitizenAnimationHelper>();
+				if ( animHelper is null )
+				{
+					return;
+				}
+
+				animHelper.WithVelocity( BotAgent.Velocity );
+				animHelper.WithWishVelocity( BotAgent.WishVelocity );
+			}
+
 			return;
 		}
 
-		// Debug hitbox drawing.
-		if ( Hitbox is not null )
+		// If our held object suddenly gets destroyed for whatever reason,
+		// we should stop owning it.
+		if ( HeldGameObject?.IsDestroyed ?? false )
 		{
-			Hitbox.WorldPosition = WorldPosition;
-			if ( PlayerConvars.DrawPlayerHitboxes )
-			{
-				DebugOverlay.Box( Hitbox.GetBounds(), Color.Red );
-			}
+			FreeAndReturnHeldObject();
 		}
 
 		if ( IsPlayer )
@@ -320,7 +287,7 @@ public partial class PlayerComponent :
 	private void OnPlayerUpdate()
 	{
 		// There's probably a better way to implement this, but this will do for now.
-		CameraFrustum = Camera.GetFrustum();
+		//CameraFrustum = Camera.GetFrustum();
 
 		if ( FreeCam )
 		{
@@ -378,6 +345,11 @@ public partial class PlayerComponent :
 	/// </summary>
 	private void DressPlayer()
 	{
+		if ( IsProxy )
+		{
+			return;
+		}
+
 		// If we already have clothes on, get rid of them.
 		foreach ( var x in Components.GetAll<ModelRenderer>( FindMode.InDescendants )
 			         .Where( y => y.Tags.Contains( "clothing" ) ) )
@@ -385,7 +357,7 @@ public partial class PlayerComponent :
 			x.DestroyGameObject();
 		}
 
-		Dresser.BodyTarget = Renderer;
+		Dresser.BodyTarget = RendererComponent;
 		Dresser.Source = Dresser.ClothingSource.Manual;
 		Dresser.ApplyHeightScale = false;
 
@@ -449,12 +421,6 @@ public partial class PlayerComponent :
 	{
 		Dresser.Clothing = container.Clothing;
 		_ = Dresser.Apply();
-
-		foreach ( var modelRen in Components.GetAll<ModelRenderer>( FindMode.InDescendants )
-			         .Where( x => x.Tags.Contains( "clothing" ) ) )
-		{
-			modelRen.GameObject.NetworkSpawn();
-		}
 	}
 
 	private void ApplyTeamTintToClothes()
@@ -466,7 +432,7 @@ public partial class PlayerComponent :
 			if ( modelRen.Model.Name.Contains( "loose_jumper" ) ||
 			     modelRen.Model.Name.Contains( "trackie_bottoms" ) )
 			{
-				modelRen.Tint = PhysboxUtilites.GetTeamColor( Team );
+				modelRen.Tint = PhysboxUtilities.GetTeamColor( Team );
 			}
 		}
 	}
@@ -482,38 +448,10 @@ public partial class PlayerComponent :
 		}
 
 		Ragdoll = PlayerController.CreateRagdoll();
-		Ragdoll.Tags.Add( PhysboxConstants.RagdollTag );
+		var tempEffect = Ragdoll.AddComponent<TemporaryEffect>();
+		tempEffect.DestroyAfterSeconds = PlayerConvars.RespawnTime;
+		Ragdoll.Tags.Add( PhysboxConstants.RagdollTag, PhysboxConstants.DebrisTag );
 		Ragdoll.NetworkSpawn( Network.Owner );
-	}
-
-	/// <summary>
-	///     The reason why a separate hitbox object is created is due to the way
-	///     s&box handles tags on parented objects. When we parent a GameObject
-	///     to another GameObject, the child inherits the tags of its parent.
-	///     This makes sense for most purposes, but when trying to create a custom
-	///     hitbox for props to hit, having both tags "breakable_only" and "player"
-	///     means that collisions don't work properly. This workaround creates a
-	///     separate GameObject that is associated with the player, but not actually
-	///     parented to it.
-	/// </summary>
-	private void CreateHitbox()
-	{
-		var hitboxname = IsPlayer ? $"Player - {Network.Owner.DisplayName} (hitbox)" : $"{BotName} (hitbox)";
-		Hitbox = new GameObject( hitboxname );
-		Hitbox.Tags.Add( PhysboxConstants.BreakableOnlyTag, PhysboxConstants.HitboxTag );
-
-		var box = Hitbox.AddComponent<BoxCollider>();
-		box.Scale = HitboxSize;
-		box.Center = HitboxOffset;
-		box.Elasticity = 0.25f;
-		box.ColliderFlags = ColliderFlags.IgnoreTraces;
-
-		var collision = Hitbox.AddComponent<ObjectCollisionListenerComponent>();
-		collision.CollisionProxy = GameObject;
-
-		Hitbox.NetworkMode = NetworkMode.Object;
-		Hitbox.Network.SetOrphanedMode( NetworkOrphaned.Destroy );
-		Hitbox.NetworkSpawn();
 	}
 
 	protected override void DrawGizmos()
@@ -535,9 +473,9 @@ public partial class PlayerComponent :
 		var spawnpoint = (GameObject)null;
 
 		// Prioritise Physbox spawnpoints first, then find a normal Sandbox one.
-		spawnpoint = Scene.GetAllComponents<PhysboxSpawnpoint>()
-			.FirstOrDefault( x => x.IsValidSpawnPoint( this ) )
-			?.GameObject ?? Game.Random.FromList( Scene.GetAllComponents<SpawnPoint>().ToList() )?.GameObject;
+		spawnpoint = Game.Random.FromList( Scene.GetAllComponents<PhysboxSpawnpoint>()
+			             .Where( x => x.IsValidSpawnPoint( this ) ).ToList() )?.GameObject
+		             ?? Game.Random.FromList( Scene.GetAllComponents<SpawnPoint>().ToList() )?.GameObject;
 
 		if ( spawnpoint is null )
 		{
@@ -609,14 +547,11 @@ public partial class PlayerComponent :
 	/// </summary>
 	private void HideDeveloperComponents()
 	{
-		// We don't need to network the following components at all.
-		Hud.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		Killfeed.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		Chat.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		PauseMenu.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-		Dresser.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable | ComponentFlags.NotNetworked;
-
-		// Hide, but still network (just in case).
+		Hud.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		Killfeed.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		Chat.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		PauseMenu.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
+		Dresser.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
 		Voice.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
 		ScreenPanel.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
 		PlayerController.Flags = ComponentFlags.Hidden | ComponentFlags.NotEditable;
@@ -676,5 +611,29 @@ public partial class PlayerComponent :
 	public void PlayFallDamageSound( Vector3 position )
 	{
 		Sound.Play( "sounds/player/bone-break.sound", position );
+	}
+
+	/// <summary>
+	/// Assigns the player to the next best team.
+	/// </summary>
+	public void AssignToBestTeam()
+	{
+		if ( !GameLogicComponent.UseTeams )
+		{
+			return;
+		}
+
+		var teamCounts = GameLogicComponent.GetGameInstance().AvaliableTeams.ToDictionary( team => team, team => 0 );
+		foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )
+		{
+			if ( player.Team == Team.None )
+			{
+				continue;
+			}
+
+			teamCounts[player.Team]++;
+		}
+
+		Team = teamCounts.MinBy( x => x.Value ).Key;
 	}
 }

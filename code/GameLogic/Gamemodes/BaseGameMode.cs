@@ -1,9 +1,9 @@
 ﻿using Sandbox;
 using System;
 
-public class PhysboxGamemodeAttribute( PhysboxConstants.GameModes gameMode ) : Attribute
+public class PhysboxGamemodeAttribute( GameModes gameMode ) : Attribute
 {
-	public PhysboxConstants.GameModes GameMode = gameMode;
+	public GameModes GameMode = gameMode;
 }
 
 [Hide]
@@ -11,7 +11,10 @@ public class BaseGameMode : Component
 {
 	[Sync] [Property] [ReadOnly] public int RoundsPlayed { get; set; } = 0;
 	[Sync] [Property] [ReadOnly] public bool RoundOver { get; set; } = false;
-	[Property] public PlayerComponent Winner { get; set; }
+	[Property] public PlayerComponent WinningPlayer { get; set; }
+	[Property] public Team WinningTeam { get; set; }
+
+	public bool HasWinner => WinningTeam != Team.None || WinningPlayer is not null;
 
 	protected GameLogicComponent Game => GameLogicComponent.GetGameInstance();
 
@@ -19,7 +22,8 @@ public class BaseGameMode : Component
 	{
 		RoundsPlayed++;
 		RoundOver = false;
-		Winner = null;
+		WinningPlayer = null;
+		WinningTeam = Team.None;
 	}
 
 	public virtual void OnRoundEnd()
@@ -30,8 +34,15 @@ public class BaseGameMode : Component
 	[Rpc.Broadcast]
 	public void DeclareWinner( PlayerComponent player )
 	{
-		Winner = player;
+		WinningPlayer = player;
 	}
+
+	[Rpc.Broadcast]
+	public void DeclareWinner( Team team )
+	{
+		WinningTeam = team;
+	}
+
 
 	[ConCmd( "pb_debug_declare_me_winner", ConVarFlags.Cheat )]
 	public static void DeclareMeWinner( Connection caller )
@@ -41,5 +52,12 @@ public class BaseGameMode : Component
 			.GetAllComponents<PlayerComponent>().First( x => x.Network.OwnerId == caller.Id && x.IsPlayer );
 
 		game.GameModeComponent.DeclareWinner( player );
+	}
+
+	[ConCmd( "pb_debug_declare_team_winner", ConVarFlags.Cheat )]
+	public static void DeclareTeamWinner( Connection caller, Team team )
+	{
+		var game = GameLogicComponent.GetGameInstance();
+		game.GameModeComponent.DeclareWinner( team );
 	}
 }

@@ -10,6 +10,8 @@ public static partial class PhysboxConstants
 	public static readonly string PlayerTag = "player";
 	public static readonly string RagdollTag = "ragdoll";
 	public static readonly string HitboxTag = "hitbox";
+	public static readonly string BalloonAttachmentTag = "balloon_attachment";
+	public static readonly string PlayerOnlyTag = "player_only";
 
 	public static readonly string PropsPickedUpStat = "props_picked_up";
 	public static readonly string KillsStat = "kills";

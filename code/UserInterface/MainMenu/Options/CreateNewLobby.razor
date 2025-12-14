@@ -1,4 +1,5 @@
 @using System
+@using System.Globalization
 @using Sandbox;
 @using Sandbox.Network
 @using Sandbox.UI;
@@ -6,8 +7,10 @@
 @namespace Physbox
 
 <root>
-	<PopupWindow Title="Create New Lobby">
+	<PopupWindow Title="Create New Lobby" CustomHeight="@( new Length { Value = 80, Unit = LengthUnit.Percentage } )">
 		<ChildContent class="content">
+
+			<!-- Lobby Name -->
 			<div class="option">
 				<i class="option_icon">badge</i>
 				<div class="text option_title">Lobby Name</div>
@@ -15,53 +18,9 @@
 					<TextEntry class="text option_text" style="padding: 0px;" Value:bind="@LobbyName"
 					           style="width: 100%;"></TextEntry>
 				</div>
-
 			</div>
 
-			<div class="option">
-				<i class="option_icon">map</i>
-				<div class="text option_title">Lobby Map</div>
-				<div class="option_background">
-					<div class="text option_text"
-					     onclick="@( () => { CreateMapSelectionPopup(); } )"
-					     style="width: 100%;">
-						@MapName
-					</div>
-				</div>
-			</div>
-
-			<div class="option">
-				<i class="option_icon">lock</i>
-				<div class="text option_title">Lobby Privacy</div>
-				<div class="option_background" style="width: 100%;">
-					<DropDown class="text option_text" Value:bind="@Privacy" style="width: 100%"/>
-				</div>
-			</div>
-
-			<div class="option">
-				<i class="option_icon">person</i>
-				<div class="text option_title">Max Players</div>
-				<div class="option_background" style="width: 100%;">
-					<SliderControl @ref=" PlayersSlider"
-					               Min="@(1)" Max="@(64)" Value="@(8)"
-					               ShowValueTooltip="@(false)" ShowTextEntry="@(false)" ShowRange="@(false)"/>
-					<NumberEntry class="text option_text" style="width: 64px;" Value:bind="@PlayersSlider.Value"/>
-				</div>
-
-
-			</div>
-
-			<div class="option">
-				<i class="option_icon">android</i>
-				<div class="text option_title">Number of Bots</div>
-				<div class="option_background" style="width: 100%;">
-					<SliderControl @ref=" BotsSlider"
-					               Min="@(0)" Max="@(7)" Value="@(7)"
-					               ShowValueTooltip="@(false)" ShowTextEntry="@(false)" ShowRange="@(false)"/>
-					<NumberEntry class="text option_text" style="width: 64px;" Value:bind="@BotsSlider.Value"/>
-				</div>
-			</div>
-
+			<!-- Game Mode -->
 			<div class="option">
 				<i class="option_icon">star_rate</i>
 				<div class="text option_title">Game Mode</div>
@@ -76,6 +35,53 @@
 				</div>
 			</div>
 
+			<!-- Lobby Map -->
+			<div class="option">
+				<i class="option_icon">map</i>
+				<div class="text option_title">Lobby Map</div>
+				<div class="option_background" @ref="MapSelectPanel">
+					<div class="text option_text"
+					     onclick="@( () => { CreateMapSelectionPopup(); } )"
+					     style="width: 100%;">
+						@MapName
+					</div>
+				</div>
+			</div>
+
+			<!-- Lobby Privacy -->
+			<div class="option">
+				<i class="option_icon">lock</i>
+				<div class="text option_title">Lobby Privacy</div>
+				<div class="option_background" style="width: 100%;">
+					<DropDown class="text option_text" Value:bind="@Privacy" style="width: 100%"/>
+				</div>
+			</div>
+
+			<!-- Players -->
+			<div class="option">
+				<i class="option_icon">person</i>
+				<div class="text option_title">Max Players</div>
+				<div class="option_background" style="width: 100%;">
+					<SliderControl @ref=" PlayersSlider"
+					               Min="@( 1 )" Max="@( 64 )" Value="@( 8 )"
+					               ShowValueTooltip="@( false )" ShowTextEntry="@( false )" ShowRange="@( false )"/>
+					<NumberEntry class="text option_text" style="width: 64px;" Value:bind="@PlayersSlider.Value"/>
+				</div>
+			</div>
+
+			<!-- Bots -->
+			<div class="option">
+				<i class="option_icon">android</i>
+				<div class="text option_title">Number of Bots</div>
+				<div class="option_background" style="width: 100%;">
+					<SliderControl @ref=" BotsSlider"
+					               Min="@( 0 )" Max="@( 7 )" Value="@( 7 )"
+					               ShowValueTooltip="@( false )" ShowTextEntry="@( false )" ShowRange="@( false )"/>
+					<NumberEntry class="text option_text" style="width: 64px;" Value:bind="@BotsSlider.Value"/>
+				</div>
+			</div>
+
+			<!-- Timer -->
 			<div class="option">
 				<i class="option_icon">timer</i>
 				<div class="text option_title">Use Timer</div>
@@ -84,21 +90,30 @@
 
 				<div class="option_background" style="width: 100%">
 					<SliderControl @ref="TimeSlider"
-					               Min="@(60)" Max="@(600)" Value="@(300)"
-					               ShowValueTooltip="@(false)" ShowTextEntry="@(false)" ShowRange="@(false)"/>
+					               Min="@( 60 )" Max="@( 600 )" Value="@( 300 )"
+					               ShowValueTooltip="@( false )" ShowTextEntry="@( false )" ShowRange="@( false )"/>
 					<NumberEntry @ref="TimerValue" class="text option_text" style="width: 64px;"
 					             Value:bind="@TimeSlider.Value"/>
 				</div>
 			</div>
 
+			<!-- Teams -->
 			<div class="option">
 				<i class="option_icon">groups</i>
 				<div class="text option_title">Use Teams</div>
 				<Checkbox @ref="TeamsCheckbox" class="option_icon option_background option_checkbox"
 				          Value:bind="@UseTeams"/>
-				<div style="width: 100%"/>
+				<div class="note @( GameRequiresTeams ? "option_background" : "" )">
+					@if ( GameRequiresTeams )
+					{
+						<div class="text" style="margin: auto;">
+							This gamemode requires the use of teams.
+						</div>
+					}
+				</div>
 			</div>
 
+			<!-- Friendly Fire -->
 			<div class="option">
 				<i class="option_icon">group_off</i>
 				<div class="text option_title">Friendly Fire</div>
@@ -107,8 +122,22 @@
 				<div style="width: 100%"/>
 			</div>
 
+			<!-- Errors -->
+			<div @ref="ErrorPanel" class="option_background" style="flex-direction: column; padding: 8px;">
+				@if ( Map is null || !IsMapCompatible( Map ) )
+				{
+					<div class="text error_text">Incorrect Map or No Map Selected.</div>
+				}
+				else
+				{
+					<div class="text error_text">No issues - lobby is ready to go!</div>
+				}
+
+			</div>
+
+			<!-- Create Lobby button -->
 			<div class="create_lobby" @ref="CreateLobbyButton" onclick="@( () => { CreateLobby(); } )">
-				<div class="text option_text" style="gap: 8px">
+				<div class="text" style="filter: drop-shadow(2px 2px #000000ab);">
 					<i>play_arrow</i>
 					Create Lobby
 				</div>
@@ -121,6 +150,7 @@
 {
 	string LobbyName;
 
+	Panel MapSelectPanel;
 	SceneFile Map;
 	string MapName => Map is null ? "No Map Selected..." : $"{Map.GetMetadata( "Title" )} ({Map.GetMetadata( "Author" )})";
 
@@ -146,22 +176,36 @@
 	LobbyPrivacy Privacy;
 
 	DropDown GameModeDropDown;
-	PhysboxConstants.GameModes GameMode => (PhysboxConstants.GameModes)GameModeDropDown.Value;
+	GameModes GameMode = GameModes.Deathmatch;
 
 	Panel CreateLobbyButton;
 
 	bool CanCreateLobby => !string.IsNullOrWhiteSpace( LobbyName ) &&
 	                       Map is not null &&
-	                       GameMode != PhysboxConstants.GameModes.None &&
-	                       GameMode <= PhysboxConstants.GameModes.MAX_GAMEMODE &&
+	                       IsMapCompatible( Map ) &&
+	                       GameMode != GameModes.None &&
+	                       GameMode <= GameModes.MAX_GAMEMODE &&
 	                       MaxPlayers > 0;
+
+	bool GameRequiresTeams => GameMode == GameModes.Dodgeball;
+
+	Panel ErrorPanel;
+	Color ErrorColor = "#d4453b";
+	Color SuccessColor = "#54be35";
+
+	bool IsMapCompatible( SceneFile map )
+	{
+		if ( map is null ) return false;
+		return map.GetMetadata( "gamemodes", "" ) == "all" ||
+		       map.GetMetadata( "gamemodes", "" ).Contains( GameMode.ToString() );
+	}
 
 	void CreateLobby()
 	{
 		if ( !CanCreateLobby ) return;
 
 		// Create our new lobby.
-		PhysboxUtilites.CreateNewLobby( MaxPlayers, LobbyName, GameMode, Privacy, true );
+		PhysboxUtilities.CreateNewLobby( MaxPlayers, LobbyName, GameMode, Privacy, true );
 
 		Log.Info( UseTeams );
 
@@ -185,6 +229,7 @@
 		Style.Opacity = 0;
 
 		var panel = new SelectMap();
+		panel.CurrentlySelectedGamemode = GameMode;
 		FindRootPanel().AddChild( panel );
 
 		panel.AcceptsFocus = true;
@@ -212,7 +257,7 @@
 
 		switch ( GameMode )
 		{
-			case PhysboxConstants.GameModes.Deathmatch:
+			case GameModes.Deathmatch:
 				{
 					panel = new DeathmatchOptions();
 					break;
@@ -245,30 +290,58 @@
 
 	protected override void OnAfterTreeRender( bool firstTime )
 	{
-		if ( !firstTime ) return;
-		GameModeDropDown.Options.Clear();
-
-		var gamemodes = Enum.GetValues<PhysboxConstants.GameModes>()
-			.Where( x => x.GetAttributeOfType<HideAttribute>() is null );
-		foreach ( var gamemode in gamemodes )
+		if ( firstTime )
 		{
-			var title = PhysboxUtilites.GetGameModeIcon( gamemode ) + " ";
-			GameModeDropDown.Options.Add( new Sandbox.UI.Option( title + gamemode.ToString(), gamemode ) );
+			GameModeDropDown.Options.Clear();
+
+			var gamemodes = Enum.GetValues<GameModes>()
+				.Where( x => x.GetAttributeOfType<HideAttribute>() is null );
+			foreach ( var gamemode in gamemodes )
+			{
+				var title = PhysboxUtilities.GetGameModeIcon( gamemode ) + " ";
+				GameModeDropDown.Options.Add( new Sandbox.UI.Option( title + gamemode.ToString(), gamemode ) );
+			}
+
+			GameModeDropDown.Value = GameModes.Deathmatch;
+			LobbyName = $"{Sandbox.Utility.Steam.PersonaName}'s Physbox Lobby";
+
+			TimerCheckbox.ValueChanged += AlterTimerCheckbox;
+			TimerCheckbox.Style.Set( "color", TimerCheckbox.Value ? "white" : "gray" );
+			TimerCheckbox.StateHasChanged();
+
+			FriendlyFireCheckbox.StateHasChanged();
+			TeamsCheckbox.StateHasChanged();
 		}
+		else
+		{
+			// Add a border around the map button if the map is invalid.
+			if ( Map is null || !IsMapCompatible( Map ) )
+			{
+				var borderLength = new Length { Unit = LengthUnit.Pixels, Value = 4 };
+				MapSelectPanel.Style.BorderColor = ErrorColor;
+				MapSelectPanel.Style.BorderWidth = borderLength;
 
-		GameModeDropDown.Value = PhysboxConstants.GameModes.Deathmatch;
-		LobbyName = $"{Sandbox.Utility.Steam.PersonaName}'s Physbox Lobby";
+				ErrorPanel.Style.BackgroundColor = ErrorColor;
+			}
+			else
+			{
+				var borderLength = new Length { Unit = LengthUnit.Pixels, Value = 0 };
+				MapSelectPanel.Style.BorderColor = Color.Transparent;
+				MapSelectPanel.Style.BorderWidth = borderLength;
 
-		TimerCheckbox.ValueChanged += AlterTimerCheckbox;
-		TimerCheckbox.Style.Set( "color", TimerCheckbox.Value ? "white" : "gray" );
-		TimerCheckbox.StateHasChanged();
-
-		FriendlyFireCheckbox.StateHasChanged();
-		TeamsCheckbox.StateHasChanged();
+				ErrorPanel.Style.BackgroundColor = SuccessColor;
+			}
+		}
 	}
 
 	public override void Tick()
 	{
+		GameMode = (GameModes?)GameModeDropDown?.Selected.Value ?? GameModes.Deathmatch;
+		if ( GameRequiresTeams )
+		{
+			TeamsCheckbox.Value = true;
+		}
+
 		BotsSlider.Max = MaxPlayers - 1;
 		if ( (int)BotsSlider.Value > BotsSlider.Max )
 		{

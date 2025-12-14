@@ -1,4 +1,14 @@
-﻿public interface IGameEvents : ISceneEvent<IGameEvents>
+﻿public delegate void OnRoundStartDelegate();
+
+public delegate void OnRoundEndDelegate();
+
+public delegate void OnPlayerSpawnDelegate( PlayerComponent player );
+
+public delegate void OnPlayerDeathDelegate( PhysboxDamageInfo info );
+
+public delegate void OnPlayerScoreUpdateDelegate( PlayerComponent player, int score );
+
+public interface IPhysboxGameEvents : ISceneEvent<IPhysboxGameEvents>
 {
 	/// <summary>
 	/// Called when a round has begun.

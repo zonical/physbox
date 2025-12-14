@@ -1,24 +1,10 @@
-public static partial class PhysboxConstants
-{
-	public enum GameModes
-	{
-		[Hide] None = 0,
-
-		[Icon( "⚔️" )] Deathmatch = 1,
-		//Dodgeball = 2,
-		//Instagib = 3,
-
-		[Hide] MAX_GAMEMODE
-	}
-}
-
 public partial class GameLogicComponent
 {
 	// Current active gamemode. This is hidden, but doesn't automatically update. Call SetGameMode() to change the value.
 	[ConVar( "pb_gamemode", ConVarFlags.Replicated | ConVarFlags.Hidden )]
-	public static PhysboxConstants.GameModes GameMode { get; set; } = PhysboxConstants.GameModes.Deathmatch;
+	public static GameModes GameMode { get; set; }
 
-	// When a round ends (firing OnRoundEnd() event), this is the amount of time before RestartGame() is called.
+	// When a round ends (firing OnRoundEnd() event), this is the amount of time before StartGame() is called.
 	[ConVar( "pb_round_intermission", Help = "How long the intermission between rounds should last.", Max = 10,
 		Min = 10 )]
 	public static int RoundIntermissionSeconds { get; set; } = 5;
@@ -43,43 +29,16 @@ public partial class GameLogicComponent
 		Min = 0 )]
 	public static int MaxBots { get; set; } = 7;
 
-	[ConCmd( "pb_map" )]
-	public static void SetMap( Connection caller, string mapName )
+
+	[ConCmd( "pb_changegamemode" )]
+	public static void ChangeGameMode( Connection caller, GameModes newGameMode )
 	{
 		if ( caller != Connection.Host )
 		{
 			return;
 		}
 
-		// String sanity checks.
-		if ( !mapName.StartsWith( "scenes/maps" ) )
-		{
-			mapName = "scenes/maps/" + mapName;
-		}
-
-		if ( !mapName.EndsWith( ".scene" ) )
-		{
-			mapName += ".scene";
-		}
-
-		var file = ResourceLibrary.Get<SceneFile>( mapName );
-		if ( file is null )
-		{
-			Log.Error( $"Could not find map {mapName}." );
-			return;
-		}
-
-		// Start a new lobby if we don't have one yet.
-		if ( Networking.IsActive )
-		{
-			Networking.Disconnect();
-		}
-
-		PhysboxUtilites.CreateNewLobby();
-
-		// Change to our new scene.
-		var slo = new SceneLoadOptions { ShowLoadingScreen = true };
-		slo.SetScene( file );
-		Game.ChangeScene( slo );
+		var game = GetGameInstance();
+		game?.SetGameMode( newGameMode );
 	}
 }

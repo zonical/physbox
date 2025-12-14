@@ -1,56 +1,56 @@
 ﻿using Sandbox;
 using System;
-using static PlayerComponent;
 
 [Hide]
-[PhysboxGamemode( PhysboxConstants.GameModes.Deathmatch )]
-public class DeathmatchGameMode : BaseGameMode, IGameEvents
+[PhysboxGamemode( GameModes.Deathmatch )]
+public partial class DeathmatchGameMode : BaseGameMode, IPhysboxGameEvents, IPhysboxNetworkEvents
 {
-	[ConVar( "pb_deathmatch_kills_to_win",
-		ConVarFlags.GameSetting )]
-	[Group( "Deathmatch" )]
-	[Title( "Kills to Win" )]
+	[ConVar( "pb_deathmatch_kills_to_win", ConVarFlags.Server )]
 	public static int DeathmatchKillsToWin { get; set; } = 5;
 
-	[Sync] private NetDictionary<Team, int> TeamKills { get; set; } = new();
+	[Sync] public NetDictionary<Team, int> TeamKills { get; set; } = new();
 
-	[Rpc.Broadcast]
-	void IGameEvents.OnPlayerDeath( PhysboxDamageInfo info )
+	void IPhysboxGameEvents.OnPlayerDeath( PhysboxDamageInfo info )
 	{
-		if ( RoundOver || info.Victim is null )
+		if ( Networking.IsHost || RoundOver || info.Victim is null )
 		{
-			return;
-		}
-
-		info.Victim.Deaths++;
-		PhysboxUtilites.IncrementStatForPlayer( info.Victim, PhysboxConstants.DeathsStat, 1 );
-
-		if ( info.Attacker is not null && !info.IsSuicide )
-		{
-			// Add kills to attacking player.
-			info.Attacker.Kills++;
-			PhysboxUtilites.IncrementStatForPlayer( info.Attacker, PhysboxConstants.KillsStat, 1 );
-
-			if ( GameLogicComponent.UseTeams )
+			if ( RoundOver || info.Victim is null )
 			{
-				if ( !TeamKills.ContainsKey( info.Attacker.Team ) )
-				{
-					TeamKills[info.Attacker.Team] = 0;
-				}
-
-				TeamKills[info.Attacker.Team]++;
+				return;
 			}
 
-			Scene.RunEvent<IGameEvents>( x => x.OnPlayerScoreUpdate( info.Attacker, info.Attacker.Kills ) );
+			Log.Info( $"{info.Victim?.Name} died to {info.Attacker?.Name}, caused by {info.Prop}" );
+			if ( info.Attacker is not null && !info.IsSuicide )
+			{
+				if ( GameLogicComponent.UseTeams &&
+				     info.Victim.Team == info.Attacker.Team )
+				{
+					return;
+				}
+
+				// Add kills to attacking player.
+				info.Attacker.Kills++;
+				PhysboxUtilities.IncrementStatForPlayer( info.Attacker, PhysboxConstants.KillsStat, 1 );
+
+				// Add kills to attacking player's team.
+				if ( GameLogicComponent.UseTeams )
+				{
+					TeamKills[info.Attacker.Team]++;
+				}
+
+				Scene.RunEvent<IPhysboxGameEvents>( x => x.OnPlayerScoreUpdate( info.Attacker, info.Attacker.Kills ) );
+			}
+
+			info.Victim?.Deaths += 1;
+			PhysboxUtilities.IncrementStatForPlayer( info.Victim, PhysboxConstants.DeathsStat, 1 );
 		}
 
-		info.Victim.RequestSpawn();
+		info.Victim?.RequestSpawn();
 	}
 
-	[Rpc.Broadcast]
-	void IGameEvents.OnPlayerScoreUpdate( PlayerComponent player, int score )
+	void IPhysboxGameEvents.OnPlayerScoreUpdate( PlayerComponent player, int score )
 	{
-		if ( RoundOver )
+		if ( !Networking.IsHost || RoundOver )
 		{
 			return;
 		}
@@ -74,10 +74,10 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 				var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
 
 				chat.SendMessage( MessageType.System, $"Round over! {name} wins with {score} kills!" );
-				PhysboxUtilites.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
+				PhysboxUtilities.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
 
 				// Hand control back to master logic component.
-				Scene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
+				Scene.RunEvent<IPhysboxGameEvents>( x => x.OnRoundEnd() );
 				RoundOver = true;
 			}
 		}
@@ -95,37 +95,45 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 			// We have a winner!
 			else if ( GetKillsForTeam( team ) >= DeathmatchKillsToWin )
 			{
-				DeclareWinner( player );
+				DeclareWinner( team );
 				var chat = ChatManagerComponent.GetChatManager();
 				var playerComp = player.GetComponent<PlayerComponent>();
 				var name = playerComp.IsPlayer ? playerComp.Network.Owner.DisplayName : playerComp.BotName;
 
 				chat.SendMessage( MessageType.System,
 					$"Round over! Team {team} wins with {score} kills! Last kill achieved by {name}!" );
-				PhysboxUtilites.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
+				PhysboxUtilities.IncrementStatForPlayer( playerComp, PhysboxConstants.WinsStat, 1 );
 
 				// Hand control back to master logic component.
-				Scene.RunEvent<IGameEvents>( x => x.OnRoundEnd() );
+				Scene.RunEvent<IPhysboxGameEvents>( x => x.OnRoundEnd() );
 				RoundOver = true;
 			}
 		}
 	}
 
-	[Rpc.Broadcast]
-	void IGameEvents.OnRoundStart()
+	void IPhysboxGameEvents.OnRoundStart()
 	{
 		base.OnRoundStart();
+
+		// Reset team kills.
 		TeamKills.Clear();
+		if ( GameLogicComponent.UseTeams )
+		{
+			foreach ( var team in Game.AvaliableTeams )
+			{
+				TeamKills.Add( team, 0 );
+			}
+		}
 
 		foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )
 		{
-			if ( player.SpawnCancellationToken.CanBeCanceled )
+			if ( Networking.IsHost )
 			{
-				player.SpawnCancellationTokenSource.Cancel();
+				if ( player.SpawnCancellationToken.CanBeCanceled )
+				{
+					player.SpawnCancellationTokenSource.Cancel();
+				}
 			}
-
-			player.Kills = 0;
-			player.Deaths = 0;
 
 			// Don't spawn a player unless they are on a team.
 			if ( GameLogicComponent.UseTeams )
@@ -142,10 +150,14 @@ public class DeathmatchGameMode : BaseGameMode, IGameEvents
 		}
 	}
 
-	[Rpc.Broadcast]
-	void IGameEvents.OnRoundEnd()
+	void IPhysboxGameEvents.OnRoundEnd()
 	{
 		base.OnRoundEnd();
+
+		if ( !Networking.IsHost )
+		{
+			return;
+		}
 
 		// Stop players from respawning.
 		foreach ( var player in Scene.GetAllComponents<PlayerComponent>() )

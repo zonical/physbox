@@ -13,8 +13,13 @@ public class ExplosionComponent : Component
 	public PropDefinitionResource Prop;
 
 	[ActionGraphIgnore]
-	private void PerfomExplosionTrace()
+	private void PerformExplosionTrace()
 	{
+		if ( Owner is null )
+		{
+			return;
+		}
+
 		var traces = Scene.Trace.Sphere( Radius, new Ray( WorldPosition, Vector3.Up ), 1 )
 			.IgnoreStatic()
 			.WithAnyTags( PhysboxConstants.BreakablePropTag, PhysboxConstants.PlayerTag )
@@ -36,6 +41,18 @@ public class ExplosionComponent : Component
 				distanceDamage = float.Round( float.Max( 0, distanceDamage ) );
 
 				var victim = life as PlayerComponent;
+				if ( victim is null )
+				{
+					continue;
+				}
+
+				if ( GameLogicComponent.UseTeams &&
+				     !GameLogicComponent.FriendlyFire &&
+				     victim.Team == Owner.Team &&
+				     victim != Owner )
+				{
+					continue;
+				}
 
 				life.RequestDamage( new PhysboxDamageInfo
 				{
@@ -87,7 +104,7 @@ public class ExplosionComponent : Component
 
 			explosion.Owner = propObject.GetComponentInParent<PlayerComponent>() ?? propObject.LastOwnedBy;
 			explosion.Prop = propObject.PropDefinition;
-			explosion.PerfomExplosionTrace();
+			explosion.PerformExplosionTrace();
 			explosion.BroadcastSound();
 
 			return explosion;

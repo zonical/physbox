@@ -1,5 +1,6 @@
 ﻿using Sandbox;
 using System;
+using System.Threading;
 
 public class CollisionEvent : IEquatable<CollisionEvent>
 {
@@ -36,7 +37,7 @@ public class CollisionEvent : IEquatable<CollisionEvent>
 
 	public bool Equals( CollisionEvent? other )
 	{
-		if ( other == null )
+		if ( other == null || A is null || B is null )
 		{
 			return false;
 		}
@@ -122,7 +123,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 {
 	[ConVar( "pb_prop_damage_speed_threshold", ConVarFlags.Server | ConVarFlags.Replicated,
 		Help = "The minimum speed an object must be traveling to deal damage." )]
-	public static float DamageSpeedThreshold { get; set; } = 250.0f;
+	public static float DamageSpeedThreshold { get; set; } = 100.0f;
 
 	[ConVar( "pb_fall_damage_speed_threshold", ConVarFlags.Server | ConVarFlags.Replicated,
 		Help = "The minimum speed a player must be traveling to receive fall damage." )]
@@ -145,11 +146,6 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 	public ObjectCollisionProcessorSystem( Scene scene ) : base( scene )
 	{
-		if ( PhysboxUtilites.IsMainMenuScene() )
-		{
-			return;
-		}
-
 		Listen( Stage.PhysicsStep, 10, ProcessCollisions, "ProcessCollisions" );
 	}
 
@@ -168,8 +164,13 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 	private void ProcessCollisions()
 	{
+		if ( Scene.IsEditor || PhysboxUtilities.IsMainMenuScene() )
+		{
+			return;
+		}
+
 		// Don't process collisions and deal damage if the game has ended.
-		if ( GameLogicComponent.GetGameInstance()?.RoundOver ?? true )
+		if ( GameLogicComponent.GetGameInstance().RoundOver )
 		{
 			_collisions.Clear();
 			return;
@@ -189,7 +190,9 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 				value.Invoke( collision, collision.A, collision.B );
 				if ( VerboseCollisionLogging )
 				{
-					Log.Info( $"ObjectCollisionProcessorSystem - collision: {objectTypeTuple}" );
+					Log.Info(
+						$"ObjectCollisionProcessorSystem - event: ({objectTypeTuple.Item1}: {collision.A.Name}," +
+						$" {objectTypeTuple.Item2}: {collision.B.Name})" );
 				}
 			}
 
@@ -244,8 +247,25 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 		}
 
 		var damage = (int)float.Sqrt( @event.AbsoluteSpeed * 0.8f );
-
 		var propLife = @event.GetLifeComponent( prop ) as PropLifeComponent;
+
+		if ( GameLogicComponent.GameMode == GameModes.Dodgeball )
+		{
+			// If we are playing Dodgeball, remove the person that owned us immediately.
+			var owner = propLife?.LastOwnedBy;
+			if ( owner is not null &&
+			     owner.PropCancellationToken != CancellationToken.None &&
+			     owner.PropCancellationToken.CanBeCanceled )
+			{
+				owner.PropCancellationTokenSource?.Cancel();
+			}
+
+			propLife?.LastOwnedBy = null;
+
+			// Then get outta here. Don't deal any damage to props.
+			return;
+		}
+
 		propLife?.OnDamage( new PhysboxDamageInfo { Prop = propLife?.PropDefinition, Damage = damage } );
 
 		var worldLife = @event.GetLifeComponent( world ) as WorldLifeComponent;
@@ -284,7 +304,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 			return;
 		}
 
-		var damage = float.Sqrt( @event.AbsoluteSpeed ) * 0.25f;
+		var damage = float.Sqrt( @event.AbsoluteSpeed ) * 0.35f;
 
 		if ( @event.GetLifeComponent( player ) is PlayerComponent life )
 		{
@@ -312,6 +332,11 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 		if ( @event.GetLifeComponent( player ) is PlayerComponent victim )
 		{
+			if ( victim.DamageImmunity )
+			{
+				return;
+			}
+
 			// Do not deal damage to our teammates if friendly fire is not enabled.
 			if ( GameLogicComponent.UseTeams &&
 			     !GameLogicComponent.FriendlyFire &&
@@ -322,7 +347,20 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 			// Deal damage to the player.
 			var rigidBody = @event.GetRigidbody( prop );
-			var playerDamage = (int)float.Sqrt( @event.AbsoluteSpeed + rigidBody?.MassOverride ?? 0 );
+			var playerDamage = 0;
+			switch ( GameLogicComponent.GameMode )
+			{
+				// Insta-death. That's how dodgeball works, baby!
+				case GameModes.Dodgeball:
+					playerDamage = 100;
+					break;
+
+				// Normal damage.
+				case GameModes.Deathmatch:
+					playerDamage = (int)float.Sqrt( @event.AbsoluteSpeed + rigidBody?.MassOverride ?? 0 );
+					break;
+			}
+
 			var attackerPlayer = attacker.GetComponent<PlayerComponent>();
 			victim.RequestDamage( new PhysboxDamageInfo
 			{
@@ -340,7 +378,7 @@ public class ObjectCollisionProcessorSystem : GameObjectSystem
 
 				// Print information in attacker chat.
 				var name = victim.IsPlayer ? victim.Network.Owner.DisplayName : victim.BotName;
-				PhysboxUtilites.SendMessageToOnlyConnection( attackerPlayer.Network.Owner, MessageType.System,
+				PhysboxUtilities.SendMessageToOnlyConnection( attackerPlayer.Network.Owner, MessageType.System,
 					$"You dealt {playerDamage} damage to {name}." );
 			}
 		}

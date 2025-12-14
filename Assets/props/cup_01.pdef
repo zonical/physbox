@@ -1,1 +1,13 @@
-{"Name":"Cup","Model":"models/props/mugs/mug_01.vmdl","Mass":10,"MaxHealth":50,"HeldPositionOffset":"-32,0,12","HeldRotationOffset":"0,0,0","KillfeedIcon":"materials/ui/props_generated/cup_01.png","__references":["facepunch.mug_01#43698"],"__version":0}
+{
+  "Name": "Cup",
+  "Model": "models/props/mugs/mug_01.vmdl",
+  "Mass": 10,
+  "MaxHealth": 50,
+  "HeldPositionOffset": "-32,0,12",
+  "HeldRotationOffset": "0,0,0",
+  "KillfeedIcon": "materials/ui/props_generated/cup_01.png",
+  "__references": [
+    "facepunch.mug_01#43698"
+  ],
+  "__version": 0
+}

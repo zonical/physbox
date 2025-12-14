@@ -35,9 +35,6 @@ public sealed class PropLifeComponent :
 
 	public bool IsVisibleToConnection( Connection connection, in BBox worldBounds )
 	{
-		// Would love to look at this again in the future.
-		return true;
-
 		// If this prop is being held, always be networked.
 		if ( Tags.Contains( PhysboxConstants.HeldPropTag ) )
 		{
@@ -134,23 +131,20 @@ public sealed class PropLifeComponent :
 
 		// We need to add a delay here because the props are going so fast
 		// that it's not registering the physics touch before the prop breaks.
-		_ = CreateGibsWithDelay( 0, propModel );
+		_ = CreateGibs( propModel );
 	}
 
-	private async Task CreateGibsWithDelay( float delay, Model propModel )
+	private async Task CreateGibs( Model propModel )
 	{
 		// Don't create gibs in the main menu.
-		if ( PhysboxUtilites.IsMainMenuScene() )
+		if ( PhysboxUtilities.IsMainMenuScene() )
 		{
 			DestroyGameObject();
 			return;
 		}
 
-		await Task.DelaySeconds( delay );
-
 		// Shamelessly stolen and adapted from Prop component code.
 		var breaklist = propModel.GetData<ModelBreakPiece[]>();
-		Log.Info( breaklist?.Length );
 
 		if ( breaklist != null && breaklist.Length > 0 )
 		{

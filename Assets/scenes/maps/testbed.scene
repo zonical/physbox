@@ -14,6 +14,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -194,6 +195,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -661,6 +663,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -695,6 +698,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -718,7 +722,7 @@
       "__guid": "81200321-e12e-445a-8b04-123feacdc3ea",
       "__version": 1,
       "Flags": 0,
-      "Name": "Spawn (2)",
+      "Name": "Spawnpoint (Deathmatch)",
       "Position": "0,-64,20",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
@@ -727,6 +731,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -734,6 +739,7 @@
           "__guid": "cd05f704-bdfe-4762-b2fd-148dced957a1",
           "__enabled": true,
           "AnyGameMode": false,
+          "AnyTeam": true,
           "GameModes": [
             "Deathmatch"
           ],
@@ -742,7 +748,8 @@
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "Red"
         }
       ],
       "Children": []
@@ -751,7 +758,7 @@
       "__guid": "cb4d5ed5-1aa5-4fbb-a9ab-623293469603",
       "__version": 1,
       "Flags": 0,
-      "Name": "Spawn (1)",
+      "Name": "Spawnpoint (Deathmatch)",
       "Position": "0,0,20",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
@@ -760,6 +767,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -767,6 +775,7 @@
           "__guid": "15c234ab-86e3-46e3-96c8-0a5d733d1cd4",
           "__enabled": true,
           "AnyGameMode": false,
+          "AnyTeam": true,
           "GameModes": [
             "Deathmatch"
           ],
@@ -775,7 +784,152 @@
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "164040f8-adbb-40b0-a1aa-c2303bcd6388",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (3)",
+      "Position": "80,-64,20",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "b39b0feb-567b-4109-9ded-c40b37b386e6",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": true,
+          "GameModes": [
+            "Deathmatch"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "8b6c5b15-4738-4bd4-a634-ab028cc0e26f",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (2)",
+      "Position": "80,0,20",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "9faa8c37-ed9a-49b3-85fd-06ed6fb10e35",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": true,
+          "GameModes": [
+            "Deathmatch"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "ef7782a8-d80b-4aff-bd98-64d5d4b006b1",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (6)",
+      "Position": "-96,-64,20",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "40e997ec-b52d-4fe6-bb47-da067c70dde5",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": true,
+          "GameModes": [
+            "Deathmatch"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "95dafe14-cd2e-4635-a795-43fd171f728f",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (5)",
+      "Position": "-96,0,20",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "54ab7ab6-5f45-41f5-b666-dd66209c1181",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": true,
+          "GameModes": [
+            "Deathmatch"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
         }
       ],
       "Children": []
@@ -785,7 +939,7 @@
       "__version": 1,
       "Flags": 0,
       "Name": "Spawn (4)",
-      "Position": "96,0,0",
+      "Position": "96,0,98",
       "Rotation": "0,0,1,0.0000001947072",
       "Scale": "1,1,1",
       "Tags": "",
@@ -793,6 +947,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -813,7 +968,7 @@
       "__guid": "a31df4f9-da44-46b0-bdf4-2373bd9a2ecf",
       "__version": 1,
       "Flags": 0,
-      "Name": "Spawn (3)",
+      "Name": "Spawnpoint (Deathmatch)",
       "Position": "0,56,20",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
@@ -822,6 +977,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -829,6 +985,7 @@
           "__guid": "3f0a0981-bfee-43d7-bfa9-9f5395e3b88b",
           "__enabled": true,
           "AnyGameMode": false,
+          "AnyTeam": true,
           "GameModes": [
             "Deathmatch"
           ],
@@ -837,7 +994,80 @@
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
-          "OnComponentUpdate": null
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "91f809e5-8f6e-4ab7-a35b-7a805c30020a",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (1)",
+      "Position": "80,56,20",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "1c95a75a-aa50-472d-ae68-24c4f53730d0",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": true,
+          "GameModes": [
+            "Deathmatch"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
+        }
+      ],
+      "Children": []
+    },
+    {
+      "__guid": "33fe380c-fcb5-406e-9142-1e028dac69db",
+      "__version": 1,
+      "Flags": 0,
+      "Name": "Spawnpoint (4)",
+      "Position": "-96,56,20",
+      "Rotation": "0,0,0,1",
+      "Scale": "1,1,1",
+      "Tags": "",
+      "Enabled": true,
+      "NetworkMode": 2,
+      "NetworkInterpolation": true,
+      "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
+      "OwnerTransfer": 1,
+      "Components": [
+        {
+          "__type": "PhysboxSpawnpoint",
+          "__guid": "34d0be91-608a-4f17-ae86-6969185c4ee4",
+          "__enabled": true,
+          "AnyGameMode": false,
+          "AnyTeam": true,
+          "GameModes": [
+            "Deathmatch"
+          ],
+          "OnComponentDestroy": null,
+          "OnComponentDisabled": null,
+          "OnComponentEnabled": null,
+          "OnComponentFixedUpdate": null,
+          "OnComponentStart": null,
+          "OnComponentUpdate": null,
+          "Team": "Red"
         }
       ],
       "Children": []
@@ -846,7 +1076,7 @@
       "__guid": "5eea3937-b6a5-4a9f-8159-f82fc7d853af",
       "__version": 1,
       "Flags": 0,
-      "Name": "prop_spawner",
+      "Name": "Spawner (Spectacular Crate)",
       "Position": "-464.0001,0,147.2649",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
@@ -855,12 +1085,15 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "PropSpawnerComponent",
           "__guid": "ee627140-5989-4f4e-a863-441cd65a837c",
           "__enabled": true,
+          "AnyGameMode": true,
+          "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -882,7 +1115,7 @@
       "__guid": "b1485cc9-0b25-4d66-af04-b1e762f80f37",
       "__version": 1,
       "Flags": 0,
-      "Name": "Breakable Prop Spawner (7)",
+      "Name": "Spawner (Traffic Cone)",
       "Position": "719.9999,-0.000693385,147.2649",
       "Rotation": "0,0,1,0.0000001947072",
       "Scale": "1,1,1",
@@ -891,12 +1124,15 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "PropSpawnerComponent",
           "__guid": "cef6be13-c1df-4706-9b6c-86950605560c",
           "__enabled": true,
+          "AnyGameMode": true,
+          "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -935,7 +1171,7 @@
       "__guid": "8e714cb5-47bf-4889-8ecd-10dc4c0f917d",
       "__version": 1,
       "Flags": 0,
-      "Name": "Breakable Prop Spawner (3)",
+      "Name": "Spawner (Spectacular Crate)",
       "Position": "-464.0001,160,147.2649",
       "Rotation": "0,0,0,1",
       "Scale": "1,1,1",
@@ -944,12 +1180,15 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "PropSpawnerComponent",
           "__guid": "d9a35b5c-4817-46f6-9a62-b40fc4a93d74",
           "__enabled": true,
+          "AnyGameMode": true,
+          "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -971,7 +1210,7 @@
       "__guid": "3cf21886-788c-4226-a151-5d806d9999d6",
       "__version": 1,
       "Flags": 0,
-      "Name": "Breakable Prop Spawner (6)",
+      "Name": "Spawner (Traffic Cone)",
       "Position": "719.9999,-160.0007,147.2649",
       "Rotation": "0,0,1,0.0000001947072",
       "Scale": "1,1,1",
@@ -980,12 +1219,15 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "PropSpawnerComponent",
           "__guid": "479a1f82-8274-4756-b2cb-3a60345e9524",
           "__enabled": true,
+          "AnyGameMode": true,
+          "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -1007,7 +1249,7 @@
       "__guid": "5d54d8db-bcdb-4579-9d74-310954947c8a",
       "__version": 1,
       "Flags": 0,
-      "Name": "Breakable Prop Spawner (5)",
+      "Name": "Spawner (Spectacular Crate)",
       "Position": "-464.0001,-160,147.2649",
       "Rotation": "0,0.0000002831221,0,-1",
       "Scale": "1,1,1",
@@ -1016,12 +1258,15 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "PropSpawnerComponent",
           "__guid": "62462769-828b-422f-bd46-47119e495a99",
           "__enabled": true,
+          "AnyGameMode": true,
+          "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -1043,7 +1288,7 @@
       "__guid": "5f1e12d0-a782-42c8-9296-e1ef6f702a43",
       "__version": 1,
       "Flags": 0,
-      "Name": "Breakable Prop Spawner (8)",
+      "Name": "Spawner (Traffic Cone)",
       "Position": "720,159.9993,147.2649",
       "Rotation": "-0.0000002831221,0.00000000000005512592,-1,-0.0000001947072",
       "Scale": "1,1,1",
@@ -1052,12 +1297,15 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
           "__type": "PropSpawnerComponent",
           "__guid": "715e4501-469d-4aed-bbba-989d36ee3c13",
           "__enabled": true,
+          "AnyGameMode": true,
+          "GameModes": [],
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
@@ -1088,6 +1336,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [],
       "Children": [
@@ -1104,6 +1353,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1198,6 +1448,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1292,6 +1543,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1386,6 +1638,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1480,6 +1733,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1574,6 +1828,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1668,6 +1923,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1762,6 +2018,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1856,6 +2113,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -1950,6 +2208,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2044,6 +2303,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2138,6 +2398,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2232,6 +2493,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2326,6 +2588,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2420,6 +2683,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2516,6 +2780,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [],
       "Children": [
@@ -2532,6 +2797,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2626,6 +2892,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2720,6 +2987,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2814,6 +3082,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -2908,6 +3177,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3002,6 +3272,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3096,6 +3367,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3190,6 +3462,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3284,6 +3557,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3378,6 +3652,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3472,6 +3747,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3566,6 +3842,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3660,6 +3937,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3754,6 +4032,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3848,6 +4127,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -3944,6 +4224,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -4038,6 +4319,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -4132,6 +4414,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -4287,6 +4570,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -4381,6 +4665,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -4556,6 +4841,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -4711,6 +4997,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -4805,6 +5092,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -4979,6 +5267,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -5134,6 +5423,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -5178,6 +5468,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -5209,6 +5500,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -5234,14 +5526,16 @@
           "__guid": "07fd33d6-eed8-47b7-943c-b1fa9e23ae61",
           "__enabled": true,
           "Image": null,
-          "IsVisibleInMenu": true,
+          "IsVisibleInMenu": false,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
           "OnComponentEnabled": null,
           "OnComponentFixedUpdate": null,
           "OnComponentStart": null,
           "OnComponentUpdate": null,
-          "PackageIdent": ""
+          "OverrideDefaultSpawnpoints": false,
+          "PackageIdent": "",
+          "SupportedGamemodes": []
         }
       ],
       "Children": []
@@ -5259,6 +5553,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -5414,6 +5709,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -5602,6 +5898,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -5698,6 +5995,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -5853,6 +6151,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -6010,6 +6309,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -6104,6 +6404,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -6200,6 +6501,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -6355,6 +6657,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -6512,6 +6815,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -6606,6 +6910,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -6702,6 +7007,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -6857,6 +7163,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -7012,160 +7319,7 @@
               "OnDisabledAction": null,
               "OnEnabledAction": null,
               "OnFixedUpdateAction": null,
-              "OnUpdateAction": {
-                "__version": 9,
-                "__guid": "e9770809-f629-41b2-a65e-81aa274f92f5",
-                "__changeId": 35,
-                "UserData": {
-                  "Title": "On Update Action",
-                  "ReferencedComponentTypes": []
-                },
-                "Variables": [],
-                "Nodes": [
-                  {
-                    "Id": 0,
-                    "Type": "input"
-                  },
-                  {
-                    "Id": 1,
-                    "Type": "call",
-                    "Properties": {
-                      "_isStatic": false,
-                      "_name": "GetOrCreate",
-                      "_type": "Sandbox.IComponentLister",
-                      "T": "ObjectCollisionListenerComponent"
-                    },
-                    "UserData": {
-                      "Position": "336,-0"
-                    }
-                  },
-                  {
-                    "Id": 3,
-                    "Type": "if",
-                    "UserData": {
-                      "Position": "972,0"
-                    }
-                  },
-                  {
-                    "Id": 4,
-                    "Type": "property",
-                    "Properties": {
-                      "_name": "CollisionProxy",
-                      "_type": "ObjectCollisionListenerComponent"
-                    },
-                    "UserData": {
-                      "Position": "624,24"
-                    }
-                  },
-                  {
-                    "Id": 8,
-                    "Type": "op.isnull",
-                    "UserData": {
-                      "Position": "912,24"
-                    }
-                  },
-                  {
-                    "Id": 9,
-                    "Type": "property",
-                    "Properties": {
-                      "_name": "CollisionProxy",
-                      "_type": "ObjectCollisionListenerComponent"
-                    },
-                    "UserData": {
-                      "Position": "1644,60"
-                    }
-                  },
-                  {
-                    "Id": 10,
-                    "Type": "physbox.get_local_player",
-                    "UserData": {
-                      "Position": "1188,0"
-                    }
-                  },
-                  {
-                    "Id": 11,
-                    "Type": "property",
-                    "Properties": {
-                      "_name": "GameObject",
-                      "_type": "Sandbox.Component"
-                    },
-                    "UserData": {
-                      "Position": "1380,168"
-                    }
-                  }
-                ],
-                "Links": [
-                  {
-                    "SrcId": 0,
-                    "SrcName": "_signal",
-                    "DstId": 1,
-                    "DstName": "_signal"
-                  },
-                  {
-                    "SrcId": 0,
-                    "SrcName": "_target",
-                    "DstId": 1,
-                    "DstName": "_target"
-                  },
-                  {
-                    "SrcId": 1,
-                    "SrcName": "_signal",
-                    "DstId": 3,
-                    "DstName": "_signal"
-                  },
-                  {
-                    "SrcId": 8,
-                    "SrcName": "_result",
-                    "DstId": 3,
-                    "DstName": "condition"
-                  },
-                  {
-                    "SrcId": 1,
-                    "SrcName": "_result",
-                    "DstId": 4,
-                    "DstName": "_target"
-                  },
-                  {
-                    "SrcId": 4,
-                    "SrcName": "_result",
-                    "DstId": 8,
-                    "DstName": "input"
-                  },
-                  {
-                    "SrcId": 10,
-                    "SrcName": "_signal",
-                    "DstId": 9,
-                    "DstName": "_signal"
-                  },
-                  {
-                    "SrcId": 1,
-                    "SrcName": "_result",
-                    "DstId": 9,
-                    "DstName": "_target"
-                  },
-                  {
-                    "SrcId": 11,
-                    "SrcName": "_result",
-                    "DstId": 9,
-                    "DstName": "_value"
-                  },
-                  {
-                    "SrcId": 3,
-                    "SrcName": "_signal",
-                    "DstId": 10,
-                    "DstName": "_signal"
-                  },
-                  {
-                    "SrcId": 10,
-                    "SrcName": "_result",
-                    "DstId": 11,
-                    "DstName": "_target",
-                    "UserData": {
-                      "x": 0
-                    }
-                  }
-                ]
-              }
+              "OnUpdateAction": null
             },
             {
               "__type": "ObjectCollisionListenerComponent",
@@ -7197,6 +7351,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -7291,6 +7446,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -7387,6 +7543,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -7542,6 +7699,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -7697,6 +7855,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -7896,13 +8055,13 @@
                         "DstName": "_target"
                       },
                       {
-                        "Id": 11,
+                        "Id": 7,
                         "Value": "This message came from a button!",
                         "DstId": 4,
                         "DstName": "text"
                       },
                       {
-                        "Id": 12,
+                        "Id": 8,
                         "Value": "System",
                         "DstId": 4,
                         "DstName": "type"
@@ -7935,6 +8094,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -8029,6 +8189,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -8125,6 +8286,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -8280,6 +8442,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -8374,6 +8537,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -8529,6 +8693,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -8704,7 +8869,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 6,
+                        "Id": 4,
                         "Value": true,
                         "DstId": 2,
                         "DstName": "state"
@@ -8735,6 +8900,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -8831,6 +8997,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -8986,6 +9153,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -9160,7 +9328,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 3,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -9191,6 +9359,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -9287,6 +9456,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -9442,6 +9612,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -9616,7 +9787,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 3,
                         "Value": 30,
                         "DstId": 1,
                         "DstName": "time"
@@ -9647,6 +9818,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -9743,6 +9915,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -9898,6 +10071,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -10073,7 +10247,7 @@
                         "DstName": "_signal"
                       },
                       {
-                        "Id": 5,
+                        "Id": 3,
                         "Value": false,
                         "DstId": 1,
                         "DstName": "state"
@@ -10104,6 +10278,7 @@
               "NetworkMode": 2,
               "NetworkInterpolation": true,
               "NetworkOrphaned": 0,
+              "NetworkTransmit": true,
               "OwnerTransfer": 1,
               "Components": [
                 {
@@ -10202,6 +10377,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -10357,6 +10533,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -10451,6 +10628,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -10547,6 +10725,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -10565,10 +10744,10 @@
             "Position": "344,-312,128.0017",
             "Rotation": "0,0,0,1",
             "Positions": [
-              "-24,-24,319.9991",
-              "24,-24,319.9991",
-              "24,24,319.9991",
-              "-24,24,319.9991",
+              "-24,-24,91.9991",
+              "24,-24,91.9991",
+              "24,24,91.9991",
+              "-24,24,91.9991",
               "-24,24,-128",
               "24,24,-128",
               "24,-24,-128",
@@ -10702,6 +10881,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -10720,10 +10900,10 @@
                 "Position": "312.0006,-312,128",
                 "Rotation": "0,0,0,1",
                 "Positions": [
-                  "-8.00058,-24,319.9991",
-                  "8.00058,-24,319.9991",
-                  "8.00058,24,319.9991",
-                  "-8.00058,24,319.9991",
+                  "-8.00058,-24,91.9991",
+                  "8.00058,-24,91.9991",
+                  "8.00058,24,91.9991",
+                  "-8.00058,24,91.9991",
                   "-8.00058,24,-128",
                   "8.00058,24,-128",
                   "8.00058,-24,-128",
@@ -10858,6 +11038,7 @@
           "NetworkMode": 2,
           "NetworkInterpolation": true,
           "NetworkOrphaned": 0,
+          "NetworkTransmit": true,
           "OwnerTransfer": 1,
           "Components": [
             {
@@ -10954,6 +11135,7 @@
       "NetworkMode": 2,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 1,
       "Components": [
         {
@@ -11105,6 +11287,7 @@
       "NetworkMode": 1,
       "NetworkInterpolation": true,
       "NetworkOrphaned": 0,
+      "NetworkTransmit": true,
       "OwnerTransfer": 0,
       "Components": [
         {
@@ -11162,8 +11345,10 @@
           "__guid": "97fd348f-66ea-4943-8d55-8c2007267e3c",
           "__enabled": true,
           "AngularDamping": 0,
+          "EnableImpactDamage": true,
           "Gravity": true,
           "GravityScale": 1,
+          "ImpactDamage": 0,
           "LinearDamping": 0,
           "Locking": {
             "X": false,
@@ -11175,6 +11360,7 @@
           },
           "MassCenterOverride": "0,0,0",
           "MassOverride": 50,
+          "MinImpactDamageSpeed": 500,
           "MotionEnabled": true,
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -11193,9 +11379,13 @@
           "DamageImmunity": false,
           "DeathDamageInfo": {
             "Attacker": null,
+            "Victim": null,
+            "Prop": null,
+            "Damage": 0,
+            "IsWorld": true,
+            "IsSuicide": true,
             "Weapon": null,
             "Hitbox": null,
-            "Damage": 0,
             "Origin": "0,0,0",
             "Position": "0,0,0",
             "Shape": null,
@@ -11231,6 +11421,7 @@
           "__type": "Physbox.PropDefinitionComponent",
           "__guid": "4938b075-be82-4b8a-a07f-4670f0b59bb8",
           "__enabled": true,
+          "__version": 1,
           "Definition": "props/exploding_barrel.pdef",
           "OnComponentDestroy": null,
           "OnComponentDisabled": null,
@@ -11251,8 +11442,8 @@
       "Title": "Testbed",
       "Author": "ZoNiCaL",
       "Image": null,
-      "IsVisibleInMenu": "True",
-      "GameModes": "",
+      "IsVisibleInMenu": "False",
+      "GameModes": "all",
       "PackageIdent": ""
     },
     "NavMesh": {

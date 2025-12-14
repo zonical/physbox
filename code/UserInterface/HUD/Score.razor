@@ -5,7 +5,7 @@
 @namespace Physbox
 
 @if ( Player is null ) return;
-@if ( GameLogicComponent.GameMode != PhysboxConstants.GameModes.Deathmatch ) return;
+@if ( GameLogicComponent.GameMode != GameModes.Deathmatch ) return;
 
 <root>
 	<div style="flex-direction:column; justify-content: center;">
@@ -17,7 +17,7 @@
 @code
 {
 	PlayerComponent Player => PlayerComponent.LocalPlayer;
-	Color TextColorOverride => GameLogicComponent.UseTeams ? PhysboxUtilites.GetTeamColor( Player.Team ) : Color.White;
+	Color TextColorOverride => GameLogicComponent.UseTeams ? PhysboxUtilities.GetTeamColor( Player.Team ) : Color.White;
 
 	public int GetKills()
 	{

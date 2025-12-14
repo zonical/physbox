@@ -1,0 +1,232 @@
+{
+  "RootObject": {
+    "__guid": "9799a841-2037-4518-95a3-507c55e9cd69",
+    "__version": 1,
+    "Flags": 0,
+    "Name": "balloon",
+    "Position": "0,0,0",
+    "Rotation": "0,0,0,1",
+    "Scale": "1,1,1",
+    "Tags": "no_breakable,balloon",
+    "Enabled": true,
+    "NetworkMode": 1,
+    "NetworkInterpolation": true,
+    "NetworkOrphaned": 0,
+    "NetworkTransmit": true,
+    "OwnerTransfer": 1,
+    "Components": [
+      {
+        "__type": "Sandbox.ModelRenderer",
+        "__guid": "582f0862-c0ae-4ede-b9a0-1972af231a3e",
+        "__enabled": true,
+        "BodyGroups": 18446744073709551615,
+        "CreateAttachments": false,
+        "LodOverride": null,
+        "MaterialGroup": null,
+        "MaterialOverride": null,
+        "Materials": null,
+        "Model": "models/citizen_props/balloonregular01.vmdl",
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "RenderOptions": {
+          "GameLayer": true,
+          "OverlayLayer": false,
+          "BloomLayer": false,
+          "AfterUILayer": false
+        },
+        "RenderType": "On",
+        "Tint": "1,1,1,1"
+      },
+      {
+        "__type": "Sandbox.SphereCollider",
+        "__guid": "d725cbe2-f58d-4e8d-848d-15e0a3c8234b",
+        "__enabled": true,
+        "Center": "0,0,16",
+        "ColliderFlags": 0,
+        "Elasticity": null,
+        "Friction": null,
+        "IsTrigger": false,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OnObjectTriggerEnter": null,
+        "OnObjectTriggerExit": null,
+        "OnTriggerEnter": null,
+        "OnTriggerExit": null,
+        "Radius": 14,
+        "RollingResistance": null,
+        "Static": false,
+        "Surface": null,
+        "SurfaceVelocity": "0,0,0"
+      },
+      {
+        "__type": "Sandbox.Rigidbody",
+        "__guid": "628e70a0-418b-4d01-85ac-34d38c7dfe34",
+        "__enabled": true,
+        "AngularDamping": 0,
+        "EnableImpactDamage": false,
+        "Gravity": true,
+        "GravityScale": 1,
+        "ImpactDamage": 0,
+        "LinearDamping": 0,
+        "Locking": {
+          "X": false,
+          "Y": false,
+          "Z": true,
+          "Pitch": false,
+          "Yaw": false,
+          "Roll": false
+        },
+        "MassCenterOverride": "0,0,0",
+        "MassOverride": 0,
+        "MinImpactDamageSpeed": 500,
+        "MotionEnabled": false,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "OverrideMassCenter": false,
+        "RigidbodyFlags": "DisableCollisionSounds",
+        "StartAsleep": false
+      },
+      {
+        "__type": "Sandbox.SpringJoint",
+        "__guid": "3a7c2cac-e1ea-446f-bd9d-119f5ea6dff2",
+        "__enabled": true,
+        "Attachment": "Auto",
+        "Body": null,
+        "BreakForce": 0,
+        "BreakTorque": 0,
+        "Damping": 0.7,
+        "EnableCollision": false,
+        "ForceMode": "Push",
+        "Frequency": 0,
+        "LocalFrame1": {
+          "Position": "0,0,0",
+          "Scale": "0,0,0",
+          "Rotation": "0,0,0,0"
+        },
+        "LocalFrame2": {
+          "Position": "0,0,0",
+          "Scale": "0,0,0",
+          "Rotation": "0,0,0,0"
+        },
+        "MaxLength": 25,
+        "MinLength": 10,
+        "OnBreak": null,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "RestLength": 25,
+        "StartBroken": false
+      },
+      {
+        "__type": "Sandbox.LineRenderer",
+        "__guid": "38a93ab8-f07e-4595-ab69-3b0d933eb3dd",
+        "__enabled": true,
+        "Additive": false,
+        "AutoCalculateNormals": true,
+        "CastShadows": true,
+        "Color": {
+          "blend": "Linear",
+          "color": [
+            {
+              "t": 1,
+              "c": "0.54419,0.34043,0.25311,1"
+            }
+          ],
+          "alpha": []
+        },
+        "CylinderSegments": 12,
+        "DepthFeather": 0,
+        "EndCap": "None",
+        "Face": "Camera",
+        "FogStrength": 1,
+        "Lighting": false,
+        "OnComponentDestroy": null,
+        "OnComponentDisabled": null,
+        "OnComponentEnabled": null,
+        "OnComponentFixedUpdate": null,
+        "OnComponentStart": null,
+        "OnComponentUpdate": null,
+        "Opaque": true,
+        "Points": [],
+        "RenderOptions": {
+          "GameLayer": true,
+          "OverlayLayer": false,
+          "BloomLayer": false,
+          "AfterUILayer": false
+        },
+        "SplineBias": 0,
+        "SplineContinuity": 0,
+        "SplineInterpolation": 0,
+        "SplineTension": 0,
+        "StartCap": "None",
+        "Texturing": {
+          "Texture": null,
+          "Material": null,
+          "WorldSpace": true,
+          "UnitsPerTexture": 10,
+          "Scale": 1,
+          "Offset": 0,
+          "Scroll": 0,
+          "Clamp": false
+        },
+        "UseVectorPoints": false,
+        "VectorPoints": [],
+        "Width": {
+          "rangey": "0,0.5",
+          "frames": [
+            {
+              "x": 0.5,
+              "y": 1,
+              "in": 0,
+              "out": 0,
+              "mode": "Mirrored"
+            }
+          ]
+        },
+        "Wireframe": false
+      }
+    ],
+    "Children": [],
+    "__properties": {
+      "NetworkInterpolation": true,
+      "TimeScale": 1,
+      "WantsSystemScene": true,
+      "Metadata": {},
+      "NavMesh": {
+        "Enabled": false,
+        "IncludeStaticBodies": true,
+        "IncludeKeyframedBodies": true,
+        "EditorAutoUpdate": true,
+        "AgentHeight": 64,
+        "AgentRadius": 16,
+        "AgentStepSize": 18,
+        "AgentMaxSlope": 40,
+        "ExcludedBodies": "",
+        "IncludedBodies": ""
+      }
+    },
+    "__variables": []
+  },
+  "ResourceVersion": 2,
+  "ShowInMenu": false,
+  "MenuPath": null,
+  "MenuIcon": null,
+  "DontBreakAsTemplate": false,
+  "__references": [],
+  "__version": 2
+}

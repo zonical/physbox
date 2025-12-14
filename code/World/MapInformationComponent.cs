@@ -12,18 +12,12 @@ public class MapInformationComponent : Component, ISceneMetadata
 	[Property] public string PackageIdent { get; set; } = "";
 	[Property] public bool IsVisibleInMenu { get; set; } = true;
 	[Property] public bool OverrideDefaultSpawnpoints { get; set; } = false;
+	[Property] public List<GameModes> SupportedGamemodes { get; set; } = new();
 
-	private List<string> GetGameModeList()
+	private string GetGameModeList()
 	{
-		var list = new List<string>();
-		/*foreach ( var go in Scene.GetAllObjects( false ) )
-		{
-			var gm = go.GetComponent<GameMode>( true );
-			if ( !gm.IsValid() ) continue;
-			list.Add( go.PrefabInstanceSource );
-		}*/
-
-		return list;
+		var list = string.Join( ", ", SupportedGamemodes.Select( gamemode => gamemode.ToString() ) );
+		return SupportedGamemodes.Any() ? list : "all";
 	}
 
 	protected override void OnValidate()
@@ -40,7 +34,7 @@ public class MapInformationComponent : Component, ISceneMetadata
 		{
 			{ "Image", Image },
 			{ "IsVisibleInMenu", IsVisibleInMenu.ToString() },
-			{ "GameModes", string.Join( ", ", GetGameModeList() ) },
+			{ "GameModes", GetGameModeList() },
 			{ "PackageIdent", PackageIdent }
 		};
 	}

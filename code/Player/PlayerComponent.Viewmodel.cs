@@ -1,4 +1,5 @@
 ﻿using Sandbox;
+using Sandbox.Diagnostics;
 
 public partial class PlayerComponent
 {
@@ -10,21 +11,24 @@ public partial class PlayerComponent
 		// Destroy viewmodel if it currently exists.
 		Viewmodel?.Destroy();
 
-		Viewmodel = new GameObject( true, "Viewmodel" );
-		Viewmodel.NetworkMode = NetworkMode.Never;
-		Viewmodel.Tags.Add( "viewmodel" );
+		var go = new GameObject( true, "Viewmodel" );
+		Assert.IsValid( go );
 
-		var modelComp = Viewmodel.AddComponent<SkinnedModelRenderer>();
+		go.NetworkMode = NetworkMode.Never;
+		go.Tags.Add( "viewmodel" );
+
+		var modelComp = go.AddComponent<SkinnedModelRenderer>();
 		modelComp.Model = Cloud.Model( "facepunch.v_first_person_arms_human" );
 		modelComp.RenderOptions.Overlay = true;
 		modelComp.RenderOptions.Game = false;
 		modelComp.RenderType = ModelRenderer.ShadowRenderType.Off;
 		modelComp.UseAnimGraph = true;
 
-		Viewmodel.WorldRotation = new Angles( 45, 0, 5 );
+		go.WorldRotation = new Angles( 45, 0, 5 );
 
 		// Parent model to camera.
-		Viewmodel.Parent = Camera.GameObject;
+		go.Parent = Camera.GameObject;
+		Viewmodel = go;
 	}
 
 	/// <summary>
@@ -109,6 +113,11 @@ public partial class PlayerComponent
 	private void TriggerViewmodelJump()
 	{
 		var model = Viewmodel.GetComponent<SkinnedModelRenderer>();
+		if ( model is null )
+		{
+			return;
+		}
+
 		if ( model.Enabled )
 		{
 			model.Parameters.Set( "b_jump", true );

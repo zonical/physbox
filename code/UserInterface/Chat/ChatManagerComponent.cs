@@ -15,7 +15,7 @@ public enum MessageType : int
 [Tint( EditorTint.Yellow )]
 [Hide]
 public class ChatManagerComponent :
-	Component, IGameEvents,
+	Component, IPhysboxGameEvents,
 	Component.INetworkListener
 {
 	[Property] [ActionGraphIgnore] public List<(MessageType, Guid, string)> Messages { get; set; } = new();
@@ -23,13 +23,14 @@ public class ChatManagerComponent :
 	protected override void OnEnabled()
 	{
 		// Delete ourselves if we're in the main menu.
-		if ( PhysboxUtilites.IsMainMenuScene() )
+		if ( PhysboxUtilities.IsMainMenuScene() )
 		{
 			DestroyGameObject();
 		}
 	}
 
 	[Rpc.Broadcast]
+	[ActionGraphIgnore]
 	public void SendMessage( MessageType type, string text )
 	{
 		Messages.Add( (type, Rpc.CallerId, text) );
@@ -42,7 +43,7 @@ public class ChatManagerComponent :
 	[ConCmd( "pb_chat_test" )]
 	public static void ChatTestMessage()
 	{
-		PhysboxUtilites.SendLocalChatMessage( MessageType.System, "This is a test message!" );
+		PhysboxUtilities.SendLocalChatMessage( MessageType.System, "This is a test message!" );
 	}
 
 	[ActionGraphIgnore]

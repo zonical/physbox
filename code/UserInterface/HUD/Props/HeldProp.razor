@@ -9,11 +9,13 @@
 <root>
 	<div style="flex-direction:column; justify-content: center;">
 		<div class="text title" style="font-style: italic;">@PropDef.Name</div>
-		<div class="text health">
-			<div>❤ @PropLife.Health / @PropLife.MaxHealth</div>
-		</div>
+		@if ( GameLogicComponent.GameMode != GameModes.Dodgeball )
+		{
+			<div class="text health">
+				<div>❤ @PropLife.Health / @PropLife.MaxHealth</div>
+			</div>
+		}
 	</div>
-
 </root>
 
 @code

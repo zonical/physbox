@@ -19,7 +19,8 @@
 			<ChatDisplay MessageType="@( type )" Sender="@( sender )" Message="@( message )"></ChatDisplay>
 		}
 	</div>
-	<TextEntry class="background" @ref="InputBox" onsubmit="@ChatFinished"></TextEntry>
+	<TextEntry class="background" @ref="InputBox" onsubmit="@ChatFinished"
+	           OnTextEdited="@(OnTextEdited)"></TextEntry>
 </root>
 
 @code
@@ -39,6 +40,15 @@
 	                     "volutpat eget at velit. Donec vulputate urna nec lacus venenatis tincidunt tincidunt sed leo. Morbi in" +
 	                     "porta nibh, id ultricies arcu. Mauris et leo tellus. Nunc maximus aliquet venenatis. Sed facilisis augue" +
 	                     "ultrices lacinia vehicula.";
+
+	public void OnTextEdited( string text )
+	{
+		if ( text.Length > 256 )
+		{
+			InputBox.Text = text.Substring( 0, 256 );
+		}
+	}
+
 
 	/// <summary>
 	/// the hash determines if the system should be rebuilt. If it changes, it will be rebuilt
@@ -129,7 +139,7 @@
 		CloseChat();
 		Open = false;
 
-		var text = InputBox.Text;
+		var text = InputBox.Text.Trim();
 		InputBox.Text = "";
 
 		if ( string.IsNullOrWhiteSpace( text ) )

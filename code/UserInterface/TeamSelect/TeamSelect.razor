@@ -12,7 +12,7 @@
 			@foreach ( var team in Teams )
 			{
 				<div class="team" onclick="@( () => JoinTeam( team ) )"
-				     style="background-color: @PhysboxUtilites.GetTeamColor( team ).Hex; width: @( 100 / Teams.Count )%">
+				     style="background-color: @PhysboxUtilities.GetTeamColor( team ).Hex; width: @( 100 / Teams.Count )%">
 					<div class="team_label text">
 						@team.ToString()
 					</div>
@@ -24,30 +24,38 @@
 
 @code
 {
-	// Get all the playable teams in the scene.
-	// TODO: Make this dynamic.
-	public List<Team> Teams = new() { Team.Red, Team.Blue };
+	List<Team> Teams => GameLogicComponent.GetGameInstance().AvaliableTeams;
 
 	public Action<Team> OnTeamSelected;
 
 	void JoinTeam( Team team )
 	{
-		// TODO: Max team check here as well in the future.
-		if ( team == Team.None ) return;
+		if ( !Teams.Contains( team ) ) return;
 
 		var player = PlayerComponent.LocalPlayer;
 		if ( team == player.Team ) return;
 
 		player.Team = team;
 
-		if ( player.IsAlive )
+		// If we are the only player on the server, and the game hasn't started,
+		// we should probably start the game.
+		var players = Scene.GetAllComponents<PlayerComponent>();
+		if ( players.Count() == 1 )
 		{
-			player.CommitSuicide();
+			GameLogicComponent.GetGameInstance().StartGame();
 		}
 		else
 		{
-			player.RequestSpawn();
+			if ( player.IsAlive )
+			{
+				player.CommitSuicide();
+			}
+			else
+			{
+				player.RequestSpawn();
+			}
 		}
+
 
 		OnTeamSelected?.Invoke( team );
 		Delete();

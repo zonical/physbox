@@ -30,7 +30,10 @@
           "OnComponentStart": null,
           "OnComponentUpdate": null,
           "OverrideDefaultSpawnpoints": false,
-          "PackageIdent": "zonical.physbox_street"
+          "PackageIdent": "zonical.physbox_street",
+          "SupportedGamemodes": [
+            "Deathmatch"
+          ]
         },
         {
           "__type": "Sandbox.SceneInformation",
@@ -259,7 +262,7 @@
     "Metadata": {
       "Image": null,
       "IsVisibleInMenu": "True",
-      "GameModes": "",
+      "GameModes": "Deathmatch",
       "PackageIdent": "zonical.physbox_street",
       "Title": "Street",
       "Author": "ZoNiCaL"

@@ -19,10 +19,24 @@ CreateNewLobby {
     border-radius: 4px;
     margin: auto;
     background-color: #54be35;
-    width: 300px;
+    width: 500px;
     animation-name: HudElementAnimation;
     animation-duration: 10s;
     animation-iteration-count: infinite;
+    font-size: 28px;
+    gap: 8px;
+  }
+
+  .error_text {
+    filter: drop-shadow(2px 2px #000000ab);
+    justify-content: center;
+  }
+
+  .note {
+    justify-content: center;
+    font-size: 24px;
+    width: 100%;
+    height: 100%
   }
 }
 

@@ -1,22 +1,23 @@
 {
   "RootObject": {
-    "__guid": "cef811fb-62fe-46b1-8a8c-1896a0f52a63",
+    "__guid": "6da56dbe-6f34-4dfc-addc-b92c3184b9a5",
     "__version": 1,
     "Flags": 0,
     "Name": "camera",
     "Position": "0,0,0",
-    "Rotation": "-0.002389955,-0.0005257491,-0.9766451,0.2148452",
+    "Rotation": "0,0,0,1",
     "Scale": "1,1,1",
     "Tags": "",
     "Enabled": true,
-    "NetworkMode": 2,
+    "NetworkMode": 0,
     "NetworkInterpolation": true,
     "NetworkOrphaned": 0,
+    "NetworkTransmit": true,
     "OwnerTransfer": 1,
     "Components": [
       {
         "__type": "Sandbox.CameraComponent",
-        "__guid": "30c67f75-dc45-4689-ac23-363220d962d2",
+        "__guid": "f31cb4d4-74aa-4235-824d-8b0304559058",
         "__enabled": true,
         "BackgroundColor": "0,0,0,1",
         "ClearFlags": "All",
@@ -44,7 +45,7 @@
       },
       {
         "__type": "Sandbox.Highlight",
-        "__guid": "e1adeddb-2ed2-4426-afc0-22a1cee05dc3",
+        "__guid": "8b79fd65-eb58-46cd-b257-73b2b5b81d1d",
         "__enabled": true,
         "OnComponentDestroy": null,
         "OnComponentDisabled": null,
@@ -55,7 +56,7 @@
       },
       {
         "__type": "Sandbox.AmbientOcclusion",
-        "__guid": "bc07af56-567f-47ee-9fea-3a5a1c553736",
+        "__guid": "d487e118-59ac-4e28-8039-316803b5e496",
         "__enabled": true,
         "__version": 1,
         "DenoiseMode": "Temporal",
@@ -72,7 +73,7 @@
       },
       {
         "__type": "Sandbox.Bloom",
-        "__guid": "08351d6e-9d9f-493a-9eee-ba3435ab5b7f",
+        "__guid": "8a092af5-29a9-492e-ba77-4352f5454b46",
         "__enabled": true,
         "__version": 1,
         "Filter": "Bilinear",
@@ -90,7 +91,7 @@
       },
       {
         "__type": "Sandbox.ScreenSpaceReflections",
-        "__guid": "ad383465-a402-4fae-99f0-c7c542b6b34f",
+        "__guid": "a8cd9f81-fb00-4358-b501-67805e21c687",
         "__enabled": true,
         "Denoise": true,
         "OnComponentDestroy": null,

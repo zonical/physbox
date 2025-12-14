@@ -11,7 +11,7 @@ public class PhysboxDamageInfo : DamageInfo
 	/// <summary>
 	/// The player that was attacked.
 	/// </summary>
-	public new PlayerComponent Victim { get; set; }
+	public PlayerComponent Victim { get; set; }
 
 	/// <summary>
 	/// The prop that was used in the attack (if any).

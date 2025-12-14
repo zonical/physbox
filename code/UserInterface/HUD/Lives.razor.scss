@@ -1,0 +1,50 @@
+Lives {
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  width: 150px;
+  height: 150px;
+  justify-content: center;
+  background-repeat: no-repeat;
+  background-image: url(materials/ui/hud_background_3.png);
+  background-size: 150px 150px;
+  background-image-tint: #000000ab;
+  animation-name: HudElementAnimation;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-delay: -3s;
+
+  .title {
+    font-size: 24px;
+    justify-content: center;
+    filter: drop-shadow(2px 2px #000000ab);
+  }
+
+  .value {
+    font-size: 32px;
+    justify-content: center;
+    filter: drop-shadow(2px 2px #000000ab);
+  }
+}
+
+@keyframes HudElementAnimation {
+  0% {
+    transform: translate(0px, 2px) rotate(0.5deg);
+  }
+
+  25% {
+    transform: translate(2px, 0px) rotate(-0.5deg);
+  }
+
+  50% {
+    transform: translate(0px, -2px) rotate(0.5deg);
+  }
+
+  75% {
+    transform: translate(-2px, 0px) rotate(-0.5deg);
+  }
+
+  100% {
+    transform: translate(0px, 2px) rotate(0.5deg);
+  }
+}

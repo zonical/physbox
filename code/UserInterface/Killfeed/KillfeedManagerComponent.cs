@@ -5,14 +5,14 @@
 [Icon( "directions_run" )]
 [Tint( EditorTint.Yellow )]
 [Hide]
-public class KillfeedManagerComponent : Component, IGameEvents
+public class KillfeedManagerComponent : Component, IPhysboxGameEvents
 {
 	[Property] public List<(PlayerComponent, PhysboxDamageInfo, TimeSince)> Deaths { get; set; } = new();
 
 	protected override void OnEnabled()
 	{
 		// Delete ourselves if we're in the main menu.
-		if ( PhysboxUtilites.IsMainMenuScene() )
+		if ( PhysboxUtilities.IsMainMenuScene() )
 		{
 			DestroyGameObject();
 			return;
@@ -20,16 +20,14 @@ public class KillfeedManagerComponent : Component, IGameEvents
 	}
 
 	[Rpc.Broadcast] // Make everyone update their killfeeds.
-	void IGameEvents.OnRoundStart()
+	void IPhysboxGameEvents.OnRoundStart()
 	{
 		Deaths.Clear();
 	}
 
 	[Rpc.Broadcast] // Make everyone update their killfeeds.
-	void IGameEvents.OnPlayerDeath( PhysboxDamageInfo info )
+	void IPhysboxGameEvents.OnPlayerDeath( PhysboxDamageInfo info )
 	{
-		Log.Info( $"{info.Victim?.Name} died to {info.Attacker?.Name}, caused by {info.Prop}" );
-
 		var timeSince = new TimeSince();
 		timeSince = 0;
 

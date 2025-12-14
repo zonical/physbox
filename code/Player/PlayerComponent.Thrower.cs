@@ -16,8 +16,8 @@ public partial class PlayerComponent
 	[Property] [Feature( "Thrower" )] public Vector3 HeldObjectOffset = new();
 	[Property] [Feature( "Thrower" )] public float MaxForce = 2.75f;
 
-	private CancellationToken PropCancellationToken = CancellationToken.None;
-	private CancellationTokenSource PropCancellationTokenSource;
+	public CancellationToken PropCancellationToken = CancellationToken.None;
+	public CancellationTokenSource PropCancellationTokenSource;
 
 	public int Throws;
 
@@ -85,7 +85,7 @@ public partial class PlayerComponent
 				}
 				else
 				{
-					PhysboxUtilites.SendLocalChatMessage( MessageType.System,
+					PhysboxUtilities.SendLocalChatMessage( MessageType.System,
 						"Cannot throw prop. Too close to a wall or another object." );
 					Sound.Play( "sounds/player_use_fail.sound", Mixer.FindMixerByName( "UI" ) );
 				}
@@ -159,7 +159,7 @@ public partial class PlayerComponent
 			CurrentlyLookingAtObject = null;
 		}
 
-		var HaveFacepunchFuckedUpHighlightsAgain = true;
+		var HaveFacepunchFuckedUpHighlightsAgain = false;
 
 		// We've found something valid, put a highlight on it.
 		if ( trace.GameObject is not null && (
@@ -314,12 +314,15 @@ public partial class PlayerComponent
 
 		BroadcastPutDownAnimation();
 
-		HeldGameObject.SetParent( null );
-		HeldGameObject.Tags.Remove( PhysboxConstants.HeldPropTag );
-		LastHeldGameObject = HeldGameObject;
-		HeldGameObject = null;
+		if ( !HeldGameObject.IsDestroyed )
+		{
+			HeldGameObject.SetParent( null );
+			HeldGameObject.Tags.Remove( PhysboxConstants.HeldPropTag );
+			LastHeldGameObject = HeldGameObject;
+			StartPreviousOwnerRemovalProcess();
+		}
 
-		StartPreviousOwnerRemovalProcess();
+		HeldGameObject = null;
 
 		return LastHeldGameObject;
 	}
@@ -526,7 +529,8 @@ public partial class PlayerComponent
 				PhysboxConstants.PlayerTag,
 				PhysboxConstants.DebrisTag,
 				PhysboxConstants.HeldPropTag,
-				PhysboxConstants.RagdollTag )
+				PhysboxConstants.RagdollTag,
+				PhysboxConstants.PlayerOnlyTag )
 			.Run();
 
 		return trace;
@@ -559,7 +563,8 @@ public partial class PlayerComponent
 			.WithoutTags(
 				PhysboxConstants.DebrisTag,
 				PhysboxConstants.HeldPropTag,
-				PhysboxConstants.PlayerTag )
+				PhysboxConstants.PlayerTag,
+				PhysboxConstants.PlayerOnlyTag )
 			.IgnoreGameObject( HeldGameObject )
 			.IgnoreGameObject( GameObject )
 			.Run();

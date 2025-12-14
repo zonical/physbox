@@ -15,7 +15,7 @@ public class PhysboxSpawnpoint : Component
 	[Property]
 	[Description( "List of game modes this spawn can use." )]
 	[HideIf( "AnyGameMode", true )]
-	public List<PhysboxConstants.GameModes> GameModes { get; set; } = new();
+	public List<GameModes> GameModes { get; set; } = new();
 
 	[Property]
 	[Description( "If any team can use this spawnpoint" )]
@@ -69,13 +69,40 @@ public class PhysboxSpawnpoint : Component
 		return true;
 	}
 
+	[Button( "Update GameObject Name" )]
+	public void UpdateGameObjectName()
+	{
+		GameObject.Name = "Spawnpoint";
+		var additional = "";
+
+		if ( !AnyTeam )
+		{
+			additional += $"{Team}";
+		}
+
+		if ( !AnyGameMode )
+		{
+			if ( additional != "" )
+			{
+				additional += ", ";
+			}
+
+			additional += $"{string.Join( "& ", GameModes )}";
+		}
+
+		if ( additional != "" )
+		{
+			GameObject.Name += $" ({additional})";
+		}
+	}
+
 	protected override void DrawGizmos()
 	{
 		base.DrawGizmos();
 		var model = Model.Load( "models/editor/spawnpoint.vmdl" );
 		Gizmo.Hitbox.Model( model );
 
-		var color = AnyTeam ? Color : PhysboxUtilites.GetTeamColor( Team );
+		var color = AnyTeam ? Color : PhysboxUtilities.GetTeamColor( Team );
 
 		Gizmo.Draw.Color = color.WithAlpha( Gizmo.IsHovered || Gizmo.IsSelected ? 0.7f : 0.5f );
 		SceneObject sceneObject = Gizmo.Draw.Model( model, LocalTransform.WithPosition( Vector3.Zero ) );

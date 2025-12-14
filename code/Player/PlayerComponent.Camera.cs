@@ -1,5 +1,7 @@
 ﻿public partial class PlayerComponent
 {
+	[Property] [Feature( "Prefabs" )] private GameObject CameraPrefab { get; set; }
+
 	private bool _freeCam;
 	private float _pitch;
 	private float _yaw;
@@ -18,6 +20,8 @@
 				return;
 			}
 
+			Log.Info( $"PlayerComponent - {Name} freecam state set to {value}" );
+
 			if ( _freeCam )
 			{
 				CreateFreeCam();
@@ -33,41 +37,6 @@
 				PlayerController.Enabled = true;
 			}
 		}
-	}
-
-	/// <summary>
-	/// Creates the scene camera, which is derived from a prefab that
-	/// has some special components placed on top (mainly post-processing).
-	/// </summary>
-	private void CreateCamera()
-	{
-		if ( Camera is null )
-		{
-			var prefab = ResourceLibrary.Get<PrefabFile>( "prefabs/camera.prefab" );
-			if ( prefab is null )
-			{
-				Log.Error( "Could not find prefab file." );
-				return;
-			}
-
-			var prefabScene = SceneUtility.GetPrefabScene( prefab );
-			var go = prefabScene.Clone( new Transform(), name: "Camera" );
-			go.BreakFromPrefab();
-			go.NetworkMode = NetworkMode.Never;
-
-			go.Parent = GameObject;
-
-			Camera = go.GetComponent<CameraComponent>();
-		}
-
-		Camera.IsMainCamera = true;
-		Camera.FieldOfView = Preferences.FieldOfView;
-		Camera.BackgroundColor = Color.Black;
-
-		// Create viewmodel.
-		CreateViewmodel();
-
-		FreeCam = false;
 	}
 
 	/// <summary>
@@ -90,6 +59,11 @@
 	private void CreateNormalCam()
 	{
 		if ( IsProxy )
+		{
+			return;
+		}
+
+		if ( Camera is null || Camera.GameObject is null || !Camera.GameObject.IsValid )
 		{
 			return;
 		}

@@ -68,6 +68,9 @@ public partial class BotPlayerTasksComponent : Component
 	[ConVar( "pb_debug_visualise_bots", ConVarFlags.Cheat )]
 	public static bool DebugVisualiseBots { get; set; } = false;
 
+	[ConVar( "pb_debug_bots_freeze", ConVarFlags.Cheat )]
+	public static bool DebugBotsFreeze { get; set; } = false;
+
 	protected override void OnEnabled()
 	{
 		TimeSinceLastAllocation = 0;
@@ -81,6 +84,12 @@ public partial class BotPlayerTasksComponent : Component
 
 		if ( IsProxy )
 		{
+			return;
+		}
+
+		if ( DebugBotsFreeze )
+		{
+			Agent?.Stop();
 			return;
 		}
 
@@ -139,10 +148,13 @@ public partial class BotPlayerTasksComponent : Component
 			TimeSinceLastAllocation = 0;
 		}
 
-		var textPos = new Vector3( WorldPosition.x, WorldPosition.y, WorldPosition.z + 96 );
-		DebugOverlay.Text( textPos,
-			new TextRendering.Scope( $"Task: {DebugCurrentTask}", DebugColor, 64 ),
-			TextFlag.Left, 1.5f );
+		if ( DebugVisualiseBots )
+		{
+			var textPos = new Vector3( WorldPosition.x, WorldPosition.y, WorldPosition.z + 96 );
+			DebugOverlay.Text( textPos,
+				new TextRendering.Scope( $"Task: {DebugCurrentTask}", DebugColor, 16 ),
+				TextFlag.Center, 0, true );
+		}
 	}
 
 	private void DebugRender( Vector3? movePoint )
@@ -300,7 +312,7 @@ public partial class BotPlayerTasksComponent : Component
 				}
 
 				// Don't look for our own teammates.
-				if ( foundPlayer.Team == Player.Team )
+				if ( GameLogicComponent.UseTeams && foundPlayer.Team == Player.Team )
 				{
 					continue;
 				}

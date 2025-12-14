@@ -32,14 +32,18 @@
     "Compiler": {
       "RootNamespace": "Sandbox",
       "DefineConstants": "SANDBOX;ADDON;DEBUG",
-      "NoWarn": "1701;1702;1591;",
+      "NoWarn": "1701;1702;1591;8632",
       "WarningsAsErrors": "",
       "TreatWarningsAsErrors": false,
       "Nullables": false,
       "ReleaseMode": "Debug",
       "AssemblyReferences": [],
+      "ReplacementDirectives": {
+        ".Server.cs": "SERVER"
+      },
       "IgnoreFolders": [
-        "unittest"
+        "unittest",
+        "editor"
       ],
       "DistinctAssemblyReferences": []
     },
