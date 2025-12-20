@@ -28,6 +28,10 @@ public sealed class PropLifeComponent :
 	[Sync]
 	public PlayerComponent LastOwnedBy { get; set; }
 
+	[Property] [Group( "Actions" )] public Action OnPropBroken;
+
+	[Property] [Group( "Actions" )] public Action OnPropPickedUp;
+
 	public PlayerComponent InterestedBot { get; set; }
 
 	public PropDefinitionComponent DefinitionComponent => Components.Get<PropDefinitionComponent>();
@@ -140,6 +144,7 @@ public sealed class PropLifeComponent :
 		// Run death action.
 		var propModel = PropDefinition.Model;
 		PropDefinition.OnPropBroken?.Invoke( GameObject );
+		OnPropBroken?.Invoke();
 
 		// We need to add a delay here because the props are going so fast
 		// that it's not registering the physics touch before the prop breaks.

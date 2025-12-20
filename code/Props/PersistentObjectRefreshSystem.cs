@@ -81,7 +81,7 @@ public class PersistentObjectRefreshSystem : GameObjectSystem, IPhysboxGameEvent
 
 	void IPhysboxGameEvents.OnRoundStart()
 	{
-		if ( !Networking.IsHost )
+		if ( !Networking.IsHost || GameLogicComponent.GameMode == GameModes.Tutorial )
 		{
 			return;
 		}

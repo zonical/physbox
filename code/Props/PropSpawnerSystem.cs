@@ -69,7 +69,8 @@ public class PropSpawnerSystem : GameObjectSystem, IPhysboxGameEvents, ISceneLoa
 			spawner.Sleeping = true;
 			spawner.TimeSinceWentToSleep = 0;
 
-			PhysboxUtilities.CreatePropFromResource( spawner.Prop, spawner.WorldTransform );
+			var transform = (Transform?)spawner.WorldTransform ?? new Transform();
+			PhysboxUtilities.CreatePropFromResource( spawner.Prop, transform );
 		}
 	}
 
@@ -97,16 +98,14 @@ public class PropSpawnerSystem : GameObjectSystem, IPhysboxGameEvents, ISceneLoa
 
 		// Spawn from a random spawner.
 		var spawner = Random.Shared.FromList( ValidSpawners );
-		if ( spawner is null )
-		{
-			return;
-		}
 
 		spawner.Sleeping = true;
 		spawner.TimeSinceWentToSleep = 0;
 
+		var transform = (Transform?)spawner.WorldTransform ?? new Transform();
+
 		// Create a prop in front of us.
-		PhysboxUtilities.CreatePropFromResource( spawner.Prop, spawner.WorldTransform );
+		PhysboxUtilities.CreatePropFromResource( spawner.Prop, transform );
 
 		SpawnDelay = 0;
 	}

@@ -30,7 +30,7 @@ public partial class GameLogicComponent :
 	/// <param name="scene"></param>
 	void ISceneLoadingEvents.AfterLoad( Scene scene )
 	{
-		Log.Info( "Initialising new Physbox game." );
+		Log.Info( $"Initialising new Physbox game - {GameMode}" );
 		GameObject.Name = $"Physbox Game - {GameMode}";
 
 		if ( Networking.IsHost )
@@ -94,6 +94,11 @@ public partial class GameLogicComponent :
 	/// </summary>
 	private void SaveProps()
 	{
+		if ( GameMode == GameModes.Tutorial )
+		{
+			return;
+		}
+
 		// Save the props that the developer has manually placed in the level.
 		var system = Scene.GetSystem<PersistentObjectRefreshSystem>();
 		system.SaveProps();
@@ -179,6 +184,7 @@ public partial class GameLogicComponent :
 			case GameModes.None: GameModeComponent = Components.Create<EmptyGameMode>(); break;
 			case GameModes.Deathmatch: GameModeComponent = Components.Create<DeathmatchGameMode>(); break;
 			case GameModes.Dodgeball: GameModeComponent = Components.Create<DodgeballGameMode>(); break;
+			case GameModes.Tutorial: GameModeComponent = Components.Create<TutorialGameMode>(); break;
 			default:
 				{
 					Log.Error( $"Invalid gamemode selected! ({GameMode})" );
@@ -191,27 +197,30 @@ public partial class GameLogicComponent :
 
 	private void ForceCleanup()
 	{
-		var props = Scene.GetAllComponents<PropLifeComponent>();
-		var meshes = Scene.GetAllComponents<WorldLifeComponent>();
-
-		Log.Info(
-			$"GameLogicComponent::ForceCleanup() - cleaning up {props.Count()} props and {meshes.Count()} meshes." );
-
-		// Destroy all props.
-		foreach ( var prop in props )
+		if ( GameMode != GameModes.Tutorial )
 		{
-			prop.GameObject.Destroy();
-		}
+			var props = Scene.GetAllComponents<PropLifeComponent>();
+			var meshes = Scene.GetAllComponents<WorldLifeComponent>();
 
-		// Destroy all breakable meshes.
-		foreach ( var mesh in meshes )
-		{
-			mesh.GameObject.Destroy();
-		}
+			Log.Info(
+				$"GameLogicComponent::ForceCleanup() - cleaning up {props.Count()} props and {meshes.Count()} meshes." );
 
-		// Reset prop spawn timer.
-		Scene.GetSystem<PropSpawnerSystem>().SpawnDelay = 0;
-		Scene.GetSystem<PropSpawnerSystem>().CheckDelay = 0;
+			// Destroy all props.
+			foreach ( var prop in props )
+			{
+				prop.GameObject.Destroy();
+			}
+
+			// Destroy all breakable meshes.
+			foreach ( var mesh in meshes )
+			{
+				mesh.GameObject.Destroy();
+			}
+
+			// Reset prop spawn timer.
+			Scene.GetSystem<PropSpawnerSystem>().SpawnDelay = 0;
+			Scene.GetSystem<PropSpawnerSystem>().CheckDelay = 0;
+		}
 
 		AnnouncerSoundsAlreadyPlayed.Clear();
 	}

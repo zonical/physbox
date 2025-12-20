@@ -65,6 +65,12 @@ public partial class GameLogicComponent
 	/// </summary>
 	private void CreateBot( Guid botId )
 	{
+		// Do not create bots in tutorials.
+		if ( GameMode == GameModes.Tutorial )
+		{
+			return;
+		}
+
 		Assert.NotNull( BotPrefab );
 		var bot = BotPrefab.Clone();
 

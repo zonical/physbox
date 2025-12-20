@@ -20,7 +20,7 @@
 		}
 	</div>
 	<TextEntry class="background" @ref="InputBox" onsubmit="@ChatFinished"
-	           OnTextEdited="@(OnTextEdited)"></TextEntry>
+	           OnTextEdited="@( OnTextEdited )"></TextEntry>
 </root>
 
 @code
@@ -91,8 +91,6 @@
 	/// </summary>
 	void OpenChat()
 	{
-		ScrollPanel.PreferScrollToBottom = true;
-
 		InputBox.Focus();
 		ScrollPanel.TryScrollToBottom();
 		Panel.Style.PointerEvents = PointerEvents.All;
@@ -112,7 +110,6 @@
 	void CloseChat()
 	{
 		InputBox.Blur();
-		ScrollPanel.TryScrollToBottom();
 		Panel.Style.PointerEvents = PointerEvents.None;
 		InputBox.Style.Opacity = 0;
 
@@ -146,5 +143,19 @@
 			return;
 
 		ChatManager.SendMessage( MessageType.Player, text );
+	}
+
+	protected override void OnTreeFirstBuilt()
+	{
+		ScrollPanel?.PreferScrollToBottom = true;
+	}
+
+	/// <summary>
+	/// Always scroll down.
+	/// </summary>
+	protected override void OnUpdate()
+	{
+		if ( Open ) return;
+		ScrollPanel?.TryScrollToBottom();
 	}
 }

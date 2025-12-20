@@ -68,6 +68,9 @@ public partial class PlayerComponent
 			AssignToBestTeam();
 		}
 
+		// Get rid of the breakable tag. I don't know why it shows up, but it does!
+		Collider.Tags.Remove( PhysboxConstants.BreakablePropTag );
+
 		Scene.RunEvent<IPhysboxGameEvents>( x => x.OnPlayerSpawn( this ) );
 		Network.Refresh( this );
 		Log.Info( $"PlayerComponent::Spawn() - {Name}" );

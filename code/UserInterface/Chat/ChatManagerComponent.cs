@@ -36,8 +36,10 @@ public class ChatManagerComponent :
 		Messages.Add( (type, Rpc.CallerId, text) );
 		Sound.Play( "sounds/player/chat_new_message.sound" );
 
-		var chatDisplayComp = Game.ActiveScene.Get<ChatDisplay>();
-		chatDisplayComp?.StateHasChanged();
+		foreach ( var chatDisplay in Scene.GetAllComponents<ChatDisplay>() )
+		{
+			chatDisplay.StateHasChanged();
+		}
 	}
 
 	[ConCmd( "pb_chat_test" )]

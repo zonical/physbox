@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Sandbox;
+using Sandbox.Network;
 
 [Group( "Physbox" )]
 [Title( "Game Networking Component" )]
@@ -45,7 +46,8 @@ public class GameNetworkingComponent : Component, Component.INetworkListener
 			Log.Info( "Lobby doesn't exist - creating a new one!" );
 
 			await Task.DelayRealtimeSeconds( 0.1f );
-			PhysboxUtilities.CreateNewLobby();
+			PhysboxUtilities.CreateNewLobby( 16, $"Physbox {GameLogicComponent.GameMode} Lobby",
+				GameLogicComponent.GameMode, LobbyPrivacy.Public );
 
 			// If we are not on a map for some reason, load into Street.
 			if ( Application.IsDedicatedServer && Scene.Get<MapInformationComponent>() is null )
@@ -142,7 +144,8 @@ public class GameNetworkingComponent : Component, Component.INetworkListener
 			Networking.Disconnect();
 		}
 
-		PhysboxUtilities.CreateNewLobby();
+		PhysboxUtilities.CreateNewLobby( 16, $"Physbox {GameLogicComponent.GameMode} Lobby",
+			GameLogicComponent.GameMode, LobbyPrivacy.Public );
 
 		// Change to our new scene.
 		var slo = new SceneLoadOptions { ShowLoadingScreen = true };

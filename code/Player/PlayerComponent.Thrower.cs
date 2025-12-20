@@ -220,6 +220,7 @@ public partial class PlayerComponent
 		if ( HeldGameObject.Components.TryGet<PropLifeComponent>( out var propLifeComponent ) )
 		{
 			propLifeComponent.LastOwnedBy = this;
+			propLifeComponent.OnPropPickedUp?.Invoke();
 		}
 	}
 

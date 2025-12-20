@@ -2235,7 +2235,7 @@
             ]
           },
           {
-            "__guid": "e0e9e37a-7219-4482-b559-565359edda43",
+            "__guid": "3ed5e4f0-1d6b-48c9-b774-05c5eead4b04",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - eyelashes",
@@ -2252,7 +2252,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "3acfe083-7913-4296-a0a1-c7648ee8674d",
+                "__guid": "3c0a3b21-9647-4765-9243-50752063401c",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2303,7 +2303,7 @@
             "Children": []
           },
           {
-            "__guid": "f4176286-7b65-4651-81e6-679d96af0394",
+            "__guid": "f263ccc8-54a2-442b-9a74-6af45d2271be",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - sneakers",
@@ -2320,7 +2320,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "0f452185-44be-42cc-ae26-ea38da02eefd",
+                "__guid": "c5d9866b-0b1e-4344-9538-8cf80ddaa3b0",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2371,7 +2371,7 @@
             "Children": []
           },
           {
-            "__guid": "1e7beee4-b364-4d41-809b-6bcc355c2153",
+            "__guid": "83168c6f-eb89-4ab3-b9df-c8bd6f0c5cb6",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - braided_long_beard",
@@ -2388,7 +2388,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "236fe4da-887f-4e5f-aba2-c65a03284d15",
+                "__guid": "f7e01ad8-da66-44fa-92e1-c0637b1919d8",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2439,7 +2439,7 @@
             "Children": []
           },
           {
-            "__guid": "c9ab639c-b6b2-450c-887b-c750ae6312c1",
+            "__guid": "2b983277-df3e-4df0-8c59-f8b59f033842",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - loose_jumper_wooly",
@@ -2456,7 +2456,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "53d359f0-1bd2-4fff-b91c-ce4964334cb7",
+                "__guid": "6fa21493-4fff-4114-ba82-47c7f771e58e",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2507,7 +2507,7 @@
             "Children": []
           },
           {
-            "__guid": "a4b8e0b3-a849-403d-bc76-9b2a9636dc5a",
+            "__guid": "227349f2-81ac-4b86-b00b-70fb08f120ac",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - eyebrows_styled",
@@ -2524,7 +2524,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "cd6e5b3d-b5c7-4543-a1b2-af87b32f10cd",
+                "__guid": "8d52233e-beb7-4c03-aa82-15e7fcfface8",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2575,7 +2575,7 @@
             "Children": []
           },
           {
-            "__guid": "046678ba-5746-4a46-896e-0ccdab07622c",
+            "__guid": "db06e8f2-b261-46e0-904c-caf511c7609b",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - hair_longcurly_brown",
@@ -2592,7 +2592,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "50a19b92-1e7a-46ea-ac60-79ab135a6fac",
+                "__guid": "b2fc2ae6-bccd-4635-8850-1955f64e8b70",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2643,7 +2643,7 @@
             "Children": []
           },
           {
-            "__guid": "d9e0365b-7bc4-4345-8d1a-57fa91a29ac4",
+            "__guid": "6943b212-823f-48d4-9368-c1d57605f63d",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - loose_jeans",
@@ -2660,7 +2660,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "cb161e74-0e75-4817-987a-a680bb7203a0",
+                "__guid": "4552a8a9-5297-4431-ace5-e54227c485d6",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2711,7 +2711,7 @@
             "Children": []
           },
           {
-            "__guid": "685c5030-fd3e-49ae-89e0-cf0557286f15",
+            "__guid": "6930ffdd-6163-44a7-86be-f93d0c96f93b",
             "__version": 1,
             "Flags": 0,
             "Name": "Clothing - freckles",
@@ -2728,7 +2728,7 @@
             "Components": [
               {
                 "__type": "Sandbox.SkinnedModelRenderer",
-                "__guid": "d75283eb-f7a6-4fdf-ba21-8dc0d5fd24c6",
+                "__guid": "22f2886f-6d29-4a11-ac30-162ce9d277a9",
                 "__enabled": true,
                 "AnimationGraph": null,
                 "BodyGroups": 18446744073709551615,
@@ -2788,7 +2788,7 @@
         "Position": "0,0,0",
         "Rotation": "0,0,0,1",
         "Scale": "1,1,1",
-        "Tags": "breakable",
+        "Tags": "",
         "Enabled": true,
         "NetworkMode": 2,
         "NetworkInterpolation": true,

@@ -70,8 +70,7 @@ public partial class PhysboxUtilities
 	public static bool IsMainMenuScene()
 	{
 		Assert.IsValid( Game.ActiveScene );
-		var scene = Game.ActiveScene;
-		return scene.Get<MainMenu>() is not null;
+		return IsMainMenuScene( Game.ActiveScene );
 	}
 
 	/// <summary>
@@ -195,7 +194,7 @@ public partial class PhysboxUtilities
 		LoadingScreen.Title = "Creating Lobby";
 		var config = new LobbyConfig { MaxPlayers = maxPlayers, Name = lobbyName, Privacy = privacy };
 		Networking.CreateLobby( config );
-		Networking.SetData( "gamemode", gameMode.GetAttributeOfType<IconAttribute>().Value ?? "❓" );
+		Networking.SetData( "gamemode", gameMode.GetAttributeOfType<IconAttribute>()?.Value ?? "❓" );
 
 		GameLogicComponent.GameMode = gameMode;
 	}

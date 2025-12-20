@@ -1,7 +1,7 @@
 public partial class GameLogicComponent
 {
 	// Current active gamemode. This is hidden, but doesn't automatically update. Call SetGameMode() to change the value.
-	[ConVar( "pb_gamemode", ConVarFlags.Replicated | ConVarFlags.Hidden )]
+	[ConVar( "pb_gamemode", ConVarFlags.Replicated )]
 	public static GameModes GameMode { get; set; }
 
 	// When a round ends (firing OnRoundEnd() event), this is the amount of time before StartGame() is called.
